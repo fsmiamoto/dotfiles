@@ -354,8 +354,8 @@ bar {
         separator  $foreground 
     #                      border        backgr.    text
         focused_workspace  #F9FAF9       $color2    #292F34
-        active_workspace   $foreground   $color8    #EEE8D5
-        inactive_workspace $foreground   $color8    #EEE8D5
+        active_workspace   $foreground   $color3    #EEE8D5
+        inactive_workspace $foreground   $color3    #EEE8D5
         binding_mode       #16a085       #2C2C2C    #F9FAF9
         urgent_workspace   #16a085       $color1    #EEE8D5
     }

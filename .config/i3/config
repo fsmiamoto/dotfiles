@@ -11,6 +11,9 @@ exec setxkbmap -option caps:escape
 exec mpd
 exec_always mpc ls | mpc add
 
+# Nitrogen restore background
+exec nitrogen --restore
+
 # Bindings
 bindsym $mod+e exec terminal -e ranger
 bindsym $mod+w exec firefox
@@ -23,6 +26,7 @@ for_window [class="Spotify"] move to workspace number $ws8
 for_window [class="Steam"] move to workspace number $ws6
 for_window [title="フレンドリスト"] floating enable border pixel 1
 for_window [title="ncmpcpp"] floating enable border pixel 1 move to workspace number $ws8
+for_window [class="qutebrowser"] floating enable border pixel 1
 for_window [class="Anki"] move to workspace number $ws5
 assign [class="code-oss"] number $ws7
 
@@ -357,7 +361,7 @@ bar {
         active_workspace   $foreground   $color3    #EEE8D5
         inactive_workspace $foreground   $color3    #EEE8D5
         binding_mode       #16a085       #2C2C2C    #F9FAF9
-        urgent_workspace   #16a085       $color1    #EEE8D5
+        urgent_workspace   $foreground   $color1    #EEE8D5
     }
 }
 

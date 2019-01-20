@@ -8,8 +8,11 @@
 exec setxkbmap -option caps:escape
 
 # Execute MPD
-exec mpd
+exec --no-startup-id mpd
 exec_always mpc ls | mpc add
+
+# Execute polybar
+exec_always --no-startup-id .config/polybar/polybarstart.sh
 
 # Nitrogen restore background
 exec nitrogen --restore
@@ -22,6 +25,7 @@ bindsym $mod+w exec firefox
 bindsym $mod+slash move scratchpad
 bindsym $mod+backslash scratchpad show
 
+# Window configs
 for_window [class="Spotify"] move to workspace number $ws8
 for_window [class="Steam"] move to workspace number $ws6
 for_window [title="フレンドリスト"] floating enable border pixel 1
@@ -338,32 +342,32 @@ set_from_resource $color14    color14
 set_from_resource $color15    color15
 
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
-bar {
-	i3bar_command i3bar
-	status_command i3blocks
-    font pango: RobotoMono Nerd Font 12
-	position bottom
-
-## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
-#	tray_output primary
-#	tray_output eDP1
-
-	bindsym button4 nop
-	bindsym button5 nop
-	strip_workspace_numbers no
-
-    colors {
-        background $background 
-        statusline #F9FAF9
-        separator  $foreground 
-    #                      border        backgr.    text
-        focused_workspace  #F9FAF9       $color2    #292F34
-        active_workspace   $foreground   $color3    #EEE8D5
-        inactive_workspace $foreground   $color3    #EEE8D5
-        binding_mode       #16a085       #2C2C2C    #F9FAF9
-        urgent_workspace   $foreground   $color1    #EEE8D5
-    }
-}
+#bar {
+#	i3bar_command i3bar
+#	status_command i3blocks
+#    font pango: RobotoMono Nerd Font 12
+#	position bottom
+#
+### please set your primary output first. Example: 'xrandr --output eDP1 --primary'
+##	tray_output primary
+##	tray_output eDP1
+#
+#	bindsym button4 nop
+#	bindsym button5 nop
+#	strip_workspace_numbers no
+#
+#    colors {
+#        background $background 
+#        statusline #F9FAF9
+#        separator  $foreground 
+#    #                      border        backgr.    text
+#        focused_workspace  #F9FAF9       $color2    #292F34
+#        active_workspace   $foreground   $color3    #EEE8D5
+#        inactive_workspace $foreground   $color3    #EEE8D5
+#        binding_mode       #16a085       #2C2C2C    #F9FAF9
+#        urgent_workspace   $foreground   $color1    #EEE8D5
+#    }
+#}
 
 # hide/unhide i3status bar
 bindsym $mod+m bar mode toggle

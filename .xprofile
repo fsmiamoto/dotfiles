@@ -1,7 +1,11 @@
 xset -b
+
+# Set SCIM as Input Method
 export XMODIFIERS=@im=SCIM
 export GTK_IM_MODULE=¨scim¨
 export QT_IM_MODULE=¨scim¨
 scim -d
+
+# Restore PyWal colorscheme
 wal -R
 

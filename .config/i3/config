@@ -75,8 +75,8 @@ bindsym $mod+Ctrl+m exec pavucontrol
 
 ################################################################################################
 
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +1%; exec pkill -RTMIN+10 i3blocks 
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -1%; exec pkill -RTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +3%; exec pkill -RTMIN+10 i3blocks 
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -3%; exec pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RTMIN+10
 
 # Start Applications

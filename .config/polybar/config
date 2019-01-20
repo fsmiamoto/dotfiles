@@ -28,8 +28,7 @@ alert = ${xrdb:color3:#222}
 [bar/monitor0]
 monitor = ${env:MONITOR:DVI-D-0}
 width = 100%
-height = 29
-override_redirect = false
+height = 32
 offset-x = 0
 offset-y = 0
 radius = 0.0
@@ -40,7 +39,7 @@ background = ${colors.background}
 foreground = ${colors.foreground}
 
 line-size = 2
-line-color = #f00
+line-color = #fff
 
 border-size = 0
 border-color = #00000000
@@ -51,14 +50,13 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = DejavuSansMono Nerd Font:size=9
-font-1 = Droid Sans Japanese:size=10
-;font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-;font-2 = siji:pixelsize=10;1
+font-0 = Droid Sans:size=11
+font-1 = DejavuSansMono Nerd Font:size=10
+font-2 = Droid Sans Japanese:size=10
 
 modules-left = i3
 modules-center = xwindow
-modules-right =  filesystem pulseaudio xkeyboard memory cpu eth temperature date 
+modules-right = pulseaudio filesystem memory eth date 
 
 ;scroll-up = i3wm-wsnext
 ;scroll-down = i3wm-wsprev
@@ -73,7 +71,7 @@ label = %title:0:30:...%
 [module/xkeyboard]
 type = internal/xkeyboard
 blacklist-0 = num lock
-
+    
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-prefix-underline = ${colors.secondary}
@@ -92,7 +90,10 @@ interval = 25
 
 mount-0 = /
 
-label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+; How to add colors!
+;label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+label-mounted =  %percentage_used%%
+label-mounted-underline = ${xrdb:color1} 
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
@@ -120,7 +121,7 @@ label-empty-padding = 2
 
 [module/mpd]
 type = internal/mpd
-format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
+format-online = <label-song>    <icon-prev> <icon-stop> <toggle> <icon-next> 
 
 icon-prev = 
 icon-stop =  
@@ -128,7 +129,7 @@ icon-play = 
 icon-pause =  
 icon-next =  
 
-label-song-maxlen = 25
+label-song-maxlen = 55
 label-song-ellipsis = true
 
 ;wm-restack = i3
@@ -193,38 +194,16 @@ type = internal/memory
 interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #4bffdc
+format-underline = ${xrdb:color2}
 label = %percentage_used%%
-
-[module/wlan]
-type = internal/network
-interface = net1
-interval = 3.0
-
-format-connected = <ramp-signal> <label-connected>
-format-connected-underline = #9f78e1
-label-connected = %essid%
-
-format-disconnected =
-;format-disconnected = <label-disconnected>
-;format-disconnected-underline = ${self.format-connected-underline}
-;label-disconnected = %ifname% disconnected
-;label-disconnected-foreground = ${colors.foreground-alt}
-
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
-ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
 type = internal/network
 interface = eno1
 interval = 3.0
 
-format-connected-underline = #55aa55
-format-connected-prefix = " "
+format-connected-underline = ${xrdb:color3} 
+format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.foreground-alt}
 label-connected = %local_ip%
 
@@ -239,16 +218,16 @@ type = internal/date
 interval = 5
 
 date =
-date-alt = " %Y-%m-%d"
+date-alt = "- %Y年%m月%d日"
 
 time = %H:%M
 time-alt = %H:%M:%S
 
-format-prefix = 
+format-prefix = " " 
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #0a6cf5
+format-underline = ${xrdb:color4} 
 
-label = %date% %time%
+label = %time% %date%
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -259,34 +238,6 @@ label-volume-foreground = ${root.foreground}
 
 label-muted =  muted
 label-muted-foreground = #666
-
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
-
-[module/alsa]
-type = internal/alsa
-
-format-volume = <label-volume> <bar-volume>
-label-volume = VOL
-label-volume-foreground = ${root.foreground}
-
-format-muted-prefix = " "
-format-muted-foreground = ${colors.foreground-alt}
-label-muted = sound muted
 
 bar-volume-width = 10
 bar-volume-foreground-0 = #55aa55
@@ -369,36 +320,8 @@ margin-bottom = 5
 
 
 [bar/monitor1]
+inherit = bar/monitor0
 monitor = ${env:MONITOR:HDMI-0}
-width = 100%
-height = 29
-offset-x = 0
-offset-y = 0
-radius = 0.0
-fixed-center = false
-bottom = true
-
-padding = 0
-
-background = ${colors.background}
-foreground = ${colors.foreground}
-
-line-size = 2
-line-color = #f00
-
-border-size = 0
-border-color = #00000000
-
-padding-left = 0
-padding-right = 2
-
-module-margin-left = 1
-module-margin-right = 2
-
-font-0 = DejavuSansMono Nerd Font:size=9
-font-1 = Droid Sans Japanese:size=10
-;font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-;font-2 = siji:pixelsize=10;1
 
 modules-left = i3
 modules-center = xwindow

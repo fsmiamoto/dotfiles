@@ -1,0 +1,60 @@
+; 
+; 
+; 
+; 
+; 
+
+[settings]
+screenchange-reload = true
+[bar/test]
+monitor = eDP1
+bottom = true
+modules-center = text1  separator1  text2  separator2 text3 separator3 text4
+
+background = #FFB5BD68
+foreground = #f00
+
+;height = 14
+height = 21
+spacing = 3
+module-margin-left = 0
+module-margin-right = 0
+
+font-0 = Fixed:size=9;-6
+font-1 = Droid Sans Mono for Powerline Plus Nerd File Types Mono:size=15
+font-2 = Powerline Extra Symbols:size=15
+
+[module/separator1]
+type = custom/text
+content = %{F#FFB5BD68 B#FF454A4F}
+
+[module/separator2]
+type = custom/text
+content = %{B#f90 F#FF454A4F}
+
+[module/separator3]
+type = custom/text
+content = %{F#FFB5BD68 B-}
+
+[module/text1]
+type = custom/text
+content = test
+content-background = #f90
+
+[module/text2]
+type = custom/text
+content = test
+content-background = #FF454A4F
+content-foreground = #FFF
+
+[module/text3]
+type = custom/text
+content = test
+content-background = #f90
+
+[module/text4]
+type = custom/text
+content = test
+content-background = #90f
+
+; vim:ft=dosini

@@ -1,0 +1,43 @@
+# Excludes all in root folder, the home folder in this case.
+/*
+
+# Files in home folder
+!.vimrc
+!.bashrc
+!.bash_profile
+!.xinitrc
+!.xprofile
+!.Xresources
+!.gitignore
+
+# Files in .config
+
+# First, unignore .config dir
+!/.config/
+
+# Then ignore other all other stuff in it
+/.config/*
+
+# Unignore the i3 dir
+!/.config/i3/
+# Then unignore the files in it.
+!/.config/i3/*
+
+# Same for other programs
+!/.config/i3blocks/
+!/.config/i3blocks/*
+
+!/.config/ranger/
+!/.config/ranger/*
+
+!/.config/rofi/
+!/.config/rofi/*
+
+!/.config/polybar/
+!/.config/polybar/*
+
+#!/.config/'Code - OSS'/
+#/.config/'Code - OSS'/*
+#!/.config/'Code - OSS'/User/
+#/.config/'Code - OSS'/User/
+#!/.config/'Code - OSS'/User/settings.json

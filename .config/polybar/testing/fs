@@ -1,0 +1,39 @@
+[bar/test]
+monitor = eDP-1
+override-redirect = true
+
+width = 800
+height = 50
+
+offset-x = 560
+
+padding = 2
+
+line-size = 10
+line-color = #c51850
+
+font-0 = envypn:weight=bold:pixelsize=13;0
+font-1 = fontawesome:size=10;0
+font-2 = materialicons:size=10;0
+
+modules-center = filesystem
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+
+mount-0 = /
+mount-1 = /home
+mount-2 = /invalid/mountpoint
+
+remove-unmounted = true
+
+;fixed-values = true
+;spacing = 4
+
+label-mounted = %mountpoint%: %percentage_free%%/%percentage_used%% F: %free%, U: %used%, T: %total%
+
+;label-unmounted = %mountpoint%: not mounted
+;label-unmounted-foreground = #55
+
+# vim:ft=dosini

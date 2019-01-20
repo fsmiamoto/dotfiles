@@ -1,0 +1,50 @@
+[bar/test]
+monitor = eDP-1
+
+override-redirect = true
+width = 1000
+offset-x = 460
+
+background = #ff184f
+foreground = #44000d
+
+spacing = 1
+
+padding-left = 2
+padding-right = 2
+module-margin-left = 0
+module-margin-right = 0
+
+font-0 = envypn-regular:size=10;0
+font-1 = Siji:pixelsize=10;0
+
+modules-left = date
+
+[module/date]
+; type = internal/date
+; interval = 1
+;
+; format = <label>
+; format-alt = <label>
+;
+; date = %%{T2}%%{F#666}%{F#cc} %Y-%m-%d
+; date-alt =  %Y:%m:%d
+;
+; time = %%{F#92f2ba}%%{F#cc} %H:%M%%{T-}
+; time-alt =  %H:%M:%S
+;
+; label = "  %date%       -> %time%  "
+; label-background = #fff
+; label-foreground = #000
+type = internal/date
+interval = 5
+
+label = %date% %time%
+format-prefix = " "
+
+time = %H:%M
+time-alt = %H:%M:%S
+date =
+date-alt = %Y-%m-%d
+
+; vim:ft=dosini

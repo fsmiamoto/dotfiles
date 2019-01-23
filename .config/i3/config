@@ -24,6 +24,7 @@ for_window [class="Steam"] move to workspace number $ws6
 for_window [title="フレンドリスト"] floating enable border pixel 1
 for_window [title="ncmpcpp"] floating enable border pixel 1 move to workspace number $ws8
 for_window [class="qutebrowser"] floating enable border pixel 1
+for_window [class="matplotlib"] floating enable border pixel 1
 for_window [class="Anki"] move to workspace number $ws5
 assign [class="code-oss"] number $ws7
 

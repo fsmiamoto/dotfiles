@@ -1,60 +1,3 @@
-Xft.dpi:       96
-Xft.antialias: true
-Xft.hinting:   true
-Xft.rgba:      rgb
-Xft.autohint:  false
-Xft.hintstyle: hintslight
-Xft.lcdfilter: lcddefault
-
-XTerm*background:        #222D31
-XTerm*foreground:        #d8d8d8
-XTerm*pointerColor:      #1ABB9B
-XTerm*faceName:          Fixed
-XTerm*faceSize:          11
-XTerm*reverseVideo:      on
-XTerm*selectToClipboard: true
-
-/*
-*background:                      #222D31
-*foreground:                      #d8d8d8
-*fading:                          8
-*fadeColor:                       black
-*cursorColor:                     #1ABB9B
-*pointerColorBackground:          #2B2C2B
-*pointerColorForeground:          #16A085
-
-!! black dark/light
-*color0:                          #222D31
-*color8:                          #585858
-
-!! red dark/light
-*color1:                          #ab4642
-*color9:                          #ab4642
-
-!! green dark/light
-*color2:                          #7E807E
-*color10:                         #8D8F8D
-
-!! yellow dark/light
-*color3:                          #f7ca88
-*color11:                         #f7ca88
-
-!! blue dark/light
-*color4:                          #7cafc2
-*color12:                         #7cafc2
-
-!! magenta dark/light
-*color5:                          #ba8baf
-*color13:                         #ba8baf
-
-!! cyan dark/light
-*color6:                          #1ABB9B
-*color14:                         #1ABB9B
-
-!! white dark/light
-*color7:                          #d8d8d8
-*color15:                         #f8f8f8
-*/
 
 ! special
 *.foreground:   #c0c5ce
@@ -93,9 +36,6 @@ XTerm*selectToClipboard: true
 *.color7:       #c0c5ce
 *.color15:      #eff1f5
 
-
-
-
 Xcursor.theme: xcursor-breeze
 Xcursor.size:                     0
 
@@ -132,26 +72,6 @@ URxvt.keysym.Shift-Control-Down:  \033[1;6B
 URxvt.perl-ext-common: resize-font
 URxvt.keysym.C-Down: resize-font:smaller
 URxvt.keysym.C-Up: resize-font:bigger
-
-!URxvt*color0:                     color
-!URxvt*color1:                     color
-!URxvt*color2:                     color
-!URxvt*color3:                     color
-!URxvt*color4:                     color
-!URxvt*color5:                     color
-!URxvt*color6:                     color
-!URxvt*color7:                     color
-!URxvt*color8:                     color
-!URxvt*color9:                     color
-!URxvt*color10:                     color
-!URxvt*color11:                     color
-!URxvt*color12:                     color
-!URxvt*color13:                     color
-!URxvt*color14:                     color
-!URxvt*color15:                     color
-
-
-
 
 ! URxvt*skipScroll:                 boolean
 ! URxvt*pastableTabs:               boolean
@@ -269,20 +189,3 @@ URxvt.keysym.C-Up: resize-font:bigger
 ! URxvt*tabbar-bg:                  colour
 ! URxvt*tabbar-fg:                  colour
 ! URxvt*url-launcher:               string
-
-! The Terminus font uses the following X-names:
-! -xos4-terminus-medium-r-normal--12-120-72-72-c-60-iso10646-1
-! -xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso10646-1
-! -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
-! -xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1
-! -xos4-terminus-medium-r-normal--22-220-72-72-c-110-iso10646-1
-! -xos4-terminus-medium-r-normal--24-240-72-72-c-120-iso10646-1
-! -xos4-terminus-medium-r-normal--28-280-72-72-c-140-iso10646-1
-! -xos4-terminus-medium-r-normal--32-320-72-72-c-160-iso10646-1
-! -xos4-terminus-bold-r-normal--12-120-72-72-c-60-iso10646-1
-! -xos4-terminus-bold-r-normal--14-140-72-72-c-80-iso10646-1
-! -xos4-terminus-bold-r-normal--16-160-72-72-c-80-iso10646-1
-! -xos4-terminus-bold-r-normal--20-200-72-72-c-100-iso10646-1
-! -xos4-terminus-bold-r-normal--24-240-72-72-c-120-iso10646-1
-! -xos4-terminus-bold-r-normal--28-280-72-72-c-140-iso10646-1
-! -xos4-terminus-bold-r-normal--32-320-72-72-c-160-iso10646-1

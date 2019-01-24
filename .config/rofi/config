@@ -1,1 +1,5 @@
 rofi.theme: ~/.cache/wal/colors-rofi-light.rasi
+rofi.font: Droid Sans, 16
+rofi.lines: 5
+rofi.opacity: 85
+

@@ -10,6 +10,9 @@ exec_always mpc ls | mpc add
 # Execute polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh
 
+# Execute nitrogen 
+exec --no-startup-id nitrogen --restore
+
 # Bindings
 bindsym $mod+e exec terminal -e ranger
 bindsym $mod+w exec firefox
@@ -22,10 +25,10 @@ bindsym $mod+backslash scratchpad show
 for_window [class="Spotify"] move to workspace number $ws8
 for_window [class="Steam"] move to workspace number $ws6
 for_window [title="フレンドリスト"] floating enable border pixel 1
-for_window [title="ncmpcpp"] floating enable border pixel 1 move to workspace number $ws8
-for_window [class="qutebrowser"] floating enable border pixel 1
-for_window [class="matplotlib"] floating enable border pixel 1
-for_window [class="Anki"] move to workspace number $ws5
+for_window [title="ncmpcpp"] floating enable move to workspace number $ws8
+for_window [class="qutebrowser"] floating enable 
+for_window [class="matplotlib"] floating enable 
+assign [class="Anki"] number $ws5
 assign [class="code-oss"] number $ws7
 
 # END OF MY STUFF ###################
@@ -37,11 +40,11 @@ set $mod Mod4
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-new_window pixel 2
-new_float normal
+default_border pixel 2
+default_floating_border pixel 2 
 
 # Hide borders
-hide_edge_borders none
+#hide_edge_borders none
 
 # change borders
 bindsym $mod+u border none
@@ -62,7 +65,7 @@ bindsym $mod+Return exec terminal
 bindsym $mod+q kill
 
 # Runs rofi
-bindsym $mod+d exec rofi -show drun -font "Roboto Light 16" -lines 10 -opacity 85 -show-icons -drun-icon-theme Adwaita -sidebar-mode
+bindsym $mod+d exec rofi -show drun -show-icons -drun-icon-theme Adwaita -sidebar-mode
 
 # launch categorized menu
 bindsym $mod+z exec --no-startup-id morc_menu
@@ -294,7 +297,7 @@ bindsym $mod+9 exec --no-startup-id blurlock
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nitrogen --restore; sleep 1; compton -b
+exec --no-startup-id compton -b
 exec --no-startup-id nm-applet
 exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
@@ -337,22 +340,13 @@ set_from_resource $color15    color15
 
 # Theme colors
 
-# Set colors from Xresources
-# Change 'color7' and 'color2' to whatever colors you want i3 to use 
-# from the generated scheme.
-# NOTE: The '#f0f0f0' in the lines below is the color i3 will use if
-# it fails to get colors from Xresources.
-set_from_resource $fg i3wm.color2 #f0f0f0
-set_from_resource $bg i3wm.color0 #f0f0f0
-
-# class                 border  backgr. text indicator child_border
-client.focused          $bg     $bg     $fg  $bg       $bg
-client.focused_inactive $bg     $bg     $fg  $bg       $bg
-client.unfocused        $bg     $bg     $fg  $bg       $bg
-client.urgent           $bg     $bg     $fg  $bg       $bg
-client.placeholder      $bg     $bg     $fg  $bg       $bg
-
-client.background       $bg
+# class                 border          backgr.      text         indicator    child_border
+client.focused          $foreground     $background  $foreground  $color1      $color2
+client.focused_inactive $foreground     $background  $foreground  $color1      $color2
+client.unfocused        $foreground     $background  $foreground  $color1      $color2
+client.urgent           $foreground     $background  $foreground  $color1      $color2
+client.placeholder      $foreground     $background  $foreground  $color1      $color2
+client.background       $background
 
 
 

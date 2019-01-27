@@ -18,7 +18,6 @@ exec_always --no-startup-id .config/polybar/polybarstart.sh
 # Execute nitrogen 
 exec --no-startup-id nitrogen --restore
 
-
 # Bindings
 bindsym $mod+e exec $terminal -e ranger
 bindsym $mod+w exec firefox
@@ -36,6 +35,8 @@ for_window [title="ncmpcpp"] floating enable move to workspace number $ws8
 for_window [class="qutebrowser"] floating enable 
 for_window [class="matplotlib"] floating enable 
 for_window [class="GNU Octave"] floating enable 
+
+# Assigns
 assign [class="Anki"] number $ws5
 assign [class="code-oss"] number $ws7
 
@@ -49,7 +50,7 @@ set $mod Mod4
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
 default_border pixel 3 
-default_floating_border pixel 1 
+default_floating_border pixel 3 
 
 # Hide borders
 #hide_edge_borders none

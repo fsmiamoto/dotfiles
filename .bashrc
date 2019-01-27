@@ -143,7 +143,7 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 
 # Export variables
 export EDITOR=vim
-export PATH="${PATH}:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/bin/"
+export PATH="${PATH}:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
 export BROWSER=firefox
 
 # Set bash to VI mode

@@ -1,3 +1,4 @@
+## Colors
 
 ! special
 *.foreground:   #c0c5ce
@@ -36,11 +37,14 @@
 *.color7:       #c0c5ce
 *.color15:      #eff1f5
 
-Xcursor.theme: xcursor-breeze
-Xcursor.size:                     0
+*.font:                      Inconsolata Nerd Font Mono:size=18
+*.alpha: 200
 
+!Xcursor.theme: xcursor-breeze
+!Xcursor.size:                     0
+
+! URxvt stuff
 URxvt.font:                       xft:Inconsolata Nerd Font Mono:size=18
-
 URxvt.depth:                      32
 URxvt.background:                 [85]#2b303b
 URxvt*scrollBar:                  false

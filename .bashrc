@@ -153,12 +153,16 @@ set -o vi
 alias pac='sudo pacman'
 alias trz='trizen'
 alias py='python'
+alias updt="sudo pacman -Syu"
 
 # Aliases for config files
 alias i3c='vim ~/.config/i3/config'
+alias vimc='vim ~/.vimrc'
 alias pbc='vim ~/.config/polybar/config'
 alias xrc='vim ~/.Xresources'
 alias bsc='vim ~/.bashrc'
+
+alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
 
 # Records only main monitor 
 alias screencast='ffmpeg -f x11grab -r 60 -s 1920x1080 -i :0.0+1440,0 -vcodec libx264 -crf 0 -preset medium output.mp4'

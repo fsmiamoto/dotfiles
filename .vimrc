@@ -57,3 +57,4 @@ autocmd FileType tex inoremap ;doc \begin{document}<Enter><Enter>\end{document}<
 autocmd FileType tex inoremap ;sec \section{}<Enter><Enter><++><Esc>2kf}i
 autocmd FileType tex inoremap ;fig \begin{figure}[ht!]<Enter>\centering <Enter>\includegraphics[width=150pt]{<++>}<Enter>\caption{<++>}<Enter>\label{fig:<++>}<Enter>\end{figure}<Esc>6k
 
+nnoremap ; :

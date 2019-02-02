@@ -9,8 +9,8 @@ exec setxkbmap -option caps:escape
 exec --no-startup-id mpd
 exec_always mpc ls | mpc add
 
-# Pulseaudio
-exec --no-startup-id pulseaudio
+# Execute Pulseaudio
+exec --no-startup-id .scripts/pastart.sh
 
 # Execute polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh

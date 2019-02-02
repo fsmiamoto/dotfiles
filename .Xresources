@@ -38,7 +38,7 @@
 *.color15:      #eff1f5
 
 *.font:                      Inconsolata Nerd Font Mono:size=18
-*.alpha: 200
+*.alpha: 230
 
 !Xcursor.theme: xcursor-breeze
 !Xcursor.size:                     0

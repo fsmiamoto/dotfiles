@@ -1,6 +1,8 @@
 # MY STUFF #########################
-
 set $terminal st
+
+# Executes script to set cron needed variable for notify-send 
+exec notify-cron
 
 # Set Caps Lock to Escape
 exec setxkbmap -option caps:escape
@@ -21,6 +23,7 @@ exec --no-startup-id nitrogen --restore
 # Bindings
 bindsym $mod+e exec $terminal -e ranger
 bindsym $mod+w exec firefox
+bindsym $mod+a exec --no-startup-id $terminal -e octave -q 
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -147,7 +150,7 @@ bindsym $mod+space floating toggle
 bindsym $mod+Shift+s sticky toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+#bindsym $mod+a focus parent
 
 # move the currently focused window to the scratchpad
 bindsym $mod+Shift+minus move scratchpad
@@ -207,6 +210,7 @@ bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [title="ranger"] floating enable border pixel 1 
+for_window [title="octave"] floating enable border pixel 1 
 for_window [class="calamares"] floating enable border normal
 for_window [class="Clipgrab"] floating enable
 for_window [title="File Transfer*"] floating enable
@@ -346,7 +350,7 @@ set_from_resource $color15    color15
 # Theme colors
 
 # class                 border          backgr.      text         indicator    child_border
-client.focused          $foreground     $background  $foreground  $color1      $color2
+client.focused          $foreground     $background  $foreground  $color2      $color1
 client.focused_inactive $foreground     $background  $foreground  $color1      $color2
 client.unfocused        $foreground     $background  $foreground  $color1      $color2
 client.urgent           $foreground     $background  $foreground  $color1      $color2

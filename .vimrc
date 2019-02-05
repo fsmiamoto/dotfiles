@@ -3,11 +3,14 @@ filetype plugin indent on
 
 call plug#begin('~/.vim/plugged')
 Plug 'dylanaraps/wal.vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'pangloss/vim-javascript'
 call plug#end()
 
 colorscheme wal
 
-"let g:airline_theme='base16_ocean'
+let g:javascript_plugin_jsdoc = 1
 
 set enc=utf-8
 set fileencoding=utf-8

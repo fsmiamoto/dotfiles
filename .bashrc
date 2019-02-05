@@ -145,6 +145,7 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 export EDITOR=vim
 export PATH="${PATH}:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
 export BROWSER=firefox
+export FILE=ranger
 
 # Set bash to VI mode
 set -o vi
@@ -156,6 +157,8 @@ alias py='python'
 alias updt="sudo pacman -Syu"
 
 # Aliases for config files
+alias sv='sudo vim'
+alias v='vim'
 alias i3c='vim ~/.config/i3/config'
 alias vimc='vim ~/.vimrc'
 alias pbc='vim ~/.config/polybar/config'
@@ -167,3 +170,6 @@ alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aA
 # Bash prompt
 export PS1="\[\033[38;5;100m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;4m\]\u\[$(tput sgr0    )\]\[\033[38;5;5m\]@\[$(tput sgr0)\]\[\033[38;5;29m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[    38;5;15m\] \[$(tput sgr0)\]\[\033[38;5;1m\]\W\[$(tput sgr0)\]\[\033[38;5;100m\]]\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]"
 
+#export PS1="\[$(tput setaf 5)\]\W\[$(tput setaf 6)\] \\$\[$(tput sgr0)\]"
+#export PS1="\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
+export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"

@@ -1,4 +1,4 @@
-URxvt.font: xft:Liberation Mono:size=18:antialias=true:autohint=true
+URxvt.font: xft:Inconsolata Nerd Font Mono:size=20:antialias=true
 URxvt.depth: 32
 URxvt.scrollBar: false
 URxvt.background: [85]#002b36
@@ -10,6 +10,7 @@ URxvt.iso14755_52: false
 URxvt.keysym.C-Down: resize-font:smaller
 URxvt.keysym.C-Up: resize-font:bigger
 
+*font: Inconsolata Nerd Font Mono:size=20:antialias=true
 *background: #002b36
 *foreground: #657b83
 !!*fading: 40

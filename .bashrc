@@ -152,7 +152,7 @@ export PS1="\[\033[38;5;100m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;4m\]\
 # Environmental varibles
 export EDITOR=vim
 export BROWSER=firefox
-export PATH="${PATH}:${HOME}/bin/:${HOME}/anaconda3/bin/"
+export PATH="${PATH}:${HOME}/bin/:${HOME}/anaconda3/bin/:/sbin/:${HOME}/.scripts"
 
 # Set VI mode on Bash
 set -o vi
@@ -160,5 +160,14 @@ set -o vi
 # Aliases
 alias cls='clear'
 alias v='vim'
+alias sv='sudo vim'
 alias pac='sudo pacman'
 
+# Aliases for config files
+alias i3c="vim .config/i3/config"
+alias pbc="vim .config/polybar/config"
+alias bsc="vim .bashrc"
+alias xrc="vim .Xresources"
+
+# SED to remove marks
+alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 

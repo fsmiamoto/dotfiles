@@ -1,14 +1,16 @@
 syntax on
 filetype plugin indent on
 
-let g:airline_theme='solarized'
-
+" Encoding
 set enc=utf-8
+set encoding=utf-8
 set fileencoding=utf-8
 
 " Config dos splits
 set splitbelow
 set splitright
+
+map ; :
 
 " Atalhos para navegação dos splits
 map <C-h> <C-w>h

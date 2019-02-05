@@ -8,14 +8,6 @@
 ;=====================================================
 
 [colors]
-;background = #2f343f
-;background-alt = #444
-;foreground = #dfdfdf
-;foreground-alt = #555
-;primary = #2969ff
-;secondary = #e60053
-;alert = #bd2c40
-
 background = ${xrdb:color0:#222}
 background-alt = ${xrdb:color2:#222}
 foreground = ${xrdb:color7:#222}
@@ -36,12 +28,10 @@ menu-1-1 = sub-item 2.2;command
 [bar/example]
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
-height = 29
-;offset-x = 1%
-;offset-y = 1%
+height = 30
 radius = 0.0
 fixed-center = false
-;bottom = true
+bottom = true
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -58,14 +48,10 @@ padding-right = 0
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = "DejaVu Sans:size=13;3"
-font-1 = "Droid Sans Japanese:size=12:weight=light;2"
-font-2 = unifont:fontformat=truetype:size=8:antialias=false;0
-font-3 = siji:pixelsize=10;1
-font-4 = "Font Awesome 5 Free:style=Solid:pixelsize=18;3"
-font-5 = "Font Awesome 5 Free:style=Regular:pixelsize=18;3"
-font-6 = "Font Awesome 5 Brands:pixelsize=18;3"
-
+font-0 = Droid Sans:size=13;2
+font-1 = DejaVu Sans:size=13;2
+font-2 = Droid Sans Japanese:size=12:weight=light;2
+font-3 = RobotoMono Nerd Font:size=13;2
 
 modules-left = i3
 modules-center = xwindow
@@ -180,17 +166,17 @@ label-song-ellipsis = true
 type = internal/xbacklight
 
 format = <label> <bar>
-label = bl 
+label =  
 
 bar-width = 10
 bar-indicator = |
 bar-indicator-foreground = #ff
-bar-indicator-font = 2
+bar-indicator-font = 1
 bar-fill = ─
-bar-fill-font = 2
+bar-fill-font = 1
 bar-fill-foreground = #9f78e1
 bar-empty = ─
-bar-empty-font = 2
+bar-empty-font = 1
 bar-empty-foreground = ${colors.foreground-alt}
 
 [module/backlight-acpi]
@@ -201,18 +187,18 @@ card = intel_backlight
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #f90000
-label = cpu %percentage%%
+label =%percentage%%
 
 [module/memory]
 type = internal/memory
 interval = 1
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
-label = mem %percentage_used%%
+label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
@@ -273,7 +259,7 @@ type = internal/volume
 interval = 1
 
 format-volume = <label-volume> <bar-volume>
-label-volume = vol 
+label-volume = 
 label-volume-foreground = ${root.foreground}
 
 format-muted-prefix = " "
@@ -290,11 +276,11 @@ bar-volume-foreground-5 = #f5a70a
 bar-volume-foreground-6 = #ff5555
 bar-volume-gradient = false
 bar-volume-indicator = |
-bar-volume-indicator-font = 2
+bar-volume-indicator-font = 1
 bar-volume-fill = ─
-bar-volume-fill-font = 2
+bar-volume-fill-font = 1
 bar-volume-empty = ─
-bar-volume-empty-font = 2
+bar-volume-empty-font = 1
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
 [module/battery]
@@ -307,23 +293,24 @@ full-at = 98
 
 label-charging = %percentage%% (%time%)
 label-discharging = %percentage%% (%time%)
-充電中
+
 
 format-charging =  <label-charging>
 format-charging-underline = #ffb52a
-format-charging-prefix = "充電中 "
+format-charging-prefix = " "
 
 format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
 
 
-format-full-prefix = " "
+format-full-prefix = ""
 format-full-prefix-foreground = ${colors.foreground-alt}
 format-full-underline = ${self.format-charging-underline}
 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
+ramp-capacity-0 =
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
 ramp-capacity-foreground = ${colors.foreground-alt}
 
 animation-charging-0 = 1
@@ -337,18 +324,15 @@ type = internal/temperature
 thermal-zone = 0
 warn-temperature = 60
 
-format = <ramp> <label>
+format = <label>
 format-underline = #f50a4d
-format-warn = <ramp> <label-warn>
+format-warn = <label-warn>
 format-warn-underline = ${self.format-underline}
 
-label = temp %temperature%
+label =  %temperature%
 label-warn = %temperature%
 label-warn-foreground = ${colors.secondary}
 
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
 ramp-foreground = ${colors.foreground-alt}
 
 [module/powermenu]

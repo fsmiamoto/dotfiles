@@ -6,6 +6,7 @@ Plug 'dylanaraps/wal.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 call plug#end()
 
 colorscheme wal

@@ -36,8 +36,5 @@
 !/.config/polybar/
 !/.config/polybar/*
 
-#!/.config/'Code - OSS'/
-#/.config/'Code - OSS'/*
-#!/.config/'Code - OSS'/User/
-#/.config/'Code - OSS'/User/
-#!/.config/'Code - OSS'/User/settings.json
+!/.config/dunst
+!/.config/dunstrc

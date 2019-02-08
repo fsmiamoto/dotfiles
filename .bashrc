@@ -168,8 +168,6 @@ alias bsc='vim ~/.bashrc'
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
 
 # Bash prompt
-export PS1="\[\033[38;5;100m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;4m\]\u\[$(tput sgr0    )\]\[\033[38;5;5m\]@\[$(tput sgr0)\]\[\033[38;5;29m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[    38;5;15m\] \[$(tput sgr0)\]\[\033[38;5;1m\]\W\[$(tput sgr0)\]\[\033[38;5;100m\]]\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]"
-
-#export PS1="\[$(tput setaf 5)\]\W\[$(tput setaf 6)\] \\$\[$(tput sgr0)\]"
-#export PS1="\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
 export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

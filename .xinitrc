@@ -13,7 +13,7 @@ DEFAULT_SESSION='i3 --shmlog-size 0'
 
 # merge in defaults and keymaps
 
-wal -R
+wal -Rn
 
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources

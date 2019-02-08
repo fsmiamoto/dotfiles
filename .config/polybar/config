@@ -271,6 +271,12 @@ bar-volume-empty = ─
 bar-volume-empty-font = 0
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
+[module/spotify]
+type = custom/script
+interval = 1
+format = <label>
+exec = python ~/.config/polybar/polybar-spotify/spotify_status.py -t 60
+
 [module/temperature]
 type = internal/temperature
 thermal-zone = 0
@@ -309,9 +315,10 @@ margin-bottom = 2
 inherit = bar/monitor0
 monitor = ${env:MONITOR:HDMI-0}
 
+
 modules-left = i3
 modules-center = xwindow
-modules-right = mpd
+modules-right = spotify
 
 tray-position = right
 tray-padding = 2

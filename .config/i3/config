@@ -41,7 +41,6 @@ for_window [class="GNU Octave"] floating enable
 
 # Assigns
 assign [class="Anki"] number $ws5
-assign [class="code-oss"] number $ws7
 
 # END OF MY STUFF ###################
 

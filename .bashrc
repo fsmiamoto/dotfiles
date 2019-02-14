@@ -158,7 +158,11 @@ alias updt="sudo pacman -Syu"
 
 # Aliases for config files
 alias sv='sudo vim'
+alias arduino="arduino-cli"
+alias inou="arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega"
+alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
 alias v='vim'
+alias sed='sed -E'
 alias i3c='vim ~/.config/i3/config'
 alias vimc='vim ~/.vimrc'
 alias pbc='vim ~/.config/polybar/config'

@@ -26,6 +26,9 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
+map <C-c> "+y
+map <C-p> "+p
+
 set number relativenumber
 set is hls is scs
 

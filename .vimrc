@@ -2,6 +2,7 @@ syntax on
 filetype plugin indent on
 
 call plug#begin('~/.vim/plugged')
+Plug 'rust-lang/rust.vim'
 Plug 'dylanaraps/wal.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'

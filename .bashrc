@@ -168,6 +168,7 @@ alias i3c="vim .config/i3/config"
 alias pbc="vim .config/polybar/config"
 alias bsc="vim .bashrc"
 alias xrc="vim .Xresources"
+alias vc='vim $(fzf)'
 
 # SED to remove marks
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 

@@ -1,6 +1,16 @@
 syntax on
 filetype plugin indent on
 
+call plug#begin('~/.vim/plugged')
+Plug 'dylanaraps/wal.vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+call plug#end()
+
+colorscheme wal
+
 " Encoding
 set enc=utf-8
 set encoding=utf-8

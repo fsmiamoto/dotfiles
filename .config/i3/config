@@ -7,6 +7,9 @@ set $mod Mod4
 # Terminal
 set $term st
 
+# sync-files
+exec --no-startup-id /home/shigueo/.scripts/sync-files
+
 # Pywal
 exec --no-startup-id wal -R
 

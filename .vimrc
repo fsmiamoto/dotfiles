@@ -2,6 +2,7 @@ syntax on
 filetype plugin indent on
 
 call plug#begin('~/.vim/plugged')
+Plug 'rust-lang/rust.vim'
 Plug 'dylanaraps/wal.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
@@ -11,22 +12,23 @@ call plug#end()
 
 colorscheme wal
 
-" Encoding
+let g:javascript_plugin_jsdoc = 1
+
 set enc=utf-8
-set encoding=utf-8
 set fileencoding=utf-8
 
 " Config dos splits
 set splitbelow
 set splitright
 
-map ; :
-
 " Atalhos para navegação dos splits
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
+
+map <C-c> "+y
+map <C-p> "+p
 
 set number relativenumber
 set is hls is scs
@@ -63,5 +65,4 @@ autocmd FileType tex inoremap ;doc \begin{document}<Enter><Enter>\end{document}<
 autocmd FileType tex inoremap ;sec \section{}<Enter><Enter><++><Esc>2kf}i
 autocmd FileType tex inoremap ;fig \begin{figure}[ht!]<Enter>\centering <Enter>\includegraphics[width=150pt]{<++>}<Enter>\caption{<++>}<Enter>\label{fig:<++>}<Enter>\end{figure}<Esc>6k
 
-
-
+nnoremap ; :

@@ -4,7 +4,6 @@
 
 [[ $- != *i* ]] && return
 
-
 colors() {
 	local fgc bgc vals seq0
 
@@ -142,33 +141,50 @@ ex ()
 # better yaourt colors
 export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
 
-##############################################################
-####################### My Stuff #############################
-##############################################################
+# MY STUFF
 
-# Prompt
-export PS1="\[\033[38;5;100m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;4m\]\u\[$(tput sgr0)\]\[\033[38;5;5m\]@\[$(tput sgr0)\]\[\033[38;5;29m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]\[\033[38;5;1m\]\W\[$(tput sgr0)\]\[\033[38;5;100m\]]\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]"
-
-# Environmental varibles
+# Export variables
 export EDITOR=vim
+export PATH="${PATH}:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
 export BROWSER=firefox
-export PATH="${PATH}:${HOME}/bin/:${HOME}/anaconda3/bin/:/sbin/:${HOME}/.scripts"
+export FILE=ranger
 
-# Set VI mode on Bash
+# Set bash to VI mode
 set -o vi
 
-# Aliases
-alias cls='clear'
-alias v='vim'
-alias sv='sudo vim'
+# Aliases for programs
 alias pac='sudo pacman'
+alias trz='trizen'
+alias py='python'
+alias updt="sudo pacman -Syu"
+alias arduino="arduino-cli"
+alias inou="arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega"
+alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
+alias sv='sudo vim'
+alias v='vim'
+alias sed='sed -E'
 
 # Aliases for config files
-alias i3c="vim .config/i3/config"
-alias pbc="vim .config/polybar/config"
-alias bsc="vim .bashrc"
-alias xrc="vim .Xresources"
-alias vc='vim $(fzf)'
+alias i3c='vim ~/.config/i3/config'
+alias vimc='vim ~/.vimrc'
+alias pbc='vim ~/.config/polybar/config'
+alias xrc='vim ~/.Xresources'
+alias bsc='vim ~/.bashrc'
 
-# SED to remove marks
+# Remove todos os acentos usando o sed
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
+
+# Cria diretório e então muda pra lá
+function mkd { 
+    mkdir $1 && cd $1 
+}
+
+function dev {
+    pasta=$(ls -l Dev/ | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf)
+    exec code $(echo "/home/shigueo/Dev/$pasta")
+}
+
+# Bash prompt
+export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

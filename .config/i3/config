@@ -10,12 +10,6 @@ exec setxkbmap -option caps:escape
 exec --no-startup-id mpd
 exec_always mpc ls | mpc add
 
-# Execute Pulseaudio
-exec --no-startup-id .scripts/pastart.sh
-
-# Execute polybar
-exec_always --no-startup-id .config/polybar/polybarstart.sh
-
 # Execute nitrogen 
 exec --no-startup-id nitrogen --restore
 
@@ -307,6 +301,7 @@ exec --no-startup-id clipit
 exec --no-startup-id xautolock -time 10 -locker betterlockscreen --lock blur
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
+exec_always --no-startup-id .config/polybar/polybarstart.sh
 
 # Color palette used for the terminal ( ~/.Xresources file )
 set_from_resource $background background

@@ -13,7 +13,9 @@ DEFAULT_SESSION='i3 --shmlog-size 0'
 
 # merge in defaults and keymaps
 
-wal -Rn
+wal -Rn # PyWal
+$HOME/.scripts/pastart.sh
+
 
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources

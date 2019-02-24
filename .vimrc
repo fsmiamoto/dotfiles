@@ -8,11 +8,21 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+Plug 'mattn/emmet-vim'
+Plug 'leafgarland/typescript-vim'
 call plug#end()
 
 colorscheme wal
 
+" Plugin Configs
 let g:javascript_plugin_jsdoc = 1
+let g:user_emmet_leader_key='<Tab>'
+let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+    \      'extends' : ['jsx','tsx']
+    \  },
+  \}
+
 
 set enc=utf-8
 set fileencoding=utf-8

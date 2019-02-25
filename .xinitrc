@@ -14,6 +14,7 @@ DEFAULT_SESSION='i3 --shmlog-size 0'
 # merge in defaults and keymaps
 
 wal -Rn # PyWal
+nitrogen --restore
 $HOME/.scripts/pastart.sh
 
 

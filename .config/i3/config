@@ -8,16 +8,15 @@ exec setxkbmap -option caps:escape
 
 # Execute MPD
 exec --no-startup-id mpd
-exec_always mpc ls | mpc add
 
-# Execute nitrogen 
-exec --no-startup-id nitrogen --restore
+# Execute nitrogen
+exec_always --no-startup-id nitrogen --restore
 
 # Bindings
 bindsym $mod+e exec $terminal -e ranger
 bindsym $mod+w exec firefox
 bindsym $mod+a exec --no-startup-id $terminal -e octave -q 
-bindsym $mod+Shift+s exec --no-startup-id .scripts/shut
+bindsym $mod+Shift+s exec .scripts/shut
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -28,7 +27,7 @@ for_window [class="Spotify"] move to workspace number $ws8
 for_window [class="Firefox"] border none
 for_window [class="Steam"] move to workspace number $ws6
 for_window [title="フレンドリスト"] floating enable border pixel 1
-for_window [title="ncmpcpp"] floating enable move to workspace number $ws8
+for_window [title="ncmpcpp"] floating enable 
 for_window [class="qutebrowser"] floating enable 
 for_window [class="matplotlib"] floating enable 
 for_window [class="GNU Octave"] floating enable 

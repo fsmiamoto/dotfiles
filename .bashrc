@@ -191,6 +191,10 @@ function ml {
 }
 
 # Bash prompt
-export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
+export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\]: \[$(tput sgr0)\]"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+ytmusic(){
+    youtube-dl -f 'bestaudio[ext=m4a]' -o "Music/$1.m4a" "$2"
+}

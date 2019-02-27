@@ -15,7 +15,7 @@ DEFAULT_SESSION='i3 --shmlog-size 0'
 
 wal -Rn # PyWal
 nitrogen --restore
-$HOME/.scripts/pastart.sh
+$HOME/.scripts/pa-start
 
 
 if [ -f $sysresources ]; then

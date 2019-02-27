@@ -1,3 +1,11 @@
+
+#  ██╗██████╗      ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗ 
+#  ██║╚════██╗    ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝ 
+#  ██║ █████╔╝    ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
+#  ██║ ╚═══██╗    ██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
+#  ██║██████╔╝    ╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
+#  ╚═╝╚═════╝      ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
+
 set $terminal st
 
 # Executes script to set cron needed variable for notify-send 
@@ -297,7 +305,7 @@ exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
 
 # Desktop Widgets
-exec --no-startup-id xautolock -time 10 -locker betterlockscreen --lock blur
+exec --no-startup-id xautolock -time 10 -locker "betterlockscreen --lock blur"
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 exec_always --no-startup-id .config/polybar/polybarstart.sh
@@ -325,11 +333,11 @@ set_from_resource $color15    color15
 # Theme colors
 
 # class                 border          backgr.      text         indicator    child_border
-client.focused          $foreground     $background  $foreground  $color2      $color1
-client.focused_inactive $foreground     $background  $foreground  $color1      $color2
-client.unfocused        $foreground     $background  $foreground  $color1      $color2
-client.urgent           $foreground     $background  $foreground  $color1      $color2
-client.placeholder      $foreground     $background  $foreground  $color1      $color2
+client.focused          $background     $background  $foreground  $color2      $color1
+client.focused_inactive $background     $background  $foreground  $color1      $color2
+client.unfocused        $background     $background  $foreground  $color1      $color2
+client.urgent           $background     $background  $foreground  $color1      $color2
+client.placeholder      $background     $background  $foreground  $color1      $color2
 client.background       $background
 
 #############################

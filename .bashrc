@@ -1,6 +1,10 @@
-#
-# ~/.bashrc
-#
+
+#  ██████╗  █████╗ ███████╗██╗  ██╗██████╗  ██████╗
+#  ██╔══██╗██╔══██╗██╔════╝██║  ██║██╔══██╗██╔════╝
+#  ██████╔╝███████║███████╗███████║██████╔╝██║     
+#  ██╔══██╗██╔══██║╚════██║██╔══██║██╔══██╗██║     
+#  ██████╔╝██║  ██║███████║██║  ██║██║  ██║╚██████╗
+#  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
 [[ $- != *i* ]] && return
 
@@ -144,7 +148,7 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 # MY STUFF
 
 # Export variables
-export EDITOR=vim
+export EDITOR=nvim
 export PATH="${PATH}:${HOME}/Android/Sdk/tools:${HOME}/Android/Sdk/platform-tools:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
 export BROWSER=firefox
 export FILE=ranger
@@ -161,8 +165,8 @@ alias updt="sudo pacman -Syu"
 alias arduino="arduino-cli"
 alias inou="arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega"
 alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
-alias sv='sudo vim'
-alias v='vim'
+alias sv='sudo nvim'
+alias v='nvim'
 alias sed='sed -E'
 
 # Aliases for config files

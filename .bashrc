@@ -204,4 +204,3 @@ ytmusic(){
     youtube-dl -f 'bestaudio[ext=m4a]' -o "Music/$1.m4a" "$2"
 }
 
-fish 

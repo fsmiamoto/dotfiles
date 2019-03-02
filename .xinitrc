@@ -11,12 +11,10 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 
 DEFAULT_SESSION='i3 --shmlog-size 0'
 
-# merge in defaults and keymaps
-
-wal -Rn # PyWal
-nitrogen --restore
+# Start pulseaudio
 $HOME/.scripts/pa-start
 
+# merge in defaults and keymaps
 
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources

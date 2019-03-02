@@ -8,6 +8,7 @@
 
 set $terminal st
 
+
 # Executes script to set cron needed variable for notify-send 
 exec notify-cron
 
@@ -16,9 +17,6 @@ exec setxkbmap -option caps:escape
 
 # Execute MPD
 exec --no-startup-id mpd
-
-# Execute nitrogen
-exec_always --no-startup-id nitrogen --restore
 
 # Bindings
 bindsym $mod+e exec $terminal -e ranger

@@ -4,8 +4,10 @@ xset -b
 export XMODIFIERS=@im=SCIM
 export GTK_IM_MODULE=¨scim¨
 export QT_IM_MODULE=¨scim¨
+export PATH="$PATH:$HOME/.local/bin"
 scim -d
 
+# Set wallpaper
+nitrogen --restore
 # Restore PyWal colorscheme
-wal -R
-
+wal -Rn

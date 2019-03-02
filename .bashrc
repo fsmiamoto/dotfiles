@@ -159,6 +159,7 @@ set -o vi
 
 # Aliases for programs
 alias pac='sudo pacman'
+alias gitc='git push'
 alias trz='trizen'
 alias py='python'
 alias updt="sudo pacman -Syu"

@@ -6,6 +6,7 @@ set fish_greeting # Disable greeting
 # Program aliases
 alias pac='sudo pacman'
 alias trz='trizen'
+alias gitp="git push"
 alias py='python'
 alias updt="sudo pacman -Syu"
 alias arduino="arduino-cli"

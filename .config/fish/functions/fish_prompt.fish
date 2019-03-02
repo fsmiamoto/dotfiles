@@ -6,9 +6,11 @@ function fish_prompt
     set_color -o red
     printf '%s' (prompt_pwd)
     set_color magenta
-    printf ' at '
+    # printf ' at '
     set_color $fish_color_cwd
+    printf ' ('
     printf '%s' (git rev-parse --abbrev-ref HEAD)
+    printf ')'
     set_color yellow
     printf ': '
     set_color normal

@@ -42,3 +42,6 @@
 !.config/nvim/
 .config/nvim/*
 !.config/nvim/init.vim
+
+!.config/fish
+!.config/fish/*

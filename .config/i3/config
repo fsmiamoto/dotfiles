@@ -23,7 +23,7 @@ exec_always --no-startup-id nitrogen --restore
 # Bindings
 bindsym $mod+e exec $terminal -e ranger
 bindsym $mod+w exec firefox
-bindsym $mod+a exec --no-startup-id $terminal -e octave -q 
+bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
 bindsym $mod+Shift+s exec .scripts/shut
 
 # Scratpatch
@@ -346,9 +346,16 @@ client.background       $background
 
 # Set inner/outer gaps
 #gaps outer -2
+#
 
-gaps inner 8
-gaps outer 3
+set $innergap 12
+set $outergap 3
+
+gaps inner $innergap 
+gaps outer $outergap 
+
+bindsym $mod+Shift+o gaps outer all set $outergap; gaps inner all set $innergap;
+bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>

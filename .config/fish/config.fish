@@ -16,6 +16,7 @@ alias sv='sudo nvim'
 alias v='nvim'
 alias sed='sed -E'
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
+
 # Config files
 alias i3c='$EDITOR ~/.config/i3/config'
 alias fishc='$EDITOR ~/.config/fish/config.fish'
@@ -28,6 +29,10 @@ alias bsc='$EDITOR ~/.bashrc'
 
 function dev 
     set pasta (ls -l "$HOME/Dev/" | grep "^d" | sed -nE 's/^.*[0-9] (.*)$/\1/p' | sed -n 's/^.*$/&\//p' | fzf) && exec code (echo "$HOME/Dev/$pasta")
+end
+
+function devd
+    set pasta (ls -l "$HOME/Dev/" | grep "^d" | sed -nE 's/^.*[0-9] (.*)$/\1/p' | sed -n 's/^.*$/&\//p' | fzf) && cd (echo "$HOME/Dev/$pasta")
 end
 
 function ml 
@@ -46,4 +51,8 @@ function mkd
                 return
         end
     end
+end
+
+function cfg
+    set file (du -a .config | awk '{print $2}' | fzf) && $EDITOR $file
 end

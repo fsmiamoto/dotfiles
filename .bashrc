@@ -191,8 +191,16 @@ function dev {
     pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) &&  exec code $(echo "$HOME/Dev/$pasta")
 }
 
+function devd {
+    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) &&  cd $(echo "$HOME/Dev/$pasta")
+}
+
 function ml {
     pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
+}
+
+function cfg {
+    file=$(du -a .config | awk '{print $2}' | fzf) && $EDITOR $file
 }
 
 # Bash prompt
@@ -204,3 +212,4 @@ ytmusic(){
     youtube-dl -f 'bestaudio[ext=m4a]' -o "Music/$1.m4a" "$2"
 }
 
+fish

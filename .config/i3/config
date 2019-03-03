@@ -344,7 +344,7 @@ client.background       $background
 
 # Set inner/outer gaps
 #gaps outer -2
-#
+
 
 set $innergap 12
 set $outergap 3

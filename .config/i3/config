@@ -1,4 +1,3 @@
-
 #  ██╗██████╗      ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗ 
 #  ██║╚════██╗    ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝ 
 #  ██║ █████╔╝    ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
@@ -37,6 +36,7 @@ for_window [title="ncmpcpp"] floating enable
 for_window [class="qutebrowser"] floating enable 
 for_window [class="matplotlib"] floating enable 
 for_window [class="GNU Octave"] floating enable 
+for_window [class="pulsemixer"] floating enable 
 
 # Assigns
 assign [class="Anki"] number $ws5
@@ -80,13 +80,15 @@ bindsym $mod+d exec rofi -show drun -show-icons -drun-icon-theme Adwaita -sideba
 # launch categorized menu
 bindsym $mod+z exec --no-startup-id morc_menu
 
-bindsym $mod+Ctrl+m exec pavucontrol
+bindsym $mod+Ctrl+m exec $terminal -e pulsemixer
 
 ################################################################################################
 
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +3%; exec pkill -RTMIN+10 i3blocks 
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -3%; exec pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RTMIN+10
+bindsym XF86AudioNext exec notify-send "Woohoo!"
+bindsym XF86AudioPrev exec notify-send "Woohoo!"
 
 # Start Applications
 bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'

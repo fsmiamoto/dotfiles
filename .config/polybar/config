@@ -90,18 +90,18 @@ label-unmounted-foreground = ${colors.foreground-alt}
 [module/nextSpotify]
 type = custom/script
 exec = $HOME/.scripts/spotify-status -q && echo ""
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+click-left = $HOME/.scripts/spotify-controls next
 
 [module/prevSpotify]
 type = custom/script
 exec = $HOME/.scripts/spotify-status -q && echo ""
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+click-left = $HOME/.scripts/spotify-controls prev
 
 [module/playPauseSpotify]
 type = custom/script
 interval = 1
 exec = $HOME/.scripts/spotify-status
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+click-left = $HOME/.scripts/spotify-controls play-pause
 
 [module/mpd]
 type = internal/mpd
@@ -302,7 +302,7 @@ monitor = ${env:MONITOR:HDMI-0}
 
 modules-left = i3
 modules-center = xwindow
-modules-right = mpd prevSpotify playPauseSpotify nextSpotify spotify
+modules-right = mpd spotify prevSpotify playPauseSpotify nextSpotify
 
 tray-position = right
 tray-padding = 2

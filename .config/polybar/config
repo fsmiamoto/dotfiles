@@ -89,17 +89,18 @@ label-unmounted-foreground = ${colors.foreground-alt}
 
 [module/nextSpotify]
 type = custom/script
-exec = echo ""
+exec = $HOME/.scripts/spotify-status -q && echo ""
 click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
 
 [module/prevSpotify]
 type = custom/script
-exec = echo ""
+exec = $HOME/.scripts/spotify-status -q && echo ""
 click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
 
 [module/playPauseSpotify]
 type = custom/script
-exec = echo ""
+interval = 1
+exec = $HOME/.scripts/spotify-status
 click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
 
 [module/mpd]

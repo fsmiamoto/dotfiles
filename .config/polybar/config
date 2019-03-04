@@ -87,6 +87,21 @@ label-mounted-underline = ${xrdb:color1}
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
+[module/nextSpotify]
+type = custom/script
+exec = echo ""
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+
+[module/prevSpotify]
+type = custom/script
+exec = echo ""
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+
+[module/playPauseSpotify]
+type = custom/script
+exec = echo ""
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+
 [module/mpd]
 type = internal/mpd
 format-online = <label-song>    <icon-prev> <icon-stop> <toggle> <icon-next> 
@@ -242,7 +257,8 @@ bar-volume-empty-foreground = ${colors.foreground-alt}
 type = custom/script
 interval = 1
 format = <label>
-exec = python ~/.config/polybar/polybar-spotify/spotify_status.py -t 60
+format-underline = ${xrdb:color1}
+exec = python ~/.config/polybar/polybar-spotify/spotify_status.py -t 60 -f '{artist}: {song}'
 
 [module/temperature]
 type = internal/temperature
@@ -285,7 +301,7 @@ monitor = ${env:MONITOR:HDMI-0}
 
 modules-left = i3
 modules-center = xwindow
-modules-right = mpd spotify
+modules-right = mpd prevSpotify playPauseSpotify nextSpotify spotify
 
 tray-position = right
 tray-padding = 2

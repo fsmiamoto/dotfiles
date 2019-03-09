@@ -203,7 +203,7 @@ cfg() {
 }
 
 cmt(){
-   test -n "$1" && git add -A && git commit -m "$1" && exit 0
+   test -n "$1" && git add -A && git commit -m "$1" && return 
    echo "Insira mensagem de commit cabeção!"
 }
 

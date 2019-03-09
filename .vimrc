@@ -48,6 +48,8 @@ map <C-l> <C-w>l
 map <C-c> "+y
 map <C-p> "+p
 
+map <C-s> :w
+
 set number relativenumber
 set is hls is scs
 

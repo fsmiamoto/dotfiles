@@ -22,6 +22,7 @@ bindsym $mod+e exec $terminal -e ranger
 bindsym $mod+w exec firefox
 bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
 bindsym $mod+Shift+s exec .scripts/shut
+bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -50,8 +51,8 @@ set $mod Mod4
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 3 
-default_floating_border pixel 3 
+default_border pixel 2 
+default_floating_border pixel 2 
 
 # Hide borders
 #hide_edge_borders none
@@ -76,9 +77,6 @@ bindsym $mod+q kill
 
 # Runs rofi
 bindsym $mod+d exec rofi -show drun -show-icons -drun-icon-theme Adwaita -sidebar-mode
-
-# launch categorized menu
-bindsym $mod+z exec --no-startup-id morc_menu
 
 bindsym $mod+Ctrl+m exec $terminal -e pulsemixer
 
@@ -333,7 +331,7 @@ set_from_resource $color15    color15
 # Theme colors
 
 # class                 border          backgr.      text         indicator    child_border
-client.focused          $background     $background  $foreground  $color2      $color1
+client.focused          $background     $background  $foreground  $color2      $color3
 client.focused_inactive $background     $background  $foreground  $color1      $color2
 client.unfocused        $background     $background  $foreground  $color1      $color2
 client.urgent           $background     $background  $foreground  $color1      $color2

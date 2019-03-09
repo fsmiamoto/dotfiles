@@ -147,12 +147,8 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 
 # MY STUFF
 
-# Export variables
-export EDITOR=nvim
-export PATH="${PATH}:${HOME}/Android/Sdk/tools:${HOME}/Android/Sdk/platform-tools:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
-export BROWSER=firefox
-export FILE=ranger
-export ANDROID_HOME="${HOME}/Android/Sdk" 
+# Bash prompt
+export PS1="\033[1;31m\W\033[1;34m: \033[m"
 
 # Set bash to VI mode
 set -o vi
@@ -182,34 +178,40 @@ alias ankid="cd $HOME/.local/share/Anki2/"
 # Remove todos os acentos usando o sed
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
 
+######  Functions #######
+
 # Cria diretório e então muda pra lá
-function mkd { 
+mkd() { 
     mkdir $1 && cd $1 
 }
 
-function dev {
+# Mostra diretórios e abre VS Code no selecionado
+dev() {
     pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) &&  exec code $(echo "$HOME/Dev/$pasta")
 }
 
-function devd {
+devd() {
     pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) &&  cd $(echo "$HOME/Dev/$pasta")
 }
 
-function ml {
+ml() {
     pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
 }
 
-function cfg {
+cfg() {
     file=$(du -a .config | awk '{print $2}' | fzf) && $EDITOR $file
 }
 
-# Bash prompt
-export PS1="\033[1;31m\W\033[1;34m: \033[m"
+cmt(){
+   test -n "$1" && git add -A && git commit -m "$1" && exit 0
+   echo "Insira mensagem de commit cabeção!"
+}
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 ytmusic(){
     youtube-dl -f 'bestaudio[ext=m4a]' -o "Music/$1.m4a" "$2"
 }
 
-fish
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+

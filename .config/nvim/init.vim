@@ -42,3 +42,4 @@ nnoremap ; :
 map <C-c> "+y
 map <C-p> "+p
 map <C-r> :%s/
+map <C-s> :w<CR>

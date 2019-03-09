@@ -302,7 +302,7 @@ monitor = ${env:MONITOR:HDMI-0}
 
 modules-left = i3
 modules-center = xwindow
-modules-right = mpd spotify prevSpotify playPauseSpotify nextSpotify
+modules-right = mpd spotify prevSpotify playPauseSpotify nextSpotify 
 
 tray-position = right
 tray-padding = 2

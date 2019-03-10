@@ -1,26 +1,13 @@
-xset -b
-
-# Set SCIM as Input Method
-export XMODIFIERS=@im=SCIM 
-export GTK_IM_MODULE="scim" 
-export QT_IM_MODULE="scim" 
-
-# Env. variables
-export TERMINAL=st
-export EDITOR=nvim
-export PATH="${PATH}:${HOME}/Android/Sdk/tools:${HOME}/Android/Sdk/platform-tools:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/:${HOME}/.cargo/bin"
-export BROWSER=firefox
-export FILE=ranger
-export ANDROID_HOME="${HOME}/Android/Sdk" 
-
-# SCIM daemon
-scim -d
-
-# Add PyWals directory to path
-export PATH="$PATH:$HOME/.local/bin"
-
+[ -f ~/.profile ] && source ~/.profile
 
 # Set wallpaper
 nitrogen --restore
+
 # Restore PyWal colorscheme
 wal -Rn
+
+# Keyboard settings
+xset -b
+
+# SCIM daemon
+scim -d

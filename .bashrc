@@ -155,7 +155,7 @@ set -o vi
 
 # Aliases for programs
 alias pac='sudo pacman'
-alias gitc='git push'
+alias oct="octave-cli"
 alias trz='trizen'
 alias py='python'
 alias updt="sudo pacman -Syu"
@@ -165,6 +165,11 @@ alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
 alias sv='sudo nvim'
 alias v='nvim'
 alias sed='sed -E'
+
+# Aliases for git
+alias gitc="git commit"
+alias gita="git add"
+alias gits="git status"
 
 # Aliases for config files
 alias i3c='vim ~/.config/i3/config'

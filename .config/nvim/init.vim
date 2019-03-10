@@ -1,3 +1,11 @@
+
+" ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+" ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+" ██║   ██║██║██╔████╔██║██████╔╝██║     
+" ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║     
+"  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+
 syntax on
 filetype plugin indent on 
 
@@ -21,7 +29,6 @@ colorscheme wal
 set hidden
 set number 
 set relativenumber
-set inccommand=split
 
 set ai
 set ci
@@ -43,3 +50,13 @@ map <C-c> "+y
 map <C-p> "+p
 map <C-r> :%s/
 map <C-s> :w<CR>
+
+" Plugin Configs
+let g:javascript_plugin_jsdoc = 1
+let g:user_emmet_leader_key='<Tab>'
+let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+    \      'extends' : ['jsx','tsx']
+    \  },
+\}
+

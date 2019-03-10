@@ -58,18 +58,24 @@ bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 
 # Ranger
 bindsym $mod+e exec --no-startup-id $terminal -e ranger
+# Lock screen
+bindsym $mod+Shift+e exec --no-startup-id betterlockscreen --lock blur
 
 # Web browser
 bindsym $mod+w exec firefox
+# NetworkManager
+bindsym $mod+Shift+w exec --no-startup-id $terminal -e nmtui
 
 # Calculator
 bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
+# Pulsemixer
+bindsym $mod+Shift+a exec --no-startup-id $terminal -e pulsemixer
 
 # Options menu
 bindsym $mod+Escape exec .scripts/shut
 
-# Pulsemixer for audio
-bindsym $mod+Ctrl+m exec $terminal -e pulsemixer
+# ncmpcpp
+bindsym $mod+m exec  --no-startup-id $terminal -e ncmpcpp
 
 # Calendar
 bindsym $mod+c exec $terminal -e calcurse
@@ -85,8 +91,6 @@ bindsym $mod+backslash scratchpad show
 bindsym $mod+Shift+o gaps outer all set $outergap; gaps inner all set $innergap;
 bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
 
-# Lock screen
-bindsym $mod+Shift+a exec --no-startup-id betterlockscreen --lock blur
 
 # Restart i3
 bindsym $mod+Shift+r restart

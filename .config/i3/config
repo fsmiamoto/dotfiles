@@ -47,9 +47,6 @@ exec --no-startup-id pamac-tray
 # Clipit
 exec --no-startup-id clipit
 
-# exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-# exec_always --no-startup-id fix_xcursor
-
 ###### Key bindings ######
 
 # Kill window
@@ -69,7 +66,7 @@ bindsym $mod+w exec firefox
 bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
 
 # Options menu
-bindsym $mod+BackSpace exec .scripts/shut
+bindsym $mod+Escape exec .scripts/shut
 
 # Pulsemixer for audio
 bindsym $mod+Ctrl+m exec $terminal -e pulsemixer
@@ -231,6 +228,7 @@ for_window [title="octave"] floating enable
 for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable
 for_window [title="ncmpcpp"] floating enable 
+for_window [title="calcurse"] floating enable 
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6

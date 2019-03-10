@@ -148,7 +148,7 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 # MY STUFF
 
 # Bash prompt
-export PS1="\033[1;31m\W\033[1;34m: \033[m"
+export PS1='\[\033[1;31m\]\W\[\033[1;34m\]:\[\033[m\] '
 
 # Set bash to VI mode
 set -o vi
@@ -167,9 +167,12 @@ alias v='nvim'
 alias sed='sed -E'
 
 # Aliases for git
-alias gitc="git commit"
+alias gitc="git commit -m"
 alias gita="git add"
 alias gits="git status"
+alias gitps="git push"
+alias gitpl="git pull"
+alias gitl="git log"
 
 # Aliases for config files
 alias i3c='vim ~/.config/i3/config'

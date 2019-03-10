@@ -194,6 +194,7 @@ format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = ${xrdb:color2}
 label = %percentage_used%%
+click-left= $HOME/.scripts/mem-status 
 
 [module/eth]
 type = internal/network

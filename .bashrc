@@ -1,6 +1,10 @@
-#
-# ~/.bashrc
-#
+
+#  ██████╗  █████╗ ███████╗██╗  ██╗██████╗  ██████╗
+#  ██╔══██╗██╔══██╗██╔════╝██║  ██║██╔══██╗██╔════╝
+#  ██████╔╝███████║███████╗███████║██████╔╝██║     
+#  ██╔══██╗██╔══██║╚════██║██╔══██║██╔══██╗██║     
+#  ██████╔╝██║  ██║███████║██║  ██║██║  ██║╚██████╗
+#  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
 [[ $- != *i* ]] && return
 
@@ -144,10 +148,11 @@ export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1
 # MY STUFF
 
 # Export variables
-export EDITOR=vim
-export PATH="${PATH}:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
+export EDITOR=nvim
+export PATH="${PATH}:${HOME}/Android/Sdk/tools:${HOME}/Android/Sdk/platform-tools:${HOME}/.local/bin/:${HOME}/anaconda3/bin/:${HOME}/.scripts/"
 export BROWSER=firefox
 export FILE=ranger
+export ANDROID_HOME="${HOME}/Android/Sdk" 
 
 # Set bash to VI mode
 set -o vi
@@ -160,8 +165,8 @@ alias updt="sudo pacman -Syu"
 alias arduino="arduino-cli"
 alias inou="arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega"
 alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
-alias sv='sudo vim'
-alias v='vim'
+alias sv='sudo nvim'
+alias v='nvim'
 alias sed='sed -E'
 
 # Aliases for config files
@@ -170,6 +175,8 @@ alias vimc='vim ~/.vimrc'
 alias pbc='vim ~/.config/polybar/config'
 alias xrc='vim ~/.Xresources'
 alias bsc='vim ~/.bashrc'
+
+alias ankid="cd $HOME/.local/share/Anki2/"
 
 # Remove todos os acentos usando o sed
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
@@ -180,11 +187,20 @@ function mkd {
 }
 
 function dev {
-    pasta=$(ls -l Dev/ | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf)
-    exec code $(echo "/home/shigueo/Dev/$pasta")
+    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) &&  exec code $(echo "$HOME/Dev/$pasta")
+}
+
+function ml {
+    pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
 }
 
 # Bash prompt
-export PS1="\[$(tput bold)\]\[$(tput setaf 1)\]\W\[$(tput setaf 4)\] \\$ \[$(tput sgr0)\]"
+export PS1="\033[1;31m\W\033[1;34m: \033[m"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+ytmusic(){
+    youtube-dl -f 'bestaudio[ext=m4a]' -o "Music/$1.m4a" "$2"
+}
+
+fish 

@@ -91,7 +91,6 @@ bindsym $mod+backslash scratchpad show
 bindsym $mod+Shift+o gaps outer all set $outergap; gaps inner all set $innergap;
 bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
 
-
 # Restart i3
 bindsym $mod+Shift+r restart
 
@@ -99,7 +98,8 @@ bindsym $mod+Shift+r restart
 bindsym $mod+n border normal
 
 # Printscreen
-bindsym Print exec --no-startup-id i3-scrot
+bindsym Ctrl+Print exec --no-startup-id i3-scrot
+bindsym Print exec --no-startup-id flameshot gui
 
 # Audio related media keys
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +3%; exec pkill -RTMIN+10 i3blocks 
@@ -179,7 +179,7 @@ bindsym $mod+Shift+6 move container to workspace $ws6
 bindsym $mod+Shift+7 move container to workspace $ws7
 bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
-bindsym $mod+Shift+0 move container to workspace $ws0
+bindsym $mod+Shift+0 move container to workspace $ws10
 
 # Resize window
 bindsym $mod+o  resize shrink width 10px or 10ppt

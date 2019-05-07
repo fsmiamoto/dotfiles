@@ -59,7 +59,7 @@ bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 # Ranger
 bindsym $mod+e exec --no-startup-id $terminal -e ranger
 # Lock screen
-bindsym $mod+Shift+e exec --no-startup-id betterlockscreen --lock blur
+bindsym $mod+Shift+e exec --no-startup-id $terminal -e neomutt
 
 # Web browser
 bindsym $mod+w exec firefox

@@ -3,7 +3,10 @@ export ZSH="/home/shigueo/.oh-my-zsh"
 
 ZSH_THEME="temaDaora"
 
-plugins=(git zsh-syntax-highlighting)
+plugins=(git zsh-syntax-highlighting zsh-vim-mode)
+
+# Vim Mode
+MODE_CURSOR_VIINS="blinking bar"
 
 source $ZSH/oh-my-zsh.sh
 

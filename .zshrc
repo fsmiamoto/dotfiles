@@ -1,7 +1,7 @@
 # Path to your oh-my-zsh installation.
 export ZSH="/home/shigueo/.oh-my-zsh"
 
-ZSH_THEME="robbyrussell"
+ZSH_THEME="temaDaora"
 
 plugins=(git zsh-syntax-highlighting)
 

@@ -139,7 +139,7 @@ bindsym $mod+f fullscreen toggle
 
 # Floating control
 bindsym $mod+space floating toggle
-bindsym $mod+Shift+space focus mode_toggle
+bindsym $mod+Shift+Tab focus mode_toggle
 
 #navigate workspaces next / previous
 bindsym $mod+Ctrl+Right workspace next

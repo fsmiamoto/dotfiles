@@ -1,10 +1,12 @@
 
-" ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+" ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗ *
 " ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
 " ██║   ██║██║██╔████╔██║██████╔╝██║     
 " ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║     
 "  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"
+" * It's actually NeoVim
 
 syntax on
 filetype plugin indent on 
@@ -22,6 +24,7 @@ Plug 'mxw/vim-jsx'
 Plug 'mattn/emmet-vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'jiangmiao/auto-pairs'
+Plug 'vim-syntastic/syntastic'
 call plug#end()
 
 colorscheme wal
@@ -46,10 +49,23 @@ set fileencoding=utf-8
 
 nnoremap ; :
 
+" Copy and paste
 map <C-c> "+y
 map <C-p> "+p
+
+" Replace in the doc
 map <C-r> :%s/
+
+" Save the file
 map <C-s> :w<CR>
+
+" Move lines up and down
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " Plugin Configs
 let g:javascript_plugin_jsdoc = 1
@@ -60,3 +76,16 @@ let g:user_emmet_settings = {
     \  },
 \}
 
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_typescript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+let g:syntastic_typescript_eslint_exe = 'npm run lint --'

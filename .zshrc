@@ -38,6 +38,7 @@ alias vimc='$EDITOR ~/.vimrc'
 alias pbc='$EDITOR ~/.config/polybar/config'
 alias xrc='$EDITOR ~/.Xresources'
 alias bsc='$EDITOR ~/.bashrc'
+alias zshc="$EDITOR ~/.zshrc"
             
 alias ankid="cd $HOME/.local/share/Anki2/"
 

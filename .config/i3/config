@@ -13,7 +13,7 @@ set $terminal --no-startup-id $TERMINAL
 font xft:Inconsolata 14
 
 default_border pixel 2 
-default_floating_border pixel 2 
+default_floating_border pixel 3 
 
 focus_follows_mouse yes
 

@@ -26,6 +26,8 @@ alias sed='sed -E'
 
 ## Aliases for git
 alias gitc="git commit -m"
+alias gitck="git checkout"
+alias gitr="git remote"
 alias gita="git add"
 alias gits="git status"
 alias gitps="git push"
@@ -74,4 +76,8 @@ cfg() {
 cmt(){
    test -n "$1" && git add -A && git commit -m "$1" && return 
    echo "Insira mensagem de commit cabeção!"
+}
+
+pdf(){
+    zathura "$(find UTFPR | grep '\.pdf' | fzf)"
 }

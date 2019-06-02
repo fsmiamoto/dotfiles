@@ -11,8 +11,10 @@
 syntax on
 filetype plugin indent on 
 
+" Plug 'ajh17/VimCompletesMe'
+
 call plug#begin('~/.config/nvim/plugged')
-Plug 'ajh17/VimCompletesMe'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 Plug 'rust-lang/rust.vim'
 Plug 'sonph/onehalf'
 Plug 'sheerun/vim-polyglot'
@@ -68,7 +70,10 @@ vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " Plugin Configs
+let g:deoplete#enable_at_startup = 1
+
 let g:javascript_plugin_jsdoc = 1
+
 let g:user_emmet_leader_key='<Tab>'
 let g:user_emmet_settings = {
   \  'javascript.jsx' : {

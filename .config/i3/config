@@ -56,6 +56,8 @@ bindsym $mod+q kill
 bindsym $mod+Return exec $terminal
 bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 
+bindsym $mod+p exec --no-startup-id .scripts/plumber
+
 # Ranger
 bindsym $mod+e exec --no-startup-id $terminal -e ranger
 # Lock screen
@@ -233,6 +235,7 @@ for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable
 for_window [title="ncmpcpp"] floating enable 
 for_window [title="calcurse"] floating enable 
+for_window [class="surf"] floating enable 
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6

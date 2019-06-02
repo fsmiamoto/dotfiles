@@ -81,7 +81,9 @@ cmt(){
 }
 
 pdf(){
-   zathura "UTFPR/$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf --color=16 --layout=reverse --prompt='Choose a PDF: ')";
+    FILE=$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf --color=16 --layout=reverse --prompt='Choose a PDF: ')
+   zathura "UTFPR/$FILE" & disown;
+   exit;
 }
 
 nihongo(){

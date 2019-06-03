@@ -1,102 +1,127 @@
-# i3 Config File
-# 2018
+#  ██╗██████╗      ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗ 
+#  ██║╚════██╗    ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝ 
+#  ██║ █████╔╝    ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
+#  ██║ ╚═══██╗    ██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
+#  ██║██████╔╝    ╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
+#  ╚═╝╚═════╝      ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
 
-# Set Mod key as Windows Key
-set $mod Mod4
+###### Definitions ######
 
-# Terminal
-set $terminal st
+set $mod Mod4 
+set $terminal --no-startup-id $TERMINAL 
 
-# sync-files
-exec --no-startup-id /home/shigueo/.scripts/sync-files
+font xft:Inconsolata 14
 
-# Pywal
-exec --no-startup-id wal -R
+default_border pixel 4 
+default_floating_border pixel 4 
 
-# Set wallpaper
-exec nitrogen --restore
+focus_follows_mouse yes
 
-# Run Compton, enables transparency
-exec_always --no-startup-id  compton 
+# Gaps
+set $innergap 12
+set $outergap 5 
+gaps inner $innergap 
+gaps outer $outergap 
 
-# Run Polybar
-exec_always --no-startup-id ./.polybarstart
-
-# Scratchpad
-bindsym $mod+slash move scratchpad
-bindsym $mod+equal scratchpad show
-
-# Makes Caps-Lock work as Esc
-exec_always xmodmap -e "clear lock"
-exec_always xmodmap -e "keysym Caps_Lock = Escape"
-
-# Script for locking after 10 mins
-exec xautolock -time 10 -locker lock
-bindsym $mod+control+l exec /bin/lock
-
-# Shut
-bindsym $mod+Shift+s exec --no-startup-id /home/shigueo/.scripts/shut
-
-# Run NetworkManager
-exec --no-startup-id nm-applet
-
-# Sets the gaps for i3-gaps
-gaps inner 10
-gaps outer 2
-
-# Thin borders
-#hide_edge_borders both
-
-new_window pixel 0
-default_border pixel 3
-default_floating_border pixel 3
-
-# Font for window titles.
-font pango: Droid Sans 12 
-
-# Use Mouse+$mod to drag floating windows to their wanted position
+# Use Mouse+$mod to drag floating windows
 floating_modifier $mod
 
-# start a terminal
-bindsym $mod+Return exec $terminal
+###### External programs ######
 
-# kill focused window
+# Polybar
+exec_always --no-startup-id .config/polybar/polybarstart.sh
+# Executes script to set cron needed variable for notify-send 
+exec --no-startup-id notify-cron
+# Set Caps Lock to Escape
+exec --no-startup-id setxkbmap -option caps:escape
+# Execute MPD
+exec --no-startup-id mpd
+# Unclutter, hides the cursor
+exec --no-startup-id unclutter
+# Network Manager applet
+exec --no-startup-id nm-applet
+# Compton
+exec --no-startup-id compton -b
+# Pamac applet
+exec --no-startup-id pamac-tray
+# Clipit
+exec --no-startup-id clipit
+
+###### Key bindings ######
+
+# Kill window
 bindsym $mod+q kill
 
-# Toggles the split direction
-bindsym $mod+Tab split toggle
+# Terminal
+bindsym $mod+Return exec $terminal
+bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 
-# Start ranger
-bindsym $mod+e exec $terminal -e ranger 
-for_window [title="ranger"] floating enable border 1px
+bindsym $mod+p exec --no-startup-id .scripts/plumber
 
+# Ranger
+bindsym $mod+e exec --no-startup-id $terminal -e ranger
+# Lock screen
+bindsym $mod+Shift+e exec --no-startup-id $terminal -e neomutt
 
-# Start Firefox
+# Web browser
 bindsym $mod+w exec firefox
+# NetworkManager
+bindsym $mod+Shift+w exec --no-startup-id $terminal -e nmtui
 
-# Octave
-bindsym $mod+a exec --no-startup-id $terminal -e octave -q 
+# Calculator
+bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
+# Pulsemixer
+bindsym $mod+Shift+a exec --no-startup-id $terminal -e pulsemixer
 
-# Window Stuff
-for_window [class="Spotify"] move to workspace number $ws8
-for_window [class="Firefox"] border none
-for_window [class="Steam"] move to workspace number $ws6
-for_window [title="フレンドリスト"] floating enable border pixel 1
-for_window [title="ncmpcpp"] floating enable move to workspace number $ws8
-for_window [class="qutebrowser"] floating enable 
-for_window [class="matplotlib"] floating enable 
-for_window [class="GNU Octave"] floating enable 
+# Options menu
+bindsym $mod+Escape exec .scripts/shut
 
-# Runs rofi
-bindsym $mod+d exec rofi -show drun -font "Roboto Light 16" -bc "$bg-color" -lines 5 -opacity 85 -show-icons -drun-icon-theme Adwaita -sidebar-mode
+# ncmpcpp
+bindsym $mod+m exec  --no-startup-id $terminal -e ncmpcpp
 
-# Change focus
+# Calendar
+bindsym $mod+c exec $terminal -e calcurse
+
+# Rofi, app launcher
+bindsym $mod+d exec rofi -show drun -show-icons -sidebar-mode
+
+# Scratpatch
+bindsym $mod+slash move scratchpad
+bindsym $mod+backslash scratchpad show
+
+# Gaps
+bindsym $mod+Shift+o gaps outer all set $outergap; gaps inner all set $innergap;
+bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
+
+# Restart i3
+bindsym $mod+Shift+r restart
+
+# Change borders
+bindsym $mod+n border normal
+
+# Printscreen
+bindsym Ctrl+Print exec --no-startup-id i3-scrot
+bindsym Print exec --no-startup-id flameshot gui
+
+# Audio related media keys
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +3%; exec pkill -RTMIN+10 i3blocks 
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -3%; exec pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RTMIN+10
+bindsym XF86AudioNext exec notify-send "Woohoo!"
+bindsym XF86AudioPrev exec notify-send "Woohoo!"
+bindsym XF86AudioPlay exec notify-send "Woohoo!"
+
+# Start Applications
+bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
+bindsym $mod+F5 exec $terminal -e 'mocp'
+
+# change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# Alternatively, you can use the cursor keys:
+# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -108,50 +133,31 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+# Split orientation
+bindsym $mod+Tab split toggle
 
-# split in horizontal orientation
-bindsym $mod+b split h
-
-# split in vertical orientation
-bindsym $mod+v split v
-
-# enter fullscreen mode for the focused container
+# Fullscreen mode
 bindsym $mod+f fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+t layout tabbed
-#bindsym $mod+Tab layout toggle split
-
-# toggle tiling / floating
+# Floating control
 bindsym $mod+space floating toggle
+bindsym $mod+Shift+Tab focus mode_toggle
 
-# change focus between tiling / floating windows
-bindsym $mod+Shift+space focus mode_toggle
+#navigate workspaces next / previous
+bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+Left workspace prev
 
-# focus the parent container
-#bindsym $mod+a focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
-
-# Define names for default workspaces for which we configure key bindings later on.
-# We use variables to avoid repeating the names in multiple places.
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
+# Workspace names
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5:
+set $ws6 6:
+set $ws7 7:
+set $ws8 8:
+set $ws9 9
+set $ws10 10
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -165,7 +171,7 @@ bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws10
 
-# move focused container to workspace
+# Move to another workspace 
 bindsym $mod+Shift+1 move container to workspace $ws1
 bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
@@ -177,54 +183,15 @@ bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
+# Resize window
+bindsym $mod+o  resize shrink width 10px or 10ppt
+bindsym $mod+i  resize grow height 10px or 10ppt
+bindsym $mod+u resize shrink height 10px or 10ppt
+bindsym $mod+y resize grow width 10px or 10ppt
 
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+###### Colors ######
 
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
-# resize window (you can also use the mouse for that)
-mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
-}
-
-bindsym $mod+r mode "resize"
-
-# Brightness and volume steps for keys
-set $brightness-step 5
-set $vol-step 10
-
-# Key-bindings of function keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +$vol-step% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -$vol-step% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
-bindsym XF86MonBrightnessUp exec xbacklight -inc $brightness-step # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec $brightness-step # decrease screen brightness
-bindsym XF86WebCam exec /bin/lock
-
+# Color palette used for the terminal ( ~/.Xresources file )
 set_from_resource $background background
 set_from_resource $foreground foreground
 set_from_resource $color0     color0
@@ -244,42 +211,67 @@ set_from_resource $color13    color13
 set_from_resource $color14    color14
 set_from_resource $color15    color15
 
-# Theme colors
-
 # class                 border          backgr.      text         indicator    child_border
-client.focused          $foreground     $background  $foreground  $color2      $color1
-client.focused_inactive $foreground     $background  $foreground  $color1      $color2
-client.unfocused        $foreground     $background  $foreground  $color1      $color2
-client.urgent           $foreground     $background  $foreground  $color1      $color2
-client.placeholder      $foreground     $background  $foreground  $color1      $color2
-client.background $background
+client.focused          $background     $background  $foreground  $color2      $color1
+client.focused_inactive $background     $background  $foreground  $color1      $color2
+client.unfocused        $background     $background  $foreground  $color1      $color2
+client.urgent           $background     $background  $foreground  $color1      $color2
+client.placeholder      $background     $background  $foreground  $color1      $color2
+client.background       $background
 
-# Floating windows
-for_window [title="alsamixer"] floating enable border pixel 1
-for_window [title="ranger"] floating enable border pixel 1 
-for_window [title="octave"] floating enable border pixel 1 
-for_window [class="calamares"] floating enable border normal
-for_window [class="Clipgrab"] floating enable
-for_window [title="File Transfer*"] floating enable
-for_window [class="Galculator"] floating enable border pixel 1
+######  Window configs ######
+
+# Change to urgent workspace
+for_window [urgent=latest] focus
+
+# Opens as floating window
+for_window [class="qutebrowser"] floating enable 
+for_window [class="matplotlib"] floating enable 
+for_window [class="GNU Octave"] floating enable 
+for_window [title="pulsemixer"] floating enable 
+for_window [title="ranger"] floating enable 
+for_window [title="octave"] floating enable 
+for_window [class="Lightdm-settings"] floating enable
+for_window [title="MuseScore: Play Panel"] floating enable
+for_window [title="ncmpcpp"] floating enable 
+for_window [title="calcurse"] floating enable 
+for_window [class="surf"] floating enable 
+
+# Move to other workspace
+for_window [class="Steam"] move to workspace number $ws6
+for_window [class="Spotify"] move to workspace number $ws8
+
+# GTK File window
+for_window [window_role="GtkFileChooserDialog"] resize set 800 600
+for_window [window_role="GtkFileChooserDialog"] move position center
+
+for_window [class="Firefox"] border none
+for_window [class="Chromium"] border none
+
+for_window [title="Steam - News"] floating enable border normal 
+for_window [title="フレンドリスト"] floating enable border normal
+
 for_window [class="GParted"] floating enable border normal
 for_window [title="i3_help"] floating enable sticky enable border normal
-for_window [class="Lightdm-settings"] floating enable
 for_window [class="Lxappearance"] floating enable sticky enable border normal
-for_window [class="Manjaro-hello"] floating enable
-for_window [class="Manjaro Settings Manager"] floating enable border normal
-for_window [title="MuseScore: Play Panel"] floating enable
 for_window [class="Nitrogen"] floating enable sticky enable border normal
-for_window [class="Oblogout"] fullscreen enable
-for_window [class="octopi"] floating enable
-for_window [class="Pamac-manager"] floating enable
-for_window [class="Pavucontrol"] floating enable
 for_window [class="qt5ct"] floating enable sticky enable border normal
 for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
 for_window [class="Simple-scan"] floating enable border normal
 for_window [class="(?i)System-config-printer.py"] floating enable border normal
-for_window [class="Skype"] floating enable border normal
-for_window [title="Steam - News"] floating enable border none 
-for_window [class="Timeset-gui"] floating enable border normal
-for_window [class="(?i)virtualbox"] floating enable border normal
-for_window [class="Xfburn"] floating enable
+
+# Assigns
+assign [class="Anki"] number $ws5
+
+###### Notebook specific ######
+
+set $brightness-step 5
+
+# Brightness bindings
+bindsym XF86MonBrightnessUp exec xbacklight -inc $brightness-step # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec $brightness-step # decrease screen brightness
+
+# PyWal
+exec --no-startup-id $HOME/.local/bin/wal -R 
+
+

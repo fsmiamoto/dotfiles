@@ -1,0 +1,13 @@
+
+###### Notebook specific ######
+
+set $brightness-step 5
+
+# Brightness bindings
+bindsym XF86MonBrightnessUp exec xbacklight -inc $brightness-step # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec $brightness-step # decrease screen brightness
+
+# PyWal
+exec --no-startup-id $HOME/.local/bin/wal -R 
+
+

@@ -1,6 +1,7 @@
-xset -b
-export XMODIFIERS=@im=SCIM
-export GTK_IM_MODULE="scim"
-export QT_IM_MODULE="scim"
+[ -f ~/.profile ] && source ~/.profile
+
+# SCIM
 scim -d
-wal -R
+
+# Disable beep
+xset -b

@@ -10,6 +10,8 @@ MODE_CURSOR_VIINS="blinking bar"
 
 source $ZSH/oh-my-zsh.sh
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 ## Aliases for programs
 alias pac='sudo pacman'
 alias oct="octave-cli"
@@ -58,7 +60,7 @@ mkd() {
 
 # List my code directories with fzf and opens VS Code on the selected
 dev() {
-    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf --color=16) &&  exec code $(echo "$HOME/Dev/$pasta")
+    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf --color=16 --prompt='Choose a project: ') &&  exec code $(echo "$HOME/Dev/$pasta")
 }
 
 devd() {
@@ -88,6 +90,10 @@ pdf(){
 
 nihongo(){
     surf -f "http://jisho.org/search/$1"
+}
+
+get-thumbnail(){
+    ffmpeg  -itsoffset -105 -i $1 -vcodec mjpeg -vframes 1 -an -f rawvideo -s 300x300 $2;
 }
 
 ## Alias expansion

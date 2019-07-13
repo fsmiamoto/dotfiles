@@ -99,7 +99,7 @@ get-thumbnail(){
 anime(){
     anime_dir="$HOME/Videos/Anime"
     choosen_anime=$(find "$anime_dir/" | cut -d / -f 6 | uniq | fzf --color=16 --prompt='Choose an Anime: ')
-    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| fzf --color=16 --prompt='Choose an Episode: ')
+    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf --color=16 --prompt='Choose an Episode: ') 
     mpv "$anime_dir/$choosen_anime/$choosen_episode" & disown;
     exit
 }

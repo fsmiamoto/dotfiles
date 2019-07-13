@@ -11,8 +11,6 @@
 syntax on
 filetype plugin indent on 
 
-" Plug 'ajh17/VimCompletesMe'
-
 call plug#begin('~/.config/nvim/plugged')
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 Plug 'rust-lang/rust.vim'
@@ -48,6 +46,7 @@ let mapleader="\<space>"
 
 set enc=utf-8
 set fileencoding=utf-8
+set incsearch
 
 nnoremap ; :
 
@@ -71,6 +70,8 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " Plugin Configs
 let g:deoplete#enable_at_startup = 1
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
 
 let g:javascript_plugin_jsdoc = 1
 

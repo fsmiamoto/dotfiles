@@ -13,6 +13,7 @@ DEFAULT_SESSION='i3 --shmlog-size 0'
 
 # Start pulseaudio
 $HOME/.scripts/pa-start
+transmission-daemon
 
 # merge in defaults and keymaps
 

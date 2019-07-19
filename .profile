@@ -12,5 +12,5 @@ export EDITOR=nvim
 export BROWSER=firefox
 export FILE=ranger
 export ANDROID_HOME="${HOME}/Android/Sdk" 
-export PATH="$PATH:${HOME}/.local/bin/::${HOME}/.scripts/:${HOME}/.cargo/bin"
+export PATH="$PATH:${HOME}/.local/bin/:${HOME}/.scripts/:${HOME}/.cargo/bin"
 

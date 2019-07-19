@@ -8,9 +8,9 @@
 ###### Definitions ######
 
 set $mod Mod4 
-set $terminal --no-startup-id $TERMINAL 
+set $terminal --no-startup-id st 
 
-font xft:Inconsolata 14
+font xft:Droid Sans 12
 
 default_border pixel 3 
 default_floating_border pixel 3 
@@ -25,27 +25,10 @@ gaps outer $outergap
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
-
 ###### External programs ######
 
 # Polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh
-# Executes script to set cron needed variable for notify-send 
-exec --no-startup-id notify-cron
-# Set Caps Lock to Escape
-exec --no-startup-id setxkbmap -option caps:escape
-# Execute MPD
-exec --no-startup-id mpd
-# Unclutter, hides the cursor
-exec --no-startup-id unclutter
-# Network Manager applet
-exec --no-startup-id nm-applet
-# Compton
-exec --no-startup-id compton -b
-# Pamac applet
-exec --no-startup-id pamac-tray
-# Clipit
-exec --no-startup-id clipit
 
 ###### Key bindings ######
 
@@ -110,10 +93,6 @@ bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RT
 bindsym XF86AudioNext exec notify-send "Woohoo!"
 bindsym XF86AudioPrev exec notify-send "Woohoo!"
 bindsym XF86AudioPlay exec notify-send "Woohoo!"
-
-# Start Applications
-bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
-bindsym $mod+F5 exec $terminal -e 'mocp'
 
 # change focus
 bindsym $mod+h focus left
@@ -211,7 +190,7 @@ set_from_resource $color13    color13
 set_from_resource $color14    color14
 set_from_resource $color15    color15
 
-# class                 border          backgr.      text         indicator    child_border
+## class                 border          backgr.      text         indicator    child_border
 client.focused          $background     $background  $foreground  $color2      $color3
 client.focused_inactive $background     $background  $foreground  $color1      $color2
 client.unfocused        $background     $background  $foreground  $color1      $color2

@@ -1,13 +1,2 @@
-[ -f ~/.profile ] && source ~/.profile
+[ -f "$HOME/.profile" ] && source "$HOME/.profile" 
 
-# Set wallpaper
-nitrogen --restore
-
-# Restore PyWal colorscheme
-wal -Rn
-
-# Keyboard settings
-xset -b
-
-# SCIM daemon
-scim -d

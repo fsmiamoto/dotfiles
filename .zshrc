@@ -3,7 +3,7 @@ export ZSH="/home/shigueo/.oh-my-zsh"
 
 ZSH_THEME="temaDaora"
 
-plugins=(git zsh-syntax-highlighting zsh-vim-mode)
+plugins=(git zsh-syntax-highlighting zsh-vimto)
 
 # Vim Mode
 MODE_CURSOR_VIINS="blinking bar"
@@ -26,7 +26,6 @@ alias sv="sudo $EDITOR"
 alias v="$EDITOR"
 alias sed='sed -E'
 alias spkg="pacman -Ss"
-alias dmenu="rofi-dmenu"
 
 
 ## Aliases for git

@@ -16,7 +16,7 @@ secondary = ${xrdb:color2:#222}
 alert = ${xrdb:color3:#222}
 
 [bar/monitor0]
-monitor = ${env:MONITOR:DVI-D-0}
+monitor = ${env:MONITOR:DVI-D-1}
 width = 100%
 height = 29 
 offset-x = 0
@@ -42,7 +42,7 @@ module-margin-right = 2
 
 font-0 = Droid Sans:size=11;2
 font-1 = DejaVuSansMono Nerd Font:size=10;2
-font-2 = Droid Sans Japanese:size=10;1
+font-2 = Source Han Sans JP:size=10;1
 
 modules-left = i3
 modules-center = xwindow
@@ -219,6 +219,7 @@ label = %time% %date%
 type = internal/pulseaudio
 
 format-volume = <label-volume> 
+format-underline = ${xrdb:color4} 
 label-volume =  %percentage%%
 label-volume-foreground = ${root.foreground}
 
@@ -285,12 +286,13 @@ margin-bottom = 2
 
 [bar/monitor1]
 inherit = bar/monitor0
-monitor = ${env:MONITOR:HDMI-0}
+monitor = ${env:MONITOR:HDMI-3}
 
 
 modules-left = i3
 modules-center = xwindow
-modules-right = mpd spotify prevSpotify playPauseSpotify nextSpotify 
+;modules-right = mpd spotify prevSpotify playPauseSpotify nextSpotify 
+modules-right = mpd 
 
 tray-position = right
 tray-padding = 2

@@ -25,6 +25,7 @@ gaps outer $outergap
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
+
 ###### External programs ######
 
 # Polybar
@@ -66,7 +67,7 @@ bindsym $mod+m exec  --no-startup-id $terminal -e ncmpcpp
 bindsym $mod+c exec $terminal -e calcurse
 
 # Rofi, app launcher
-bindsym $mod+d exec rofi -show drun -show-icons -sidebar-mode
+bindsym $mod+d exec rofi -show drun -show-icons 
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -80,7 +81,7 @@ bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
 bindsym $mod+Shift+r restart
 
 # Change borders
-bindsym $mod+n border normal
+bindsym $mod+b border toggle
 
 # Printscreen
 bindsym Ctrl+Print exec --no-startup-id i3-scrot

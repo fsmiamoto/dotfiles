@@ -13,6 +13,7 @@ filetype plugin indent on
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+Plug 'vim-airline/vim-airline'
 Plug 'rust-lang/rust.vim'
 Plug 'sonph/onehalf'
 Plug 'sheerun/vim-polyglot'

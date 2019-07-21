@@ -5,9 +5,6 @@ ZSH_THEME="temaDaora"
 
 plugins=(git zsh-syntax-highlighting zsh-vimto)
 
-# Vim Mode
-MODE_CURSOR_VIINS="blinking bar"
-
 source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -16,7 +13,6 @@ source $ZSH/oh-my-zsh.sh
 alias pac='sudo pacman'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
-alias trz='trizen'
 alias py='python'
 alias updt="sudo pacman -Syu"
 alias arduino="arduino-cli"
@@ -27,7 +23,8 @@ alias sv="sudo $EDITOR"
 alias v="$EDITOR"
 alias sed='sed -E'
 alias spkg="pacman -Ss"
-
+alias trt="transmission-remote-cli"
+alias fzf="fzf --color=16"
 
 ## Aliases for git
 alias gitc="git commit -m"
@@ -60,30 +57,24 @@ mkd() {
 
 # List my code directories with fzf and opens VS Code on the selected
 dev() {
-    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf --color=16 --prompt='Choose a project: ') &&  exec code $(echo "$HOME/Dev/$pasta")
+    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf  --prompt='Choose a project: ') &&  exec code $(echo "$HOME/Dev/$pasta")
 }
 
 devd() {
-    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf --color=16) &&  cd $(echo "$HOME/Dev/$pasta")
+    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf ) &&  cd $(echo "$HOME/Dev/$pasta")
 }
 
 ml() {
-    pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf --color=16) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
+    pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf ) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
 }
 
 # Lists my config files and opens it on $EDITOR
 cfg() {
-    file=$(du -a .config | awk '{print $2}' | fzf --color=16) && $EDITOR $file
-}
-
-# Stages everything and then commits
-cmt(){
-   test -n "$1" && git add -A && git commit -m "$1" && return 
-   echo "Insira mensagem de commit cabeção!"
+    file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
 }
 
 pdf(){
-    FILE=$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf --color=16 --layout=reverse --prompt='Choose a PDF: ')
+    FILE=$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf  --layout=reverse --prompt='Choose a PDF: ')
    zathura "UTFPR/$FILE" & disown;
    exit;
 }
@@ -99,23 +90,8 @@ get-thumbnail(){
 anime(){
     anime_dir="$HOME/Video/Anime"
     choosen_anime=$(find "$anime_dir/" | cut -d / -f 6 | uniq | fzf --color=16 --prompt='Choose an Anime: ')
-    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf --color=16 --prompt='Choose an Episode: ') 
+    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf  --prompt='Choose an Episode: ') 
     mpv "$anime_dir/$choosen_anime/$choosen_episode" & disown;
     exit
 }
 
-## Alias expansion
-
-# bindkey " " expand-alias-space
-
-# expand-alias-space() {
-#   [[ $LBUFFER =~ "\<(${(j:|:)baliases})\$" ]]; insertBlank=$?
-#   if [[ ! $LBUFFER =~ "\<(${(j:|:)ialiases})\$" ]]; then
-#     zle _expand_alias
-#   fi
-#   zle self-insert
-#   if [[ "$insertBlank" = "0" ]]; then
-#     zle backward-delete-char
-#   fi
-# }
-# zle -N expand-alias-space

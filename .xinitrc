@@ -11,7 +11,7 @@
 setxkbmap -option caps:escape -layout us
 
 # Set monitor layout
-mons -e left
+mons -e right
 
 # Restore PyWal settings
 wal -R
@@ -23,7 +23,10 @@ nm-applet &
 compton -b &
 
 # SCIM for input
-scim -d
+scim -d &
+
+# Transmisssion 
+transmission-daemon &
 
 # Initiate i3
 exec dbus-launch i3

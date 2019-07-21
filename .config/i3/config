@@ -192,11 +192,11 @@ set_from_resource $color14    color14
 set_from_resource $color15    color15
 
 ## class                 border          backgr.      text         indicator    child_border
-client.focused          $background     $background  $foreground  $color2      $color3
-client.focused_inactive $background     $background  $foreground  $color1      $color2
-client.unfocused        $background     $background  $foreground  $color1      $color2
-client.urgent           $background     $background  $foreground  $color1      $color2
-client.placeholder      $background     $background  $foreground  $color1      $color2
+client.focused          $background     $background  $foreground  $color3      $color2
+client.focused_inactive $background     $background  $foreground  $color2      $color1
+client.unfocused        $background     $background  $foreground  $color2      $color1
+client.urgent           $background     $background  $foreground  $color2      $color1
+client.placeholder      $background     $background  $foreground  $color2      $color1
 client.background       $background
 
 ######  Window configs ######

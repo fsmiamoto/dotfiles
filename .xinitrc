@@ -8,7 +8,7 @@
 [ -f "$HOME/.Xmodmap" ] && xmodmap "$HOME/.Xmodmap"
 
 # Map Caps to Esc
-setxkbmap -option caps:escape -layout us
+setxkbmap -option caps:escape
 
 # Set monitor layout
 mons -e right
@@ -27,6 +27,12 @@ scim -d &
 
 # Transmisssion 
 transmission-daemon &
+
+# Redshift
+redshift &
+
+# Unclutter for hiding cursor when idle
+unclutter &
 
 # Initiate i3
 exec dbus-launch i3

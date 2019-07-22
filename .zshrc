@@ -25,6 +25,8 @@ alias sed='sed -E'
 alias spkg="pacman -Ss"
 alias trt="transmission-remote-cli"
 alias fzf="fzf --color=16"
+alias cat="bat -p --theme='OneHalfDark'"
+alias ls="exa"
 
 ## Aliases for git
 alias gitc="git commit -m"

@@ -15,6 +15,7 @@
 
 # First, unignore .config dir
 !/.config/
+!.config/redshift.conf
 
 # Then ignore other all other stuff in it
 /.config/*
@@ -25,9 +26,6 @@
 !/.config/i3/*
 
 # Same for other programs
-!/.config/i3blocks/
-!/.config/i3blocks/*
-
 !/.config/ranger/
 !/.config/ranger/*
 
@@ -43,8 +41,5 @@
 !.config/nvim/
 .config/nvim/*
 !.config/nvim/init.vim
-
-!.config/fish
-!.config/fish/*
 
 

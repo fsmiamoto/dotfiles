@@ -209,12 +209,12 @@ for_window [class="qutebrowser"] floating enable
 for_window [class="matplotlib"] floating enable 
 for_window [class="GNU Octave"] floating enable 
 for_window [title="pulsemixer"] floating enable 
-for_window [title="ranger"] floating enable 
-for_window [title="octave"] floating enable 
+for_window [title="^ranger$"] floating enable 
+for_window [title="^octave-cli$"] floating enable 
 for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable
-for_window [title="ncmpcpp"] floating enable 
-for_window [title="calcurse"] floating enable 
+for_window [title="^ncmpcpp$"] floating enable 
+for_window [title="^calcurse$"] floating enable 
 for_window [class="surf"] floating enable 
 
 # Move to other workspace

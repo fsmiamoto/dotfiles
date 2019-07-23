@@ -49,13 +49,8 @@ mkd() {
     mkdir $1 && cd $1 
 }
 
-devd() {
-    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf ) &&  cd $(echo "$HOME/Dev/$pasta")
-}
-
 # Lists my config files and opens it on $EDITOR
 cfg() {
-
     file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
 }
 
@@ -63,10 +58,6 @@ pdf(){
     FILE=$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf  --layout=reverse --prompt='Choose a PDF: ')
    zathura "UTFPR/$FILE" & disown;
    exit;
-}
-
-nihongo(){
-    surf -f "http://jisho.org/search/$1"
 }
 
 get-thumbnail(){

@@ -15,7 +15,6 @@
 
 # First, unignore .config dir
 !/.config/
-!.config/redshift.conf
 
 # Then ignore other all other stuff in it
 /.config/*
@@ -42,4 +41,8 @@
 .config/nvim/*
 !.config/nvim/init.vim
 
+!.config/zathura/
+!.config/zathura/*
+
+!.config/redshift.conf
 

@@ -53,6 +53,7 @@ set fileencoding=utf-8
 set incsearch
 
 nnoremap ; :
+vnoremap ; :
 
 " Copy and paste
 map <C-c> "+y

@@ -32,15 +32,16 @@ alias gitps="git push"
 alias gitpl="git pull"
 alias gitl="git log"
 
-alias i3c='$EDITOR ~/.config/i3/config'
-alias vimc='$EDITOR ~/.vimrc'
-alias pbc='$EDITOR ~/.config/polybar/config'
-alias xrc='$EDITOR ~/.Xresources'
-alias bsc='$EDITOR ~/.bashrc'
+alias i3c="$EDITOR ~/.config/i3/config"
+alias vimc="$EDITOR ~/.vimrc"
+alias pbc="$EDITOR ~/.config/polybar/config"
+alias xrc="$EDITOR ~/.Xresources"
+alias bsc="$EDITOR ~/.bashrc"
 alias zshc="$EDITOR ~/.zshrc"
             
 # Removes all letters with marks
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
+
 ######  Functions #######
 
 # Creates a directory and cd's into it
@@ -48,21 +49,13 @@ mkd() {
     mkdir $1 && cd $1 
 }
 
-# List my code directories with fzf and opens VS Code on the selected
-dev() {
-    pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf  --prompt='Choose a project: ') &&  exec code $(echo "$HOME/Dev/$pasta")
-}
-
 devd() {
     pasta=$(ls -l "$HOME/Dev/" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf ) &&  cd $(echo "$HOME/Dev/$pasta")
 }
 
-ml() {
-    pasta=$(ls -l "$HOME/ML/MachineLearningCoursera" | grep "^d" | sed -nE "s/^.*[0-9] (.*)$/\1/p" | sed -n "s/^.*$/&\//p" | fzf ) && exec code $(echo "$HOME/ML/MachineLearningCoursera/$pasta")
-}
-
 # Lists my config files and opens it on $EDITOR
 cfg() {
+
     file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
 }
 
@@ -88,6 +81,12 @@ anime(){
     exit
 }
 
+# Starts one or multiple args as programs in background
+background() {
+  for ((i=2;i<=$#;i++)); do
+    ${@[1]} ${@[$i]} &> /dev/null & disown
+  done
+}
 
 # Expansion of aliases
 # Credit: https://blog.sebastian-daschner.com/entries/zsh-aliases

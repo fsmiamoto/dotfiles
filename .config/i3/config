@@ -68,6 +68,7 @@ bindsym $mod+c exec $terminal -e calcurse
 
 # Rofi, app launcher
 bindsym $mod+d exec rofi -show drun -show-icons 
+bindsym $mod+Shift+d exec $terminal -e dev
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -216,6 +217,7 @@ for_window [title="MuseScore: Play Panel"] floating enable
 for_window [title="^ncmpcpp$"] floating enable 
 for_window [title="^calcurse$"] floating enable 
 for_window [class="surf"] floating enable 
+for_window [title="^dev$"] floating enable
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6

@@ -9,36 +9,29 @@ source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-## Aliases for programs
+## Aliases
 alias pac='sudo pacman'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
-alias updt="sudo pacman -Syu"
 alias arduino="arduino-cli"
-alias inou="arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega"
-alias inoc="arduino-cli compile --fqbn arduino:avr:mega"
-alias vim="nvim"
 alias sv="sudo $EDITOR"
 alias v="$EDITOR"
-alias sed='sed -E'
-alias spkg="pacman -Ss"
 alias trt="transmission-remote-cli"
-alias fzf="fzf --color=16"
-alias cat="bat -p --theme='OneHalfDark'"
-alias ls="exa"
 
-## Aliases for git
+alias spkg="pacman -Ss"
+alias updt="sudo pacman -Syu"
+
 alias gitc="git commit -m"
 alias gitck="git checkout"
 alias gitr="git remote"
 alias gita="git add"
 alias gits="git status"
+alias gitst="git stash"
 alias gitps="git push"
 alias gitpl="git pull"
 alias gitl="git log"
 
-## Aliases for config files
 alias i3c='$EDITOR ~/.config/i3/config'
 alias vimc='$EDITOR ~/.vimrc'
 alias pbc='$EDITOR ~/.config/polybar/config'
@@ -46,8 +39,6 @@ alias xrc='$EDITOR ~/.Xresources'
 alias bsc='$EDITOR ~/.bashrc'
 alias zshc="$EDITOR ~/.zshrc"
             
-alias ankid="cd $HOME/.local/share/Anki2/"
-
 # Removes all letters with marks
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
 ######  Functions #######
@@ -139,3 +130,9 @@ zle -N expand-alias-space
 bindkey " " expand-alias-space
 bindkey -M isearch " " magic-space
 
+# Ignored aliases, not expanded
+ialias cat="bat -p --theme='OneHalfDark'"
+ialias sed='sed -E'
+ialias vim="nvim"
+ialias ls="exa"
+ialias fzf="fzf --color=16"

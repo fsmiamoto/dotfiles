@@ -6,7 +6,6 @@
 "  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
 "
-" * It's actually NeoVim
 
 syntax on
 filetype plugin indent on 
@@ -29,6 +28,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'mattn/emmet-vim'
 Plug 'leafgarland/typescript-vim'
+Plug 'chaoren/vim-wordmotion'
 Plug 'jiangmiao/auto-pairs'
 call plug#end()
 
@@ -79,14 +79,16 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " NERDTree
 map <F2> :NERDTreeToggle<CR>
-map <C-b> :NERDTreeFocus<CR>
 
 " Autoopen on a directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 " Deoplete
+
 let g:deoplete#enable_at_startup = 1
+" Closes preview window after completion
+autocmd InsertLeave, CompleteDOne * if pumvisible() == 0 | silent! pclose | endif
 
 " ALE 
 let g:ale_lint_on_insert_leave = 1
@@ -96,4 +98,7 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_fixers = { 'python': [ 
 \           'autopep8', 
 \           'add_blank_lines_for_python_control_statements' 
-\           ]}
+\           ],
+\           'javascript': [ 'prettier' ],
+\           'typescript': [ 'prettier' ],
+\}

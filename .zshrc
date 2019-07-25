@@ -125,5 +125,6 @@ ialias cat="bat -p --theme='OneHalfDark'"
 ialias sed='sed -E'
 ialias vim="nvim"
 ialias ls="exa"
+ialias l="exa -l"
 ialias grep="grep --color=auto"
 ialias fzf="fzf --color=16"

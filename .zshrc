@@ -73,6 +73,16 @@ anime(){
     exit
 }
 
+vdev(){
+    project_dir="$HOME/Dev"
+
+    selected_project=$(find $project_dir -maxdepth 1 -type d -printf '%f\n' | sed -n '2,$p'| fzf --color=16  --prompt='Choose a project: ')
+
+    if [ -n "$selected_project" ]; then
+        cd "$project_dir/$selected_project"
+    fi
+}
+
 # Starts one or multiple args as programs in background
 background() {
   for ((i=2;i<=$#;i++)); do

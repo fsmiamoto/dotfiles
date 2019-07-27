@@ -22,9 +22,6 @@ nm-applet &
 # Compton for transparency
 compton -b &
 
-# SCIM for input
-scim -d &
-
 # Transmisssion 
 transmission-daemon &
 

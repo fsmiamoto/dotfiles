@@ -44,6 +44,7 @@ set ci
 set expandtab
 set shiftwidth=4
 set tabstop=4
+set noswapfile
 set sm
 
 set wildmode=longest,list,full
@@ -88,7 +89,7 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 
 let g:deoplete#enable_at_startup = 1
 " Closes preview window after completion
-autocmd InsertLeave, CompleteDOne * if pumvisible() == 0 | silent! pclose | endif
+autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
 
 " ALE 
 let g:ale_lint_on_insert_leave = 1
@@ -102,3 +103,6 @@ let g:ale_fixers = { 'python': [
 \           'javascript': [ 'prettier' ],
 \           'typescript': [ 'prettier' ],
 \}
+
+"Supertab
+let g:SuperTabDefaultCompletionType = "<c-n>"

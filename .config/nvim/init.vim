@@ -30,10 +30,11 @@ Plug 'mattn/emmet-vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'chaoren/vim-wordmotion'
 Plug 'jiangmiao/auto-pairs'
+Plug 'morhetz/gruvbox'
 call plug#end()
 
-colorscheme onehalfdark
-let g:airline_theme='onedark'
+colorscheme gruvbox
+let g:airline_theme='gruvbox'
 
 set hidden
 set number 
@@ -46,10 +47,11 @@ set shiftwidth=4
 set tabstop=4
 set noswapfile
 set sm
+set autoread
 
 set wildmode=longest,list,full
 set wildmenu
-let mapleader="\<space>"
+let mapleader=","
 
 set enc=utf-8
 set fileencoding=utf-8
@@ -67,6 +69,7 @@ map <C-r> :%s/
 
 " Save the file
 map <C-s> :w<CR>
+map <leader>f :FZF<CR>
 
 " Move lines up and down
 nnoremap <C-j> :m .+1<CR>==

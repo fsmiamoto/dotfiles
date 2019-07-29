@@ -18,6 +18,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
 Plug 'Shougo/neco-syntax'
 Plug 'vim-airline/vim-airline'
@@ -48,6 +49,7 @@ set tabstop=4
 set noswapfile
 set sm
 set autoread
+set ignorecase
 
 set wildmode=longest,list,full
 set wildmenu

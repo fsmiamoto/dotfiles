@@ -10,7 +10,6 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ## Aliases
-alias pac='sudo pacman'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
@@ -19,8 +18,9 @@ alias sv="sudo $EDITOR"
 alias v="$EDITOR"
 alias trt="transmission-remote-cli"
 
-alias spkg="pacman -Ss"
-alias updt="sudo pacman -Syu"
+alias pac="sudo pacman"
+alias pacs="pacman -Ss"
+alias pacu="sudo pacman -Syu"
 
 alias gitc="git commit -m"
 alias gitck="git checkout"

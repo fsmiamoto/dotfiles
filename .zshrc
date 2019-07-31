@@ -18,6 +18,8 @@ alias sv="sudo $EDITOR"
 alias v="$EDITOR"
 alias trt="transmission-remote-cli"
 
+alias pyenv="source env/bin/activate"
+
 alias pac="sudo pacman"
 alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"

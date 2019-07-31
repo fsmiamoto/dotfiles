@@ -51,6 +51,8 @@ set sm
 set autoread
 set ignorecase
 
+set mouse=a
+
 set wildmode=longest,list,full
 set wildmenu
 let mapleader=","

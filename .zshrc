@@ -41,6 +41,7 @@ alias pbc="$EDITOR ~/.config/polybar/config"
 alias xrc="$EDITOR ~/.Xresources"
 alias bsc="$EDITOR ~/.bashrc"
 alias zshc="$EDITOR ~/.zshrc"
+alias tmuxc="$EDITOR ~/.tmux.conf"
             
 # Removes all letters with marks
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 

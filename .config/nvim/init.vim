@@ -83,6 +83,10 @@ inoremap <C-k> <Esc>:m .-2<CR>==gi
 vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
 
+" Putting the arrow keys to use
+nnoremap <Left> :bp<CR>
+nnoremap <Right> :bn<CR>
+
 " Plugin Configs
 
 " NERDTree

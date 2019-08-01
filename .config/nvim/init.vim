@@ -125,3 +125,13 @@ let g:ale_fixers = { 'python': [
 
 "Supertab
 let g:SuperTabDefaultCompletionType = "<c-n>"
+
+" tmuxline
+let g:tmuxline_preset = {
+      \'a'    : '#S',
+      \'win' : '#I #W',
+      \'cwin'  : ['#I','#W'],
+      \'x'    : '#(jp-date a)',
+      \'y'    : '%m/%d',
+      \'z'    : '%R',
+      \'options' :{'status-justify': 'left'}}

@@ -23,6 +23,7 @@ Plug 'ervandew/supertab'
 Plug 'Shougo/neco-syntax'
 Plug 'vim-airline/vim-airline'
 Plug 'rust-lang/rust.vim'
+Plug 'edkolev/tmuxline.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'dylanaraps/wal.vim'
 Plug 'pangloss/vim-javascript'
@@ -88,6 +89,13 @@ nnoremap <Left> :bp<CR>
 nnoremap <Right> :bn<CR>
 
 " Plugin Configs
+
+" Airline
+let g:airline#extensions#tabline#enabled = 1 " Show buffers as tabs
+let g:airline_powerline_fonts = 1
+
+" Auto-pairs
+let g:AutoPairsFlyMode = 1
 
 " NERDTree
 map <F2> :NERDTreeToggle<CR>

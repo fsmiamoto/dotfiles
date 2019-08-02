@@ -35,16 +35,16 @@ module-margin-right = 2
 
 font-0 = Droid Sans:size=13;2
 font-1 = DejaVu Sans:size=13;2
-font-2 = Droid Sans Japanese:size=12:weight=light;2
+font-2 = Source Han Sans JP:size=12:weight=light;2
 font-3 = RobotoMono Nerd Font:size=13;2
 
 modules-left = i3
 modules-center = xwindow
-modules-right = volume filesystem xbacklight mpd memory cpu wlan eth temperature battery date powermenu 
+modules-right = volume filesystem weather xbacklight mpd memory cpu wlan eth temperature battery date powermenu 
 
 tray-position = right
 tray-padding = 2
-;tray-transparent = true
+tray-transparent = true
 ;tray-background = #0063ff
 
 wm-restack = i3

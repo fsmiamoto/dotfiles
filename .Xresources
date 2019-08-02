@@ -1,3 +1,6 @@
-*.font:                      Inconsolata Nerd Font Mono:size=18
+*.font:                      Inconsolata Nerd Font Mono:size=14
 *.alpha: 0.9 
+
+Xft.dpi: 120
+Xft.antialias: 1
 

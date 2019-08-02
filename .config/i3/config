@@ -8,12 +8,12 @@
 ###### Definitions ######
 
 set $mod Mod4 
-set $terminal --no-startup-id $TERMINAL 
+set $terminal --no-startup-id st 
 
-font xft:Inconsolata 14
+font xft:Droid Sans 12
 
-default_border pixel 4 
-default_floating_border pixel 4 
+default_border pixel 3 
+default_floating_border pixel 3 
 
 focus_follows_mouse yes
 
@@ -30,22 +30,6 @@ floating_modifier $mod
 
 # Polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh
-# Executes script to set cron needed variable for notify-send 
-exec --no-startup-id notify-cron
-# Set Caps Lock to Escape
-exec --no-startup-id setxkbmap -option caps:escape
-# Execute MPD
-exec --no-startup-id mpd
-# Unclutter, hides the cursor
-exec --no-startup-id unclutter
-# Network Manager applet
-exec --no-startup-id nm-applet
-# Compton
-exec --no-startup-id compton -b
-# Pamac applet
-exec --no-startup-id pamac-tray
-# Clipit
-exec --no-startup-id clipit
 
 ###### Key bindings ######
 
@@ -83,7 +67,8 @@ bindsym $mod+m exec  --no-startup-id $terminal -e ncmpcpp
 bindsym $mod+c exec $terminal -e calcurse
 
 # Rofi, app launcher
-bindsym $mod+d exec rofi -show drun -show-icons -sidebar-mode
+bindsym $mod+d exec rofi -show drun -show-icons 
+bindsym $mod+Shift+d exec $terminal -e dev
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -97,7 +82,7 @@ bindsym $mod+Shift+p gaps outer all set 0; gaps inner all set 0;
 bindsym $mod+Shift+r restart
 
 # Change borders
-bindsym $mod+n border normal
+bindsym $mod+b border toggle
 
 # Printscreen
 bindsym Ctrl+Print exec --no-startup-id i3-scrot
@@ -110,10 +95,6 @@ bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RT
 bindsym XF86AudioNext exec notify-send "Woohoo!"
 bindsym XF86AudioPrev exec notify-send "Woohoo!"
 bindsym XF86AudioPlay exec notify-send "Woohoo!"
-
-# Start Applications
-bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
-bindsym $mod+F5 exec $terminal -e 'mocp'
 
 # change focus
 bindsym $mod+h focus left
@@ -211,12 +192,12 @@ set_from_resource $color13    color13
 set_from_resource $color14    color14
 set_from_resource $color15    color15
 
-# class                 border          backgr.      text         indicator    child_border
-client.focused          $background     $background  $foreground  $color2      $color1
-client.focused_inactive $background     $background  $foreground  $color1      $color2
-client.unfocused        $background     $background  $foreground  $color1      $color2
-client.urgent           $background     $background  $foreground  $color1      $color2
-client.placeholder      $background     $background  $foreground  $color1      $color2
+## class                 border          backgr.      text         indicator    child_border
+client.focused          $background     $background  $foreground  $color3      $color2
+client.focused_inactive $background     $background  $foreground  $color2      $color1
+client.unfocused        $background     $background  $foreground  $color2      $color1
+client.urgent           $background     $background  $foreground  $color2      $color1
+client.placeholder      $background     $background  $foreground  $color2      $color1
 client.background       $background
 
 ######  Window configs ######
@@ -229,13 +210,14 @@ for_window [class="qutebrowser"] floating enable
 for_window [class="matplotlib"] floating enable 
 for_window [class="GNU Octave"] floating enable 
 for_window [title="pulsemixer"] floating enable 
-for_window [title="ranger"] floating enable 
-for_window [title="octave"] floating enable 
+for_window [title="^ranger$"] floating enable 
+for_window [title="^octave-cli$"] floating enable 
 for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable
-for_window [title="ncmpcpp"] floating enable 
-for_window [title="calcurse"] floating enable 
+for_window [title="^ncmpcpp$"] floating enable 
+for_window [title="^calcurse$"] floating enable 
 for_window [class="surf"] floating enable 
+for_window [title="^dev$"] floating enable
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6
@@ -270,8 +252,5 @@ set $brightness-step 5
 # Brightness bindings
 bindsym XF86MonBrightnessUp exec xbacklight -inc $brightness-step # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec $brightness-step # decrease screen brightness
-
-# PyWal
-exec --no-startup-id $HOME/.local/bin/wal -R 
 
 

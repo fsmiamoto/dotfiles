@@ -72,8 +72,6 @@ map <C-p> "+p
 " Save the file
 map <C-s> :w<CR>
 
-" Quit
-map <C-q> :q<CR>
 
 " Search for files
 map <leader>f :GFiles<CR>
@@ -89,6 +87,9 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 " Putting the arrow keys to use
 nnoremap <Left> :bp<CR>
 nnoremap <Right> :bn<CR>
+
+" Close buffer
+map <C-q> :bd<CR>
 
 " Split window
 nmap ss :split<Return><C-w>w

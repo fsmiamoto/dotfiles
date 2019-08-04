@@ -76,6 +76,12 @@ anime(){
     exit
 }
 
+clone(){
+    PROJECT_DIR="$HOME/Dev"
+    test  -n "$1" && cd $PROJECT_DIR && git clone $1
+    echo "Missing repository URL"
+}
+
 dev(){
     project_dir="$HOME/Dev"
 

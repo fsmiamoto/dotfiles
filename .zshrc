@@ -76,13 +76,13 @@ anime(){
     exit
 }
 
-vdev(){
+dev(){
     project_dir="$HOME/Dev"
 
     selected_project=$(find $project_dir -maxdepth 1 -type d -printf '%f\n' | sed -n '2,$p'| fzf --color=16  --prompt='Choose a project: ')
 
     if [ -n "$selected_project" ]; then
-        tmux new-session -c "$project_dir/$selected_project" 
+        tmux new-session -c "$project_dir/$selected_project" "ide && $EDITOR ."
     fi
 }
 

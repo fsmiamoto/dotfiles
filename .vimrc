@@ -33,6 +33,8 @@ Plug 'leafgarland/typescript-vim'
 Plug 'chaoren/vim-wordmotion'
 Plug 'jiangmiao/auto-pairs'
 Plug 'morhetz/gruvbox'
+Plug 'deoplete-plugins/deoplete-go'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 colorscheme gruvbox
@@ -72,9 +74,9 @@ map <C-p> "+p
 " Save the file
 map <C-s> :w<CR>
 
-
 " Search for files
-map <leader>f :GFiles<CR>
+map <leader>f :Files<CR>
+map <leader>g :GFiles<CR>
 
 " Move lines up and down
 nnoremap <C-j> :m .+1<CR>==
@@ -127,7 +129,7 @@ map <F2> :NERDTreeToggle<CR>
 
 " Autoopen on a directory
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 " Deoplete
 
@@ -144,8 +146,8 @@ let g:ale_fixers = { 'python': [
 \           'autopep8', 
 \           'add_blank_lines_for_python_control_statements' 
 \           ],
-\           'javascript': [ 'prettier' ],
-\           'typescript': [ 'prettier' ],
+\           'javascript': [ 'prettier', 'eslint' ],
+\           'typescript': [ 'prettier', 'eslint'],
 \}
 
 "Supertab

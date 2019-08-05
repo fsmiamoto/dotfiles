@@ -78,6 +78,9 @@ map <C-s> :w<CR>
 map <leader>f :Files<CR>
 map <leader>g :GFiles<CR>
 
+" Reload vimrc
+map <leader>r :source $HOME/.vimrc<CR>
+
 " Move lines up and down
 nnoremap <C-j> :m .+1<CR>==
 nnoremap <C-k> :m .-2<CR>==
@@ -114,6 +117,11 @@ nmap <C-w><right> <C-w>>
 nmap <C-w><up> <C-w>+
 nmap <C-w><down> <C-w>-
 
+" File based changes
+autocmd FileType javascript     setlocal shiftwidth=2 softtabstop
+autocmd FileType typescript     setlocal shiftwidth=2 softtabstop
+autocmd FileType typescript.tsx setlocal shiftwidth=2 softtabstop
+
 " Plugin Configs
 
 " Airline
@@ -128,7 +136,7 @@ let g:AutoPairsFlyMode = 0
 map <F2> :NERDTreeToggle<CR>
 
 " Autoopen on a directory
-autocmd StdinReadPre * let s:std_in=1
+"autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 " Deoplete

@@ -1,0 +1,20 @@
+
+{
+  "suggest.echodocSupport": true,
+  "suggest.maxCompleteItemCount": 20,
+  "suggest.enablePreview": true,
+  "suggest.floatEnable": true,
+  "suggest.triggerAfterInsertEnter": true,
+  "coc.source.omni.enable": true,
+  "coc.source.omni.filetypes": ["sh", "c"],
+  "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescript", "typescriptreact"],
+  "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact"],
+  "eslint.autoFixOnSave": true,
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"]
+    }
+  }
+}

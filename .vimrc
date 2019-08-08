@@ -89,6 +89,7 @@ map <leader>gf :GFiles<CR>
 map <leader>gs :Gstatus<CR>
 map <leader>gd :Gvdiffsplit<CR>
 map <leader>gw :Gwrite<CR>
+map <leader>gc :Gcommit<CR>
 
 " No highlight
 map <leader>h :noh<CR>

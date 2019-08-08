@@ -44,6 +44,10 @@ alias gitps="git push"
 alias gitpl="git pull"
 alias gitl="git log"
 
+alias tmuxa="tmux attach-session"
+alias tmuxks="tmux kill-session"
+alias tmuxksv="tmux kill-server"
+
 alias i3c="$EDITOR ~/.config/i3/config"
 alias vimc="$EDITOR ~/.vimrc"
 alias pbc="$EDITOR ~/.config/polybar/config"

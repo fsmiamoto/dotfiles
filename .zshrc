@@ -16,6 +16,8 @@ source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
+
 ## Aliases
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"

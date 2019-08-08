@@ -39,6 +39,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Plug 'deoplete-plugins/deoplete-go'
 call plug#end()
 
+set termguicolors
 colorscheme gruvbox
 let g:airline_theme='gruvbox'
 
@@ -96,12 +97,12 @@ map <leader>h :noh<CR>
 map <leader>r :source $HOME/.vimrc<CR>
 
 " Move lines up and down
-nnoremap <C-J> :m .+1<CR>==
-nnoremap <C-K> :m .-2<CR>==
-inoremap <C-J> <Esc>:m .+1<CR>==gi
-inoremap <C-K> <Esc>:m .-2<CR>==gi
-vnoremap <C-J> :m '>+1<CR>gv=gv
-vnoremap <C-K> :m '<-2<CR>gv=gv
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 " Putting the arrow keys to use
 nnoremap <Left> :bp<CR>
@@ -120,18 +121,6 @@ nmap <C-w><right> <C-w>>
 nmap <C-w><up> <C-w>+
 nmap <C-w><down> <C-w>-
 
-" File based changes
-autocmd FileType javascript     setlocal shiftwidth=2 softtabstop
-autocmd FileType typescript     setlocal shiftwidth=2 softtabstop
-autocmd FileType typescript.tsx setlocal shiftwidth=2 softtabstop
-
-" Enable omni completion
-if has("autocmd") && exists("+omnifunc")
-    autocmd Filetype *
-                \	if &omnifunc == "" |
-                \		setlocal omnifunc=syntaxcomplete#Complete |
-                \	endif
-endif
 
 " Plugin Configs
 
@@ -150,9 +139,12 @@ let g:AutoPairsFlyMode = 0
 map <F2> :NERDTreeToggle<CR>
 
 " COC
+
+let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni']
+
 set cmdheight=2
 
-set updatetime=10
+set updatetime=300
 
 " Use <tab> for trigger completion, completion confirm and snippet expand and jump.
 inoremap <silent><expr> <TAB>
@@ -165,6 +157,9 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+" Use <CR> to complete
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 let g:coc_snippet_next = '<tab>'
 
@@ -180,6 +175,13 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
@@ -190,12 +192,12 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Expand snippet
-imap <leader>l <Plug>(coc-snippets-expand)
-
 " Navigate diagnostics
 nmap <silent> <leader>p <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
+
+" Show list of errors
+nnoremap <silent> <leader>d :CocList diagnostics<CR>
 
 " Tmuxline
 let g:tmuxline_preset = {
@@ -206,3 +208,16 @@ let g:tmuxline_preset = {
       \'y'    : '%m/%d',
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
+
+" File based changes
+autocmd FileType javascript     setlocal shiftwidth=2 softtabstop
+autocmd Filetype typescript     setlocal shiftwidth=2 softtabstop
+autocmd Filetype typescript.tsx setlocal shiftwidth=2 softtabstop
+
+" Enable omni completion
+if has("autocmd") && exists("+omnifunc")
+    autocmd Filetype *
+                \	if &omnifunc == "" |
+                \		setlocal omnifunc=syntaxcomplete#Complete |
+                \	endif
+endif

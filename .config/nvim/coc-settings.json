@@ -8,7 +8,7 @@
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],
   "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescript", "typescriptreact"],
-  "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact"],
+  "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
   "eslint.autoFixOnSave": true,
   "languageserver": {
     "golang": {

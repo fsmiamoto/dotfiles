@@ -217,7 +217,6 @@ for_window [title="MuseScore: Play Panel"] floating enable
 for_window [title="^ncmpcpp$"] floating enable 
 for_window [title="^calcurse$"] floating enable 
 for_window [class="surf"] floating enable 
-for_window [title="^vdev$"] floating enable
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6

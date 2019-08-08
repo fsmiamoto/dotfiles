@@ -44,9 +44,9 @@ alias gitps="git push"
 alias gitpl="git pull"
 alias gitl="git log"
 
-alias tmuxa="tmux attach-session"
-alias tmuxks="tmux kill-session"
-alias tmuxksv="tmux kill-server"
+alias tma="tmux attach-session"
+alias tmks="tmux kill-session"
+alias tmksv="tmux kill-server"
 
 alias i3c="$EDITOR ~/.config/i3/config"
 alias vimc="$EDITOR ~/.vimrc"
@@ -54,8 +54,10 @@ alias pbc="$EDITOR ~/.config/polybar/config"
 alias xrc="$EDITOR ~/.Xresources"
 alias bsc="$EDITOR ~/.bashrc"
 alias zshc="$EDITOR ~/.zshrc"
-alias tmuxc="$EDITOR ~/.tmux.conf"
+alias tmc="$EDITOR ~/.tmux.conf"
             
+alias src="source $HOME/.zshrc"
+
 # Removes all letters with marks
 alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
 

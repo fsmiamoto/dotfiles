@@ -7,7 +7,7 @@
   "suggest.triggerAfterInsertEnter": true,
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],
-  "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescript", "typescriptreact"],
+  "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescriptreact"],
   "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
   "eslint.autoFixOnSave": true,
   "languageserver": {

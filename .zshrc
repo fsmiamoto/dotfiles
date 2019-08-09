@@ -37,7 +37,7 @@ alias gitc="git commit -m"
 alias gitck="git checkout"
 alias gitr="git remote"
 alias gita="git add"
-alias gitf="git fetch"
+alias gitf="git fetch --all"
 alias gits="git status"
 alias gitst="git stash"
 alias gitps="git push"
@@ -45,6 +45,8 @@ alias gitpl="git pull"
 alias gitl="git log"
 
 alias tma="tmux attach-session"
+alias tmn="tmux new-session"
+alias tmls="tmux ls"
 alias tmks="tmux kill-session"
 alias tmksv="tmux kill-server"
 
@@ -103,7 +105,7 @@ dev(){
     selected_project=$(find $project_dir -maxdepth 1 -type d -printf '%f\n' | sed -n '2,$p'| fzf --color=16  --prompt='Choose a project: ')
 
     if [ -n "$selected_project" ]; then
-        tmux new-session -c "$project_dir/$selected_project" "ide && $EDITOR ."
+        tmux new-session -s $(echo "$selected_project" | tr \. -) -c "$project_dir/$selected_project" "ide && $EDITOR ."
     fi
 }
 

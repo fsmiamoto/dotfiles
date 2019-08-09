@@ -30,6 +30,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'morhetz/gruvbox'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jparise/vim-graphql'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'
@@ -57,6 +58,9 @@ set autoread
 
 set noswapfile
 set nobackup
+set nowritebackup
+
+set shortmess+=c
 
 set mouse=a
 

@@ -32,6 +32,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jparise/vim-graphql'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'
 " Plug 'w0rp/ale'
@@ -87,6 +88,7 @@ map <C-s> :w<CR>
 
 " Search for files
 map <leader>f :Files<CR>
+map <leader>a :Ag 
 
 " Shortcuts for fugitive
 map <leader>gf :GFiles<CR>
@@ -96,18 +98,18 @@ map <leader>gw :Gwrite<CR>
 map <leader>gc :Gcommit<CR>
 
 " No highlight
-map <leader>h :noh<CR>
+map <leader>q :noh<CR>
 
 " Reload vimrc
 map <leader>r :source $HOME/.vimrc<CR>
 
 " Move lines up and down
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
+nnoremap <C-A-j> :m .+1<CR>==
+nnoremap <C-A-k> :m .-2<CR>==
+inoremap <C-A-j> <Esc>:m .+1<CR>==gi
+inoremap <C-A-k> <Esc>:m .-2<CR>==gi
+vnoremap <C-A-j> :m '>+1<CR>gv=gv
+vnoremap <C-A-k> :m '<-2<CR>gv=gv
 
 " Putting the arrow keys to use
 nnoremap <Left> :bp<CR>
@@ -126,6 +128,10 @@ nmap <C-w><right> <C-w>>
 nmap <C-w><up> <C-w>+
 nmap <C-w><down> <C-w>-
 
+" Plug bindings
+nmap <leader>pi :PlugInstall<CR>
+nmap <leader>pu :PlugUpdate<CR>
+nmap <leader>pc :PlugClean<CR>
 
 " Plugin Configs
 
@@ -214,6 +220,7 @@ endfunction
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>rr :CocRestart<CR>
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -222,7 +229,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Navigate diagnostics
-nmap <silent> <leader>p <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>ee <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
 
 " Show list of errors

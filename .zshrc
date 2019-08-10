@@ -45,6 +45,7 @@ alias gitpl="git pull"
 alias gitl="git log"
 
 alias tma="tmux attach-session"
+alias tmd="tmux detach"
 alias tmn="tmux new-session"
 alias tmls="tmux ls"
 alias tmks="tmux kill-session"
@@ -97,16 +98,6 @@ clone(){
     PROJECT_DIR="$HOME/Dev"
     test  -n "$1" && cd $PROJECT_DIR && git clone $1
     echo "Missing repository URL"
-}
-
-dev(){
-    project_dir="$HOME/Dev"
-
-    selected_project=$(find $project_dir -maxdepth 1 -type d -printf '%f\n' | sed -n '2,$p'| fzf --color=16  --prompt='Choose a project: ')
-
-    if [ -n "$selected_project" ]; then
-        tmux new-session -s $(echo "$selected_project" | tr \. -) -c "$project_dir/$selected_project" "ide && $EDITOR ."
-    fi
 }
 
 # Starts one or multiple args as programs in background

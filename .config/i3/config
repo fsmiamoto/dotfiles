@@ -68,7 +68,7 @@ bindsym $mod+c exec $terminal -e calcurse
 
 # Rofi, app launcher
 bindsym $mod+d exec rofi -show drun -show-icons 
-bindsym $mod+Shift+d exec $terminal -e vdev
+bindsym $mod+Shift+d exec $terminal -e dev
 
 # Scratpatch
 bindsym $mod+slash move scratchpad

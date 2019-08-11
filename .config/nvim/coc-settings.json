@@ -10,6 +10,9 @@
   "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescriptreact"],
   "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
   "eslint.autoFixOnSave": true,
+  "python.jediEnabled": true,
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
   "languageserver": {
     "golang": {
       "command": "gopls",

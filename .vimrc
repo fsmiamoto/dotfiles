@@ -11,28 +11,29 @@ syntax on
 filetype plugin indent on 
 
 call plug#begin('~/.config/nvim/plugged')
-Plug 'junegunn/fzf.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'vim-airline/vim-airline'
-Plug 'rust-lang/rust.vim'
-Plug 'edkolev/tmuxline.vim'
-Plug 'sheerun/vim-polyglot'
-Plug 'dylanaraps/wal.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'mattn/emmet-vim'
-Plug 'leafgarland/typescript-vim'
 Plug 'chaoren/vim-wordmotion'
-Plug 'jiangmiao/auto-pairs'
-Plug 'morhetz/gruvbox'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'jparise/vim-graphql'
+Plug 'dylanaraps/wal.vim'
+Plug 'edkolev/tmuxline.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'jiangmiao/auto-pairs'
+Plug 'jparise/vim-graphql'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-slash'
+Plug 'leafgarland/typescript-vim'
+Plug 'mattn/emmet-vim'
+Plug 'morhetz/gruvbox'
+Plug 'mxw/vim-jsx'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'pangloss/vim-javascript'
+Plug 'rust-lang/rust.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'
 " Plug 'w0rp/ale'
@@ -220,7 +221,9 @@ endfunction
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
-nmap <leader>rr :CocRestart<CR>
+
+nmap <leader>cr :CocRestart<CR>
+nmap <leader>ci :CocInstall  
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -229,11 +232,12 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Navigate diagnostics
-nmap <silent> <leader>ee <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>w <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
 
 " Show list of errors
 nnoremap <silent> <leader>d :CocList diagnostics<CR>
+
 
 " Tmuxline
 let g:tmuxline_preset = {

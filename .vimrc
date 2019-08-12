@@ -167,6 +167,7 @@ let g:airline_mode_map = {
 let g:airline_skip_empty_sections = 1
 " Remove fileencoding section
 let g:airline_section_y = airline#section#create([])
+let g:airline_section_z = '%#__accent_bold#%{g:airline_symbols.linenr}%2l/%L'
 
 " Auto-pairs
 let g:AutoPairsFlyMode = 0
@@ -182,10 +183,9 @@ set cmdheight=2
 
 set updatetime=300
 
-" Use <tab> for trigger completion, completion confirm and snippet expand and jump.
+" Use <tab> for trigger completion, completion confirm.
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 
@@ -197,7 +197,8 @@ endfunction
 " Use <CR> to complete
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_next = '<CR>'
+let g:coc_snippet_confirm = '<CR>'
 
 " Tab to cycle through completion options
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"

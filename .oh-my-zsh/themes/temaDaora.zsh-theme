@@ -4,4 +4,5 @@ $: '
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg_bold[blue]%})%{$fg_bold[yellow]%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg_bold[green]%}*"
 

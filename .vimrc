@@ -34,6 +34,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-multiple-cursors'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'

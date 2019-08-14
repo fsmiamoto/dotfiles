@@ -34,6 +34,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
+Plug 'terryma/vim-multiple-cursors'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'
 " Plug 'w0rp/ale'
@@ -42,9 +43,15 @@ Plug 'vim-airline/vim-airline'
 " Plug 'deoplete-plugins/deoplete-go'
 call plug#end()
 
-set termguicolors
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+if (has("termguicolors"))
+    set termguicolors
+endif
+
 colorscheme gruvbox
 let g:airline_theme='gruvbox'
+set background=dark
 
 set hidden
 set number 
@@ -68,6 +75,7 @@ set mouse=a
 
 set wildmode=longest,list,full
 set wildmenu
+
 let mapleader=","
 
 set incsearch
@@ -165,6 +173,7 @@ let g:airline_mode_map = {
             \ ''     : 'V',
             \ }
 let g:airline_skip_empty_sections = 1
+
 " Remove fileencoding section
 let g:airline_section_y = airline#section#create([])
 let g:airline_section_z = '%#__accent_bold#%{g:airline_symbols.linenr}%2l/%L'

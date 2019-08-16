@@ -36,6 +36,7 @@ Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'daeyun/vim-matlab'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'deoplete-plugins/deoplete-jedi'
 " Plug 'w0rp/ale'
@@ -259,6 +260,10 @@ let g:tmuxline_preset = {
       \'y'    : '%m/%d',
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
+
+" vim-matlab
+let g:matlab_auto_mappings = 0
+let g:matlab_server_launcher = 'tmux'
 
 " File based changes
 autocmd FileType javascript     setlocal shiftwidth=2 softtabstop

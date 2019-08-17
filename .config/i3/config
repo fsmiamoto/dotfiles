@@ -31,6 +31,8 @@ floating_modifier $mod
 # Polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh
 
+exec_always --no-startup-id .scripts/notify-cron
+
 ###### Key bindings ######
 
 # Kill window

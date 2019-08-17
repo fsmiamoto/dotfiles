@@ -3,7 +3,7 @@
     frame_color = "#e6e0e2"
     
     # Font
-    font = Inconsolata 18
+    font = Inconsolata 16
     word_wrap = yes 
     ignore_newline = no
     alignment = left # left, center or right

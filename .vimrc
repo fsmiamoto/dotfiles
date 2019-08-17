@@ -21,6 +21,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'jparise/vim-graphql'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-slash'
+Plug 'junegunn/vim-easy-align'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
@@ -148,6 +149,14 @@ nmap <leader>pc :PlugClean<CR>
 
 let g:javascript_plugin_jsdoc = 1
 
+" EasyAlign 
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
 " Airline
 let g:airline#extensions#tabline#enabled = 1 " Show buffers as tabs
 let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -190,7 +199,7 @@ map <F2> :NERDTreeToggle<CR>
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni']
 
-set cmdheight=2
+set cmdheight=1
 
 set updatetime=300
 
@@ -255,7 +264,7 @@ nnoremap <silent> <leader>d :CocList diagnostics<CR>
 let g:tmuxline_preset = {
       \'a'    : '#S',
       \'win' : '#I #W',
-      \'cwin'  : ['#I','#W'],
+      \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}'],
       \'x'    : '#(jp-date a)',
       \'y'    : '%m/%d',
       \'z'    : '%R',

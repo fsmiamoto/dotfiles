@@ -115,6 +115,9 @@ map <leader>q :noh<CR>
 " Reload vimrc
 map <leader>r :source $HOME/.vimrc<CR>
 
+" Run file using vim-run script
+map <silent><leader>rf :!vim-run %<CR><CR>
+
 " Move lines up and down
 nnoremap <C-A-j> :m .+1<CR>==
 nnoremap <C-A-k> :m .-2<CR>==

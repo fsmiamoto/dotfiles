@@ -48,6 +48,7 @@ alias gitps="git push"
 alias gitpl="git pull"
 alias gitl="git log"
 
+alias tm="tmux"
 alias tma="tmux attach-session"
 alias tmd="tmux detach"
 alias tmn="tmux new-session"

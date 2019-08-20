@@ -71,6 +71,12 @@ alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aA
 
 ######  Functions #######
 
+# Auto ls when cd'ing
+function chpwd(){
+    emulate -L zsh
+    exa --group-directories-first
+}
+
 # Creates a directory and cd's into it
 mkd() { 
     mkdir $1 && cd $1 

@@ -109,6 +109,9 @@ map <leader>L :Lines<CR>
 " Search for mappings
 map <leader>m :Maps<CR>
 
+" Search for filetypes
+map <leader>ft :Filetypes<CR>
+
 " Shortcuts for fugitive
 map <leader>gf :GFiles<CR>
 map <leader>gs :Gstatus<CR>

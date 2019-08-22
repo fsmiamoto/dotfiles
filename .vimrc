@@ -102,6 +102,13 @@ map <C-s> :w<CR>
 map <leader>f :Files<CR>
 map <leader>a :Ag 
 
+" Search for lines
+map <leader>l :BLines<CR>
+map <leader>L :Lines<CR>
+
+" Search for mappings
+map <leader>m :Maps<CR>
+
 " Shortcuts for fugitive
 map <leader>gf :GFiles<CR>
 map <leader>gs :Gstatus<CR>
@@ -311,5 +318,3 @@ if has("autocmd") && exists("+omnifunc")
                 \		setlocal omnifunc=syntaxcomplete#Complete |
                 \	endif
 endif
-
-

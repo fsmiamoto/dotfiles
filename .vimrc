@@ -277,6 +277,28 @@ let g:tmuxline_preset = {
 let g:matlab_auto_mappings = 0
 let g:matlab_server_launcher = 'tmux'
 
+" fzf
+
+" Preview window
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+" Colors
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 " File based changes
 autocmd FileType javascript     setlocal shiftwidth=2 softtabstop
 autocmd Filetype typescript     setlocal shiftwidth=2 softtabstop
@@ -289,3 +311,5 @@ if has("autocmd") && exists("+omnifunc")
                 \		setlocal omnifunc=syntaxcomplete#Complete |
                 \	endif
 endif
+
+

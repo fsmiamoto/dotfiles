@@ -13,15 +13,17 @@ filetype plugin indent on
 call plug#begin('~/.config/nvim/plugged')
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'daeyun/vim-matlab'
 Plug 'dylanaraps/wal.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'heavenshell/vim-jsdoc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'jiangmiao/auto-pairs'
 Plug 'jparise/vim-graphql'
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/vim-slash'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
@@ -31,19 +33,12 @@ Plug 'pangloss/vim-javascript'
 Plug 'rust-lang/rust.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'daeyun/vim-matlab'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
-" Plug 'deoplete-plugins/deoplete-jedi'
-" Plug 'w0rp/ale'
-" Plug 'ervandew/supertab'
-" Plug 'Shougo/neco-syntax'
-" Plug 'deoplete-plugins/deoplete-go'
 call plug#end()
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -110,7 +105,7 @@ map <leader>L :Lines<CR>
 map <leader>m :Maps<CR>
 
 " Search for filetypes
-map <leader>ft :Filetypes<CR>
+map <leader>t :Filetypes<CR>
 
 " Shortcuts for fugitive
 map <leader>gf :GFiles<CR>
@@ -137,8 +132,8 @@ vnoremap <C-A-j> :m '>+1<CR>gv=gv
 vnoremap <C-A-k> :m '<-2<CR>gv=gv
 
 " Putting the arrow keys to use
-nnoremap <Left> :bp<CR>
-nnoremap <Right> :bn<CR>
+nnoremap <C-Left> :bp<CR>
+nnoremap <C-Right> :bn<CR>
 
 " Close buffer
 map <C-q> :bd<CR>

@@ -5,6 +5,7 @@
   "suggest.enablePreview": true,
   "suggest.floatEnable": true,
   "suggest.triggerAfterInsertEnter": true,
+  "coc.source.ultisnips.enable": true,
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],
   "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescriptreact"],

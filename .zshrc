@@ -111,6 +111,17 @@ clone(){
     echo "Missing repository URL"
 }
 
+# Select a Go Project
+godev(){
+    GO_DEV_DIR="$HOME/go/src/github.com/fsmiamoto/"
+    selected_project=$(ls $GO_DEV_DIR | fzf --color=16 --preview='' --prompt='Choose a Go project: ')
+    if [ -n "$selected_project" ]; then
+        # Substitutes . for - on selected_project
+        session_name=$(echo $selected_project | tr \. - )
+        tmux new-session -A -s "$session_name" -c "$GO_DEV_DIR/$selected_project" 
+    fi
+}
+
 # Starts one or multiple args as programs in background
 background() {
   for ((i=2;i<=$#;i++)); do
@@ -166,5 +177,5 @@ ialias vim="nvim"
 ialias ls="exa"
 ialias l="exa -l"
 ialias grep="grep --color=auto"
-ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
+ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"

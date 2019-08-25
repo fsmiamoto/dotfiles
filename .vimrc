@@ -203,6 +203,12 @@ let g:AutoPairsFlyMode = 0
 " NERDTree
 map <F2> :NERDTreeToggle<CR>
 
+"vim-go
+let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save     
+let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor     
+let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
+let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
+
 " COC
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni']

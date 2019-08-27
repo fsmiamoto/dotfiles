@@ -48,6 +48,9 @@ if (has("termguicolors"))
 endif
 
 colorscheme gruvbox
+let g:gruvbox_contrast_dark="hard"
+let g:gruvbox_italic=1
+let g:gruvbox_hls_cursor="purple"
 let g:airline_theme='gruvbox'
 set background=dark
 

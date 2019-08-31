@@ -34,6 +34,7 @@ alias trt="transmission-remote-cli"
 alias pyenv="source env/bin/activate"
 
 alias pac="sudo pacman"
+alias paci="sudo pacman -S"
 alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 

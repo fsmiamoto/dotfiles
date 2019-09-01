@@ -1,14 +1,14 @@
 
 " ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗ *
 " ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
-" ██║   ██║██║██╔████╔██║██████╔╝██║     
-" ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║     
+" ██║   ██║██║██╔████╔██║██████╔╝██║
+" ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
 "  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
 "
 
 syntax on
-filetype plugin indent on 
+filetype plugin indent on
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'chaoren/vim-wordmotion'
@@ -55,7 +55,7 @@ let g:airline_theme='gruvbox'
 set background=dark
 
 set hidden
-set number 
+set number
 set relativenumber
 
 set ai
@@ -98,7 +98,7 @@ map <C-s> :w<CR>
 
 " Search for files
 map <leader>f :Files<CR>
-map <leader>a :Ag 
+map <leader>a :Ag
 
 " Search for lines
 map <leader>l :BLines<CR>
@@ -160,7 +160,7 @@ nmap <leader>pc :PlugClean<CR>
 
 let g:javascript_plugin_jsdoc = 1
 
-" EasyAlign 
+" EasyAlign
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
@@ -198,7 +198,7 @@ let g:airline_skip_empty_sections = 1
 
 " Remove fileencoding section
 let g:airline_section_y = airline#section#create([])
-let g:airline_section_z = '%#__accent_bold#%{g:airline_symbols.linenr}%2l/%L'
+let g:airline_section_z = 'ℓ %2l/%L'
 
 " Auto-pairs
 let g:AutoPairsFlyMode = 0
@@ -207,8 +207,8 @@ let g:AutoPairsFlyMode = 0
 map <F2> :NERDTreeToggle<CR>
 
 "vim-go
-let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save     
-let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor     
+let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
+let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
@@ -261,7 +261,7 @@ endfunction
 nmap <leader>rn <Plug>(coc-rename)
 
 nmap <leader>cr :CocRestart<CR>
-nmap <leader>ci :CocInstall  
+nmap <leader>ci :CocInstall
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)

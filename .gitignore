@@ -47,4 +47,5 @@
 !.config/zathura/*
 
 !.config/redshift.conf
+!.config/mimeapps.list
 

@@ -39,6 +39,7 @@ alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 
 alias gitc="git commit -m"
+alias gitC="git add -A && git commit -m"
 alias gitck="git checkout"
 alias gitr="git remote"
 alias gita="git add"

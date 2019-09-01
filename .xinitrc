@@ -31,6 +31,9 @@ redshift &
 # Unclutter for hiding cursor when idle
 unclutter &
 
+# Start MPD
+mpd &
+
 # Initiate i3
 exec dbus-launch i3
 

@@ -1,5 +1,6 @@
 # Enviroment variables
 export TERMINAL=st
+export TERM=st-256color
 export EDITOR=nvim
 export BROWSER=firefox
 export FILE=ranger

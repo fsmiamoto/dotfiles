@@ -17,12 +17,12 @@ mons -e right
 wal -R
 
 # Network Manager Applet
-nm-applet & 
+nm-applet &
 
 # Compton for transparency
 compton -b &
 
-# Transmisssion 
+# Transmisssion
 transmission-daemon &
 
 # Redshift

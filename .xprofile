@@ -1,4 +1,4 @@
-[ -f "$HOME/.profile" ] && source "$HOME/.profile" 
+[ -f "$HOME/.profile" ] && source "$HOME/.profile"
 
 export GTK_IM_MODULE="scim"
 export QT_IM_MODULE="scim"

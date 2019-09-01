@@ -1,10 +1,10 @@
 # ███████╗███████╗██╗  ██╗██████╗  ██████╗
 # ╚══███╔╝██╔════╝██║  ██║██╔══██╗██╔════╝
-#   ███╔╝ ███████╗███████║██████╔╝██║     
-#  ███╔╝  ╚════██║██╔══██║██╔══██╗██║     
+#   ███╔╝ ███████╗███████║██████╔╝██║
+#  ███╔╝  ╚════██║██╔══██║██╔══██╗██║
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
-                                        
+
 # Path to your oh-my-zsh installation.
 export ZSH="/home/shigueo/.oh-my-zsh"
 
@@ -64,11 +64,11 @@ alias xrc="$EDITOR ~/.Xresources"
 alias bsc="$EDITOR ~/.bashrc"
 alias zshc="$EDITOR ~/.zshrc"
 alias tmc="$EDITOR ~/.tmux.conf"
-            
+
 alias src="source $HOME/.zshrc"
 
 # Removes all letters with marks
-alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/'' 
+alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/''
 
 ######  Functions #######
 
@@ -79,8 +79,8 @@ function chpwd(){
 }
 
 # Creates a directory and cd's into it
-mkd() { 
-    mkdir $1 && cd $1 
+mkd() {
+    mkdir $1 && cd $1
 }
 
 # Lists my config files and opens it on $EDITOR
@@ -101,7 +101,7 @@ get-thumbnail(){
 anime(){
     anime_dir="$HOME/Video/Anime"
     choosen_anime=$(find "$anime_dir/" | cut -d / -f 6 | uniq | fzf --color=16 --prompt='Choose an Anime: ')
-    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf  --prompt='Choose an Episode: ') 
+    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf  --prompt='Choose an Episode: ')
     mpv "$anime_dir/$choosen_anime/$choosen_episode" & disown;
     exit
 }
@@ -119,7 +119,7 @@ godev(){
     if [ -n "$selected_project" ]; then
         # Substitutes . for - on selected_project
         session_name=$(echo $selected_project | tr \. - )
-        tmux new-session -A -s "$session_name" -c "$GO_DEV_DIR/$selected_project" 
+        tmux new-session -A -s "$session_name" -c "$GO_DEV_DIR/$selected_project"
     fi
 }
 

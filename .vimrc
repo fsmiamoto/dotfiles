@@ -59,15 +59,30 @@ highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=steelblue
 set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 
+" Allows buffer switching w/o saving
 set hidden
+
+" Line numbering
 set number
 set relativenumber
 
-set ai
-set ci
+" Allow for cursor beyond last character
+set virtualedit=onemore
+" Store a ton of history (default is 20)
+set history=1000
+
+set splitright
+set splitbelow
+
+" Spaces and not tabs
 set expandtab
+" Use 4 spaces
 set shiftwidth=4
 set tabstop=4
+set softtabstop=4
+
+set ai
+set ci
 set sm
 set autoread
 
@@ -319,9 +334,8 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " File based changes
-autocmd FileType javascript     setlocal shiftwidth=2 softtabstop
-autocmd Filetype typescript     setlocal shiftwidth=2 softtabstop
-autocmd Filetype typescript.tsx setlocal shiftwidth=2 softtabstop
+autocmd FileType typescript, typescript.jsx,javascript,html setlocal shiftwidth=2 softtabstop=2
+autocmd FileType c,cpp,java,go,php,vim,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
 
 " Enable omni completion
 if has("autocmd") && exists("+omnifunc")
@@ -330,3 +344,16 @@ if has("autocmd") && exists("+omnifunc")
                 \		setlocal omnifunc=syntaxcomplete#Complete |
                 \	endif
 endif
+
+" Credit to github.com/spf13
+function! StripTrailingWhitespace()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " do the business:
+    %s/\s\+$//e
+    " clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction

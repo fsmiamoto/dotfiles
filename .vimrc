@@ -54,6 +54,11 @@ let g:gruvbox_hls_cursor="purple"
 let g:airline_theme='gruvbox'
 set background=dark
 
+" Underscore cursor
+highlight Cursor guifg=white guibg=black
+highlight iCursor guifg=white guibg=steelblue
+set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
+
 set hidden
 set number
 set relativenumber

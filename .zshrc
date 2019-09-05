@@ -14,11 +14,17 @@ plugins=(git zsh-syntax-highlighting zsh-vimto zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# PyWal colors
+source $HOME/.cache/wal/colors.sh
 
+# FZF 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
+
+export VIMTO_COLOR_NORMAL_TEXT=$foreground
+export VIMTO_COLOR_NORMAL_BACKGROUND=$background
 
 bindkey '^e' autosuggest-accept
 

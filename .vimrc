@@ -12,6 +12,7 @@ filetype plugin indent on
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'chaoren/vim-wordmotion'
+Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'daeyun/vim-matlab'
 Plug 'dylanaraps/wal.vim'
@@ -47,11 +48,11 @@ if (has("termguicolors"))
     set termguicolors
 endif
 
-colorscheme gruvbox
+colorscheme base16-tomorrow-night
 let g:gruvbox_contrast_dark="hard"
 let g:gruvbox_italic=1
 let g:gruvbox_hls_cursor="purple"
-let g:airline_theme='gruvbox'
+let g:airline_theme='base16_grayscale'
 set background=dark
 
 " Underscore cursor
@@ -336,6 +337,8 @@ let g:fzf_colors =
 " File based changes
 autocmd FileType typescript, typescript.jsx,javascript,html setlocal shiftwidth=2 softtabstop=2
 autocmd FileType c,cpp,java,go,php,vim,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+
+autocmd FileType go nmap <leader>d :GoDoc<CR>
 
 " Enable omni completion
 if has("autocmd") && exists("+omnifunc")

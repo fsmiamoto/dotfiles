@@ -17,7 +17,7 @@ source $ZSH/oh-my-zsh.sh
 # PyWal colors
 source $HOME/.cache/wal/colors.sh
 
-# FZF 
+# FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
@@ -187,3 +187,4 @@ ialias l="exa -l"
 ialias grep="grep --color=auto"
 ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
+

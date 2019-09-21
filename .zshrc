@@ -26,7 +26,20 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 export VIMTO_COLOR_NORMAL_TEXT=$foreground
 export VIMTO_COLOR_NORMAL_BACKGROUND=$background
 
+# Better autocompletion
+autoload -U compinit
+zmodload zsh/complist
+zstyle ":completion:*" menu select
+compinit
+
+export KEYTIMEOUT=1
+
 bindkey '^e' autosuggest-accept
+
+# <C-w> to edit line in editor
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^w' edit-command-line
 
 ## Aliases
 alias clip="xclip -selection clipboard"

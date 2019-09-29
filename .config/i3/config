@@ -45,7 +45,7 @@ bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 bindsym $mod+p exec --no-startup-id .scripts/plumber
 
 # Ranger
-bindsym $mod+e exec --no-startup-id $terminal -e ranger
+bindsym $mod+e exec --no-startup-id $terminal -e $FILE
 # Lock screen
 bindsym $mod+Shift+e exec --no-startup-id $terminal -e neomutt
 
@@ -213,6 +213,7 @@ for_window [class="matplotlib"] floating enable
 for_window [class="GNU Octave"] floating enable 
 for_window [title="pulsemixer"] floating enable 
 for_window [title="^ranger$"] floating enable 
+for_window [title="^lf$"] floating enable 
 for_window [title="^octave-cli$"] floating enable 
 for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable

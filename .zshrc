@@ -118,14 +118,6 @@ get-thumbnail(){
     ffmpeg  -itsoffset -105 -i $1 -vcodec mjpeg -vframes 1 -an -f rawvideo -s 300x300 $2;
 }
 
-anime(){
-    anime_dir="$HOME/Video/Anime"
-    choosen_anime=$(find "$anime_dir/" | cut -d / -f 6 | uniq | fzf --color=16 --prompt='Choose an Anime: ')
-    choosen_episode=$(find "$anime_dir/$choosen_anime/" -type f | sed "s/^.*\/(.*)$/\1/g"| sort | fzf  --prompt='Choose an Episode: ')
-    mpv "$anime_dir/$choosen_anime/$choosen_episode" & disown;
-    exit
-}
-
 clone(){
     PROJECT_DIR="$HOME/Dev"
     test  -n "$1" && cd $PROJECT_DIR > /dev/null && git clone $1

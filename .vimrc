@@ -82,8 +82,9 @@ set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 
-set ai
-set ci
+set autoindent
+set cindent
+set smartindent
 set sm
 set autoread
 
@@ -120,6 +121,9 @@ map <C-s> :w<CR>
 " Search for files
 map <leader>f :Files<CR>
 map <leader>a :Ag
+
+" Search for buffers
+map <leader>b :Buffers<CR>
 
 " Search for lines
 map <leader>l :BLines<CR>
@@ -235,7 +239,7 @@ let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
 " COC
 
-let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni']
+let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni', 'coc-rls']
 
 set cmdheight=1
 
@@ -335,8 +339,8 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " File based changes
-autocmd FileType typescript, typescript.jsx,javascript,html setlocal shiftwidth=2 softtabstop=2
-autocmd FileType c,cpp,java,go,php,vim,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
+autocmd FileType c,cpp,java,php,vim,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
 
 autocmd FileType go nmap <leader>d :GoDoc<CR>
 

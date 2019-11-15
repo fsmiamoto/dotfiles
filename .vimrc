@@ -257,7 +257,7 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <CR> to complete
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 
 let g:coc_snippet_next = '<CR>'
 let g:coc_snippet_confirm = '<CR>'

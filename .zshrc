@@ -42,6 +42,8 @@ zle -N edit-command-line
 bindkey '^w' edit-command-line
 
 ## Aliases
+alias c='clear'
+alias s='startx'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'

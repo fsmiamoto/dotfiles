@@ -111,6 +111,13 @@ set fileencoding=utf-8
 nnoremap ; :
 vnoremap ; :
 
+" Yank until the end of line
+nmap Y y$
+
+" Magic mode
+nnoremap / /\v
+vnoremap / /\v
+
 " Copy and paste
 map <C-c> "+y
 map <C-p> "+p

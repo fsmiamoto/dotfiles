@@ -8,7 +8,7 @@
   "coc.source.ultisnips.enable": true,
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],
-  "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "typescriptreact", "typescript"],
+  "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "javascript", "javascriptreact","typescriptreact", "typescript"],
   "python.jediEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

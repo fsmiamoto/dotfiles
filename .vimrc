@@ -111,6 +111,13 @@ set fileencoding=utf-8
 nnoremap ; :
 vnoremap ; :
 
+cnoremap <C-e> <End>
+cnoremap <C-w> <Home>
+
+" Change buffers
+nnoremap <Tab> :bn<CR>
+nnoremap <S-Tab> :bn<CR>
+
 " Yank until the end of line
 nmap Y y$
 
@@ -159,16 +166,12 @@ map <leader>r :source $HOME/.vimrc<CR>
 map <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
 
 " Move lines up and down
-nnoremap <C-A-j> :m .+1<CR>==
-nnoremap <C-A-k> :m .-2<CR>==
-inoremap <C-A-j> <Esc>:m .+1<CR>==gi
-inoremap <C-A-k> <Esc>:m .-2<CR>==gi
-vnoremap <C-A-j> :m '>+1<CR>gv=gv
-vnoremap <C-A-k> :m '<-2<CR>gv=gv
-
-" Putting the arrow keys to use
-nnoremap <C-Left> :bp<CR>
-nnoremap <C-Right> :bn<CR>
+nnoremap <C-Down> :m .+1<CR>==
+nnoremap <C-Up> :m .-2<CR>==
+inoremap <C-Down> <Esc>:m .+1<CR>==gi
+inoremap <C-Up> <Esc>:m .-2<CR>==gi
+vnoremap <C-Down> :m '>+1<CR>gv=gv
+vnoremap <C-Up> :m '<-2<CR>gv=gv
 
 " Close buffer
 map <C-q> :bd<CR>

@@ -51,6 +51,7 @@ alias arduino="arduino-cli"
 alias sv="sudo $EDITOR"
 alias v="$EDITOR"
 alias trt="transmission-remote-cli"
+alias v.="$EDITOR ."
 
 alias pyenv="source env/bin/activate"
 

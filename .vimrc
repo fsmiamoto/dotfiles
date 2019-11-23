@@ -233,7 +233,7 @@ let g:airline_skip_empty_sections = 1
 
 " Remove fileencoding section
 let g:airline_section_y = airline#section#create([])
-let g:airline_section_z = 'ℓ %2l/%L'
+let g:airline_section_z = 'ℓ %2l/%L c %2c'
 
 " Auto-pairs
 let g:AutoPairsFlyMode = 0
@@ -247,34 +247,22 @@ let g:go_auto_type_info = 1           " Automatically get signature/type info fo
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
-" COC
 
-let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni', 'coc-rls']
+" COC
+let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni', 'coc-rls', 'coc-snippets']
 
 set cmdheight=1
-
 set updatetime=300
-
-" Use <tab> for trigger completion, completion confirm.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
 
 " Use <CR> to complete
 inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 
-let g:coc_snippet_next = '<CR>'
-let g:coc_snippet_confirm = '<CR>'
-
 " Tab to cycle through completion options
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+imap <silent> <C-w> <Plug>(coc-snippets-expand-jump)
+let g:coc_snippet_next = '<C-a>'
 
 " Close preview window on leaving Insert Mode
 autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
@@ -321,12 +309,6 @@ let g:tmuxline_preset = {
       \'y'    : '%m/%d',
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
-
-" vim-matlab
-let g:matlab_auto_mappings = 0
-let g:matlab_server_launcher = 'tmux'
-
-" fzf
 
 " Preview window
 command! -bang -nargs=? -complete=dir Files

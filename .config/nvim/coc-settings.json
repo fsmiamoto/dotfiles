@@ -5,6 +5,7 @@
   "suggest.enablePreview": true,
   "suggest.floatEnable": true,
   "suggest.triggerAfterInsertEnter": true,
+  "snippets.ultisnips.directories": ["UltiSnips", "gosnippets/UltiSnips"],
   "coc.source.ultisnips.enable": true,
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],

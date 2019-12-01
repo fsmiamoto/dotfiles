@@ -140,6 +140,13 @@ godev(){
     fi
 }
 
+ide(){
+    tmux split-window -h -p 35
+    tmux split-window -v -p 60
+    tmux select-pane -L
+    $EDITOR .
+}
+
 # Starts one or multiple args as programs in background
 background() {
   for ((i=2;i<=$#;i++)); do

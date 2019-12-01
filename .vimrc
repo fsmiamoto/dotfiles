@@ -1,4 +1,3 @@
-
 " ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗ *
 " ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
 " ██║   ██║██║██╔████╔██║██████╔╝██║
@@ -6,6 +5,7 @@
 "  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
 "
+echo "おかえりなさい！"
 
 syntax on
 filetype plugin indent on
@@ -67,8 +67,12 @@ set hidden
 set number
 set relativenumber
 
+" Wrap lines that don't fit
+set wrap
+
 " Allow for cursor beyond last character
 set virtualedit=onemore
+
 " Store a ton of history (default is 20)
 set history=1000
 
@@ -77,6 +81,7 @@ set splitbelow
 
 " Spaces and not tabs
 set expandtab
+
 " Use 4 spaces
 set shiftwidth=4
 set tabstop=4
@@ -111,12 +116,18 @@ set fileencoding=utf-8
 nnoremap ; :
 vnoremap ; :
 
+" Open fold
+nnoremap <space> za
+
 cnoremap <C-e> <End>
 cnoremap <C-w> <Home>
 
 " Change buffers
 nnoremap <Tab> :bn<CR>
 nnoremap <S-Tab> :bn<CR>
+
+" Make current word uppercase
+inoremap <C-u> <Esc>viWgUEa
 
 " Yank until the end of line
 nmap Y y$
@@ -166,12 +177,11 @@ map <leader>r :source $HOME/.vimrc<CR>
 map <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
 
 " Move lines up and down
-nnoremap <C-Down> :m .+1<CR>==
-nnoremap <C-Up> :m .-2<CR>==
-inoremap <C-Down> <Esc>:m .+1<CR>==gi
-inoremap <C-Up> <Esc>:m .-2<CR>==gi
-vnoremap <C-Down> :m '>+1<CR>gv=gv
-vnoremap <C-Up> :m '<-2<CR>gv=gv
+nnoremap - :m .+1<CR>==
+nnoremap _ :m .-2<CR>==
+
+vnoremap - :m '>+1<CR>gv=gv
+vnoremap _ :m '<-2<CR>gv=gv
 
 " Close buffer
 map <C-q> :bd<CR>

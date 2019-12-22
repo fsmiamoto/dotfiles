@@ -29,3 +29,4 @@ application/xhtml+xml=firefox.desktop;
 application/x-extension-xhtml=firefox.desktop;
 application/x-extension-xht=firefox.desktop;
 text/x-python=wine-extension-txt.desktop;
+text/x-matlab=sublime_text.desktop;nvim.desktop;

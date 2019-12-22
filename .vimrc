@@ -18,15 +18,13 @@ Plug 'daeyun/vim-matlab'
 Plug 'dylanaraps/wal.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'heavenshell/vim-jsdoc'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'godoctor/godoctor.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'jparise/vim-graphql'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
 Plug 'leafgarland/typescript-vim'
-Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -49,10 +47,7 @@ if (has("termguicolors"))
 endif
 
 colorscheme base16-tomorrow-night
-let g:gruvbox_contrast_dark="hard"
-let g:gruvbox_italic=1
-let g:gruvbox_hls_cursor="purple"
-let g:airline_theme='base16_grayscale'
+let g:airline_theme='base16'
 set background=dark
 
 " Underscore cursor
@@ -124,7 +119,7 @@ cnoremap <C-w> <Home>
 
 " Change buffers
 nnoremap <Tab> :bn<CR>
-nnoremap <S-Tab> :bn<CR>
+nnoremap <S-Tab> :bp<CR>
 
 " Make current word uppercase
 inoremap <C-u> <Esc>viWgUEa
@@ -137,44 +132,49 @@ nnoremap / /\v
 vnoremap / /\v
 
 " Copy and paste
-map <C-c> "+y
-map <C-p> "+p
+noremap <C-c> "+y
+noremap <C-p> "+p
 
 " Save the file
-map <C-s> :w<CR>
+noremap <C-s> :w<CR>
 
 " Search for files
-map <leader>f :Files<CR>
-map <leader>a :Ag
+noremap <leader>f :Files<CR>
+noremap <leader>a :Ag
 
 " Search for buffers
-map <leader>b :Buffers<CR>
+noremap <leader>b :Buffers<CR>
 
 " Search for lines
-map <leader>l :BLines<CR>
-map <leader>L :Lines<CR>
+noremap <leader>l :BLines<CR>
+noremap <leader>L :Lines<CR>
 
 " Search for mappings
-map <leader>m :Maps<CR>
+noremap <leader>m :Maps<CR>
 
 " Search for filetypes
-map <leader>t :Filetypes<CR>
+noremap <leader>t :Filetypes<CR>
 
 " Shortcuts for fugitive
-map <leader>gf :GFiles<CR>
-map <leader>gs :Gstatus<CR>
-map <leader>gd :Gvdiffsplit<CR>
-map <leader>gw :Gwrite<CR>
-map <leader>gc :Gcommit<CR>
+noremap <leader>gf :GFiles<CR>
+noremap <leader>gs :Gstatus<CR>
+noremap <leader>gd :Gvdiffsplit<CR>
+noremap <leader>gw :Gwrite<CR>
+noremap <leader>gc :Gcommit<CR>
+
+noremap <leader>d :GoDoc
+noremap <leader>db :GoDocBrowser
+noremap <leader>t :GoTest<CR>
+
 
 " No highlight
-map <leader>q :noh<CR>
+noremap <leader>q :noh<CR>
 
 " Reload vimrc
-map <leader>r :source $HOME/.vimrc<CR>
+noremap <leader>r :source $HOME/.vimrc<CR>
 
 " Run file using vim-run script, saves before.
-map <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
+noremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
 
 " Move lines up and down
 nnoremap - :m .+1<CR>==
@@ -184,11 +184,11 @@ vnoremap - :m '>+1<CR>gv=gv
 vnoremap _ :m '<-2<CR>gv=gv
 
 " Close buffer
-map <C-q> :bd<CR>
+noremap <C-q> :bd<CR>
 
 " Split window
-map <leader>ss :split<Return><C-w>w
-map <leader>sv :vsplit<Return><C-w>w
+noremap <leader>ss :split<Return><C-w>w
+noremap <leader>sv :vsplit<Return><C-w>w
 
 " Resize window
 nmap <C-w><left> <C-w><
@@ -249,7 +249,7 @@ let g:airline_section_z = 'ℓ %2l/%L c %2c'
 let g:AutoPairsFlyMode = 0
 
 " NERDTree
-map <F2> :NERDTreeToggle<CR>
+noremap <F2> :NERDTreeToggle<CR>
 
 "vim-go
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
@@ -259,7 +259,7 @@ let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
 
 " COC
-let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-eslint', 'coc-omni', 'coc-rls', 'coc-snippets']
+let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 
 set cmdheight=1
 set updatetime=300

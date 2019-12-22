@@ -11,7 +11,8 @@
 setxkbmap -option caps:escape
 
 # Set monitor layout
-mons -e right
+# mons -e right
+[ -f "$HOME/.screenlayout/main.sh" ] && source ~/.screenlayout/main.sh
 
 # Restore PyWal settings
 wal -R

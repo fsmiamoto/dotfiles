@@ -18,6 +18,10 @@ Colorscheme generated with PyWal
 ### Installing
 
 ```bash
+    # Clone the repo
+    $ git clone git@github.com/fsmiamoto/dotfiles ~/.dotfiles
+    $ cd ~/.dotfiles
+
     # Installs dotfiles with backup of current ones in $HOME/.dotfiles.backup
     $ make
 
@@ -32,4 +36,4 @@ Colorscheme generated with PyWal
 
 ### Todo's
 
-- Add command to make file to restore backed up files
+- Add command to Makefile for restoring backed up dotfiles

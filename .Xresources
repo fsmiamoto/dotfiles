@@ -1,6 +1,5 @@
-*.font:                      Inconsolata Nerd Font Mono:size=14
-*.alpha: 0.9 
+*.font:        Fira Code:size=12
+*.alpha:       0.9
 
-Xft.dpi: 120
 Xft.antialias: 1
-
+Xft.dpi: 120

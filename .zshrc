@@ -61,6 +61,7 @@ alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 
 alias gc="git commit -m"
+alias gco="git commit"
 alias gC="git add -A && git commit -m"
 alias gck="git checkout"
 alias gcb="git checkout -b"

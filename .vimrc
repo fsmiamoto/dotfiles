@@ -47,7 +47,7 @@ if (has("termguicolors"))
 endif
 
 colorscheme base16-tomorrow-night
-let g:airline_theme='base16'
+let g:airline_theme='nicer_tomorrow'
 set background=dark
 
 " Underscore cursor

@@ -316,7 +316,7 @@ let g:tmuxline_preset = {
       \'win' : '#I #W',
       \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}'],
       \'x'    : '#(jp-date a)',
-      \'y'    : '%m/%d',
+      \'y'    : '%m月%d日',
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
 

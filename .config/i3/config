@@ -1,37 +1,44 @@
-#  ██╗██████╗      ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗ 
-#  ██║╚════██╗    ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝ 
+#  ██╗██████╗      ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗
+#  ██║╚════██╗    ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝
 #  ██║ █████╔╝    ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
 #  ██║ ╚═══██╗    ██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
 #  ██║██████╔╝    ╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
 #  ╚═╝╚═════╝      ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
 
 ###### Definitions ######
-
-set $mod Mod4 
-set $terminal --no-startup-id st 
+set $mod Mod4
 
 font xft:Droid Sans 12
 
-default_border pixel 3 
-default_floating_border pixel 3 
+default_border pixel 3
+default_floating_border pixel 3
 
 focus_follows_mouse yes
 
 # Gaps
 set $innergap 12
-set $outergap 5 
-gaps inner $innergap 
-gaps outer $outergap 
+set $outergap 5
+gaps inner $innergap
+gaps outer $outergap
+
+# Workspace names
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws10 10
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
 
 ###### External programs ######
-
 # Polybar
 exec_always --no-startup-id .config/polybar/polybarstart.sh
-
-exec_always --no-startup-id .scripts/notify-cron
 
 ###### Key bindings ######
 
@@ -39,38 +46,37 @@ exec_always --no-startup-id .scripts/notify-cron
 bindsym $mod+q kill
 
 # Terminal
-bindsym $mod+Return exec $terminal
+bindsym $mod+Return exec $TERMINAL
+# Terminal in the same directory
 bindsym $mod+Shift+Return exec --no-startup-id .scripts/samedir
 
-bindsym $mod+p exec --no-startup-id .scripts/plumber
-
-# Ranger
-bindsym $mod+e exec --no-startup-id $terminal -e $FILE
-# Lock screen
-bindsym $mod+Shift+e exec --no-startup-id $terminal -e neomutt
+# File manager
+bindsym $mod+e exec --no-startup-id $TERMINAL -e $FILE
+# Email
+bindsym $mod+Shift+e exec --no-startup-id $TERMINAL -e neomutt
 
 # Web browser
-bindsym $mod+w exec firefox
+bindsym $mod+w exec $BROWSER
 # NetworkManager
-bindsym $mod+Shift+w exec --no-startup-id $terminal -e nmtui
+bindsym $mod+Shift+w exec --no-startup-id $TERMINAL -e nmtui
 
 # Calculator
-bindsym $mod+a exec --no-startup-id $terminal -e octave-cli -q 
+bindsym $mod+a exec --no-startup-id $TERMINAL -e octave-cli -q
 # Pulsemixer
-bindsym $mod+Shift+a exec --no-startup-id $terminal -e pulsemixer
+bindsym $mod+Shift+a exec --no-startup-id $TERMINAL -e pulsemixer
 
 # Options menu
 bindsym $mod+Escape exec .scripts/shut
 
 # ncmpcpp
-bindsym $mod+m exec  --no-startup-id $terminal -e ncmpcpp
+bindsym $mod+m exec  --no-startup-id $TERMINAL -e ncmpcpp
 
 # Calendar
-bindsym $mod+c exec $terminal -e calcurse
+bindsym $mod+c exec $TERMINAL -e calcurse
 
 # Rofi, app launcher
-bindsym $mod+d exec rofi -show drun -show-icons 
-bindsym $mod+Shift+d exec $terminal -e dev
+bindsym $mod+d exec rofi -show drun -show-icons
+bindsym $mod+Shift+d exec $TERMINAL -e dev
 
 # Scratpatch
 bindsym $mod+slash move scratchpad
@@ -91,20 +97,22 @@ bindsym Ctrl+Print exec --no-startup-id i3-scrot
 bindsym Print exec --no-startup-id flameshot gui
 
 # Audio related media keys
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +3%; exec pkill -RTMIN+10 i3blocks 
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -3%; exec pkill -RTMIN+10 i3blocks
-bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle; exec pkill -RTMIN+10
+bindsym XF86AudioRaiseVolume exec pulsemixer --change-volume +3; exec dunstify -r 95463 -i audio-volume " Volume: $(volume)"
+bindsym XF86AudioLowerVolume exec pulsemixer --change-volume -3; exec dunstify -r 95463 " Volume: $(volume)"
+bindsym XF86AudioMute exec pulsemixer --toggle-mute; exec dunstify -r 95463 " Volume: $(volume)"
+
+# FIXME
 bindsym XF86AudioNext exec notify-send "Woohoo!"
 bindsym XF86AudioPrev exec notify-send "Woohoo!"
 bindsym XF86AudioPlay exec notify-send "Woohoo!"
 
-# change focus
+# Change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
+# Alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -130,19 +138,7 @@ bindsym $mod+Shift+Tab focus mode_toggle
 bindsym $mod+Ctrl+Right workspace next
 bindsym $mod+Ctrl+Left workspace prev
 
-# Workspace names
-set $ws1 1
-set $ws2 2
-set $ws3 3
-set $ws4 4
-set $ws5 5:
-set $ws6 6:
-set $ws7 7:
-set $ws8 8:
-set $ws9 9
-set $ws10 10
-
-# switch to workspace
+# Switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
 bindsym $mod+3 workspace $ws3
@@ -154,7 +150,7 @@ bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws10
 
-# Move to another workspace 
+# Move to another workspace
 bindsym $mod+Shift+1 move container to workspace $ws1
 bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
@@ -167,10 +163,10 @@ bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
 
 # Resize window
-bindsym $mod+o  resize shrink width 10px or 10ppt
-bindsym $mod+i  resize grow height 10px or 10ppt
-bindsym $mod+u resize shrink height 10px or 10ppt
-bindsym $mod+y resize grow width 10px or 10ppt
+bindsym $mod+p resize shrink width 10px or 10ppt
+bindsym $mod+o resize grow height 10px or 10ppt
+bindsym $mod+i resize shrink height 10px or 10ppt
+bindsym $mod+u resize grow width 10px or 10ppt
 
 ###### Colors ######
 
@@ -208,18 +204,18 @@ client.background       $background
 for_window [urgent=latest] focus
 
 # Opens as floating window
-for_window [class="qutebrowser"] floating enable 
-for_window [class="matplotlib"] floating enable 
-for_window [class="GNU Octave"] floating enable 
-for_window [title="pulsemixer"] floating enable 
-for_window [title="^ranger$"] floating enable 
-for_window [title="^lf$"] floating enable 
-for_window [title="^octave-cli$"] floating enable 
+for_window [class="qutebrowser"] floating enable
+for_window [class="matplotlib"] floating enable
+for_window [class="GNU Octave"] floating enable
+for_window [title="pulsemixer"] floating enable
+for_window [title="^ranger$"] floating enable
+for_window [title="^lf$"] floating enable
+for_window [title="^octave-cli$"] floating enable
 for_window [class="Lightdm-settings"] floating enable
 for_window [title="MuseScore: Play Panel"] floating enable
-for_window [title="^ncmpcpp$"] floating enable 
-for_window [title="^calcurse$"] floating enable 
-for_window [class="surf"] floating enable 
+for_window [title="^ncmpcpp$"] floating enable
+for_window [title="^calcurse$"] floating enable
+for_window [class="surf"] floating enable
 
 # Move to other workspace
 for_window [class="Steam"] move to workspace number $ws6
@@ -232,7 +228,7 @@ for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="Firefox"] border none
 for_window [class="Chromium"] border none
 
-for_window [title="Steam - News"] floating enable border normal 
+for_window [title="Steam - News"] floating enable border normal
 for_window [title="フレンドリスト"] floating enable border normal
 
 for_window [class="GParted"] floating enable border normal

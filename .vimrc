@@ -20,12 +20,14 @@ set hidden
 set number
 set relativenumber
 
+set cmdheight=1
+
 set nowrap
 
 " Allow for cursor beyond last character
 set virtualedit=onemore
 
-" Show more lines below the last
+" Show more lines at top/bottom
 set scrolloff=3
 
 " Store a ton of history (default is 20)
@@ -44,7 +46,7 @@ set smartindent
 set breakindent
 
 set showmatch
-set updatetime=500
+set updatetime=300
 
 set autoread
 
@@ -92,7 +94,17 @@ nnoremap <silent> <S-Tab> :bp<CR>
 inoremap <C-u> <Esc>viWgUEa
 
 " Yank until the end of line
-nmap Y y$
+nnoremap Y y$
+
+" Easier to type
+nnoremap H ^
+nnoremap L $
+
+" Move to T-op
+nnoremap T H
+
+" Move to B-ottom
+nnoremap B L
 
 " Open help for the word under the cursor
 nnoremap <silent> <leader>h :<C-u>help <C-r><C-w><CR>
@@ -202,10 +214,6 @@ noremap <leader>gd :Gvdiffsplit<CR>
 noremap <leader>gw :Gwrite<CR>
 noremap <leader>gc :Gcommit<CR>
 
-noremap <leader>d :GoDoc
-noremap <leader>db :GoDocBrowser
-noremap <leader>t :GoTest<CR>
-
 " Run file using vim-run script, saves before.
 noremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
 
@@ -256,9 +264,6 @@ let g:airline_skip_empty_sections = 1
 let g:airline_section_y = airline#section#create([])
 let g:airline_section_z = 'ℓ %2l/%L c %2c'
 
-" Auto-pairs
-let g:AutoPairsFlyMode = 0
-
 " NERDTree
 noremap <F2> :NERDTreeToggle<CR>
 
@@ -268,12 +273,8 @@ let g:go_auto_type_info = 1           " Automatically get signature/type info fo
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
-
 " COC
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
-
-set cmdheight=1
-set updatetime=300
 
 " Use <CR> to complete
 inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"

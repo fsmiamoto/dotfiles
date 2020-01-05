@@ -38,12 +38,11 @@ zmodload zsh/complist
 zstyle ":completion:*" menu select
 compinit
 
-export KEYTIMEOUT=1
-
 # <C-w> to edit line in editor
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^w' edit-command-line
+
 
 ## Aliases
 alias c='clear'
@@ -142,6 +141,21 @@ ide(){
     tmux select-pane -L
     $EDITOR .
 }
+
+# Change directories with lf
+# Credit to Luke Smith
+lfcd(){
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ ! -f "$tmp" ]; then
+        return
+    fi
+    dir="$(cat "$tmp")"
+    rm -f "$tmp"
+    [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+}
+
+bindkey -s '^o' 'lfcd\n'
 
 # Expansion of aliases
 # Credit: https://blog.sebastian-daschner.com/entries/zsh-aliases

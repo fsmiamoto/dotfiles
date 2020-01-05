@@ -1,96 +1,63 @@
-" ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗ *
+" ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 " ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
 " ██║   ██║██║██╔████╔██║██████╔╝██║
 " ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
 "  ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "    ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
-"
-echo "おかえりなさい！"
 
 syntax on
 filetype plugin indent on
+set nocompatible
 
-call plug#begin('~/.config/nvim/plugged')
-Plug 'chaoren/vim-wordmotion'
-Plug 'chriskempson/base16-vim'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'daeyun/vim-matlab'
-Plug 'dylanaraps/wal.vim'
-Plug 'edkolev/tmuxline.vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'godoctor/godoctor.vim'
-Plug 'jiangmiao/auto-pairs'
-Plug 'jparise/vim-graphql'
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/vim-slash'
-Plug 'leafgarland/typescript-vim'
-Plug 'morhetz/gruvbox'
-Plug 'mxw/vim-jsx'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'pangloss/vim-javascript'
-Plug 'rust-lang/rust.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-call plug#end()
+set enc=utf-8
+set fileencoding=utf-8
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-
-if (has("termguicolors"))
-    set termguicolors
-endif
-
-colorscheme base16-tomorrow-night
-let g:airline_theme='nicer_tomorrow'
 set background=dark
-
-" Underscore cursor
-highlight Cursor guifg=white guibg=black
-highlight iCursor guifg=white guibg=steelblue
-set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 
 " Allows buffer switching w/o saving
 set hidden
 
-" Line numbering
 set number
 set relativenumber
 
-" Wrap lines that don't fit
-set wrap
+set nowrap
 
 " Allow for cursor beyond last character
 set virtualedit=onemore
 
+" Show more lines below the last
+set scrolloff=3
+
 " Store a ton of history (default is 20)
-set history=1000
+set history=2000
 
 set splitright
 set splitbelow
 
-" Spaces and not tabs
-set expandtab
-
-" Use 4 spaces
+" Indentation
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
-
 set autoindent
-set cindent
+set expandtab
 set smartindent
-set sm
+set breakindent
+
+set showmatch
+set updatetime=500
+
 set autoread
+
+" Folding
+set foldenable
+set foldcolumn=1
+set foldmarker=\ {{{,\ }}}
 
 set noswapfile
 set nobackup
 set nowritebackup
+
+set lazyredraw
 
 set shortmess+=c
 
@@ -99,14 +66,14 @@ set mouse=a
 set wildmode=longest,list,full
 set wildmenu
 
-let mapleader=","
-
+" Searching
 set incsearch
 set smartcase
 set ignorecase
+set hlsearch
 
-set enc=utf-8
-set fileencoding=utf-8
+" Basic Mappings
+let mapleader=","
 
 nnoremap ; :
 vnoremap ; :
@@ -118,14 +85,17 @@ cnoremap <C-e> <End>
 cnoremap <C-w> <Home>
 
 " Change buffers
-nnoremap <Tab> :bn<CR>
-nnoremap <S-Tab> :bp<CR>
+nnoremap <silent> <Tab> :bn<CR>
+nnoremap <silent> <S-Tab> :bp<CR>
 
 " Make current word uppercase
 inoremap <C-u> <Esc>viWgUEa
 
 " Yank until the end of line
 nmap Y y$
+
+" Open help for the word under the cursor
+nnoremap <silent> <leader>h :<C-u>help <C-r><C-w><CR>
 
 " Magic mode
 nnoremap / /\v
@@ -137,6 +107,76 @@ noremap <C-p> "+p
 
 " Save the file
 noremap <C-s> :w<CR>
+
+" Move lines up and down
+nnoremap - :m .+1<CR>==
+nnoremap _ :m .-2<CR>==
+
+vnoremap - :m '>+1<CR>gv=gv
+vnoremap _ :m '<-2<CR>gv=gv
+
+" No highlight
+nnoremap <Esc><Esc> :nohlsearch<CR>
+
+" Reload vimrc
+nnoremap <leader>r :source $HOME/.vimrc<CR>
+
+" Open vimrc on a vertical split
+nnoremap <leader>v :vsplit $MYVIMRC<CR>
+
+" Close buffer
+nnoremap <C-q> :bd<CR>
+
+" Split window
+noremap <leader>ss :split<Return><C-w>w
+noremap <leader>sv :vsplit<Return><C-w>w
+
+" Resize window
+nmap <C-w><left> <C-w><
+nmap <C-w><right> <C-w>>
+nmap <C-w><up> <C-w>+
+nmap <C-w><down> <C-w>-
+
+if (has("termguicolors"))
+    set termguicolors
+endif
+
+" Plugins
+call plug#begin()
+Plug 'chriskempson/base16-vim'
+Plug 'chaoren/vim-wordmotion'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'edkolev/tmuxline.vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/vim-slash'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sheerun/vim-polyglot'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Lazy-loaded
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go'}
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+Plug 'mxw/vim-jsx', {'for': 'javascript'}
+Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+call plug#end()
+
+" Theming
+colorscheme base16-tomorrow-night
+let g:airline_theme='nicer_tomorrow'
+
+" Underscore cursor
+highlight Cursor guifg=white guibg=black
+highlight iCursor guifg=white guibg=steelblue
+set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 
 " Search for files
 noremap <leader>f :Files<CR>
@@ -166,35 +206,8 @@ noremap <leader>d :GoDoc
 noremap <leader>db :GoDocBrowser
 noremap <leader>t :GoTest<CR>
 
-
-" No highlight
-noremap <leader>q :noh<CR>
-
-" Reload vimrc
-noremap <leader>r :source $HOME/.vimrc<CR>
-
 " Run file using vim-run script, saves before.
 noremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
-
-" Move lines up and down
-nnoremap - :m .+1<CR>==
-nnoremap _ :m .-2<CR>==
-
-vnoremap - :m '>+1<CR>gv=gv
-vnoremap _ :m '<-2<CR>gv=gv
-
-" Close buffer
-noremap <C-q> :bd<CR>
-
-" Split window
-noremap <leader>ss :split<Return><C-w>w
-noremap <leader>sv :vsplit<Return><C-w>w
-
-" Resize window
-nmap <C-w><left> <C-w><
-nmap <C-w><right> <C-w>>
-nmap <C-w><up> <C-w>+
-nmap <C-w><down> <C-w>-
 
 " Plug bindings
 nmap <leader>pi :PlugInstall<CR>
@@ -202,11 +215,9 @@ nmap <leader>pu :PlugUpdate<CR>
 nmap <leader>pc :PlugClean<CR>
 
 " Plugin Configs
-
 let g:javascript_plugin_jsdoc = 1
 
 " EasyAlign
-
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 
@@ -282,6 +293,7 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 function! s:show_documentation()
   if &filetype == 'vim'
     execute 'h '.expand('<cword>')
@@ -305,10 +317,6 @@ nmap <silent> gr <Plug>(coc-references)
 " Navigate diagnostics
 nmap <silent> <leader>w <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
-
-" Show list of errors
-nnoremap <silent> <leader>d :CocList diagnostics<CR>
-
 
 " Tmuxline
 let g:tmuxline_preset = {

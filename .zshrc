@@ -5,26 +5,32 @@
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-# Path to your oh-my-zsh installation.
-export ZSH="/home/shigueo/.oh-my-zsh"
+# Oh my zsh
+plugins=(
+    git 
+    zsh-syntax-highlighting 
+    zsh-autosuggestions
+    zsh-vimto
+)
 
 ZSH_THEME="temaDaora"
 
-plugins=(git zsh-syntax-highlighting zsh-vimto zsh-autosuggestions)
-
-source $ZSH/oh-my-zsh.sh
+[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
 # PyWal colors
-source $HOME/.cache/wal/colors.sh
+[ -f ~/.cache/wal/colors.sh ] && source ~/.cache/wal/colors.sh
 
-# FZF
+# fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
-
+# zsh-vimto
 export VIMTO_COLOR_NORMAL_TEXT=$foreground
 export VIMTO_COLOR_NORMAL_BACKGROUND=$background
+
+# zsh-autosuggestions
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
+bindkey '^e' autosuggest-accept
 
 # Better autocompletion
 autoload -U compinit
@@ -33,8 +39,6 @@ zstyle ":completion:*" menu select
 compinit
 
 export KEYTIMEOUT=1
-
-bindkey '^e' autosuggest-accept
 
 # <C-w> to edit line in editor
 autoload edit-command-line
@@ -67,7 +71,7 @@ alias gck="git checkout"
 alias gcb="git checkout -b"
 alias gr="git remote"
 alias ga="git add"
-alias gaa="git add --all" 
+alias gaa="git add --all"
 alias gf="git fetch --all"
 alias gst="git status"
 alias gsta="git stash"
@@ -101,7 +105,7 @@ alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aA
 ######  Functions #######
 
 # Auto ls when cd'ing
-function chpwd(){
+chpwd(){
     emulate -L zsh
     exa --group-directories-first
 }
@@ -132,29 +136,11 @@ clone(){
     echo "Missing repository URL"
 }
 
-# Select a Go Project
-godev(){
-    GO_DEV_DIR="$HOME/go/src/github.com/fsmiamoto/"
-    selected_project=$(ls $GO_DEV_DIR | fzf --color=16 --preview='' --prompt='Choose a Go project: ')
-    if [ -n "$selected_project" ]; then
-        # Substitutes . for - on selected_project
-        session_name=$(echo $selected_project | tr \. - )
-        tmux new-session -A -s "$session_name" -c "$GO_DEV_DIR/$selected_project"
-    fi
-}
-
 ide(){
     tmux split-window -h -p 35
     tmux split-window -v -p 60
     tmux select-pane -L
     $EDITOR .
-}
-
-# Starts one or multiple args as programs in background
-background() {
-  for ((i=2;i<=$#;i++)); do
-    ${@[1]} ${@[$i]} &> /dev/null & disown
-  done
 }
 
 # Expansion of aliases

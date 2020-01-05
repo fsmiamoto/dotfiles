@@ -101,10 +101,9 @@ bindsym XF86AudioRaiseVolume exec pulsemixer --change-volume +3; exec dunstify -
 bindsym XF86AudioLowerVolume exec pulsemixer --change-volume -3; exec dunstify -r 95463 " Volume: $(volume)"
 bindsym XF86AudioMute exec pulsemixer --toggle-mute; exec dunstify -r 95463 " Volume: $(volume)"
 
-# FIXME
-bindsym XF86AudioNext exec notify-send "Woohoo!"
-bindsym XF86AudioPrev exec notify-send "Woohoo!"
-bindsym XF86AudioPlay exec notify-send "Woohoo!"
+bindsym XF86AudioNext exec mpc next;
+bindsym XF86AudioPrev exec mpc prev;
+bindsym XF86AudioPlay exec mpc toggle;
 
 # Change focus
 bindsym $mod+h focus left

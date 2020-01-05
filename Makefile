@@ -10,7 +10,8 @@ backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
 	@mkdir -p $(HOME)/.dotfiles.backup
 	@for file in $(ALL_FILES); do \
-		cp --dereference "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
+	   [ ! -e "$(HOME)/$$file" ] && continue; \
+	   cp --dereference "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
 	done
 
 install:

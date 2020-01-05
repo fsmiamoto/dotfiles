@@ -286,7 +286,7 @@ margin-bottom = 2
 
 [bar/monitor1]
 inherit = bar/monitor0
-monitor = ${env:MONITOR:HDMI-0}
+monitor = ${env:MONITOR:DVI-D-0}
 
 
 modules-left = i3

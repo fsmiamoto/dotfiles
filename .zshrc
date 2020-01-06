@@ -7,8 +7,8 @@
 
 # Oh my zsh
 plugins=(
-    git 
-    zsh-syntax-highlighting 
+    git
+    zsh-syntax-highlighting
     zsh-autosuggestions
     zsh-vimto
 )

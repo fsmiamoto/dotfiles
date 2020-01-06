@@ -96,6 +96,11 @@ inoremap <C-u> <Esc>viWgUEa
 " Yank until the end of line
 nnoremap Y y$
 
+" Yank entire file
+nnoremap <silent> <leader>ya :%y<CR>
+" Yank to clipboard
+nnoremap <silent> <leader>yc :%y+<CR>
+
 " Easier to type
 nnoremap H ^
 nnoremap L $
@@ -108,10 +113,6 @@ nnoremap B L
 
 " Open help for the word under the cursor
 nnoremap <silent> <leader>h :<C-u>help <C-r><C-w><CR>
-
-" Magic mode
-nnoremap / /\v
-vnoremap / /\v
 
 " Copy and paste
 noremap <C-c> "+y
@@ -336,6 +337,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " File based changes
 autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+
+autocmd FileType go :cabbrev goi GoImport
+autocmd FileType go :cabbrev god GoDoc
 
 " Enable omni completion
 if exists("+omnifunc")

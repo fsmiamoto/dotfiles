@@ -199,6 +199,9 @@ client.background       $background
 
 ######  Window configs ######
 
+# Fibonacci layout
+for_window [class=".*"] split toggle
+
 # Change to urgent workspace
 for_window [urgent=latest] focus
 

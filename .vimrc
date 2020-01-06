@@ -74,7 +74,7 @@ set smartcase
 set ignorecase
 set hlsearch
 
-" Basic Mappings
+"  ***** Basic Mappings *****
 let mapleader=","
 
 nnoremap ; :
@@ -144,16 +144,16 @@ noremap <leader>ss :split<Return><C-w>w
 noremap <leader>sv :vsplit<Return><C-w>w
 
 " Resize window
-nmap <C-w><left> <C-w><
-nmap <C-w><right> <C-w>>
-nmap <C-w><up> <C-w>+
-nmap <C-w><down> <C-w>-
+nnoremap <C-w><left> <C-w><
+nnoremap <C-w><right> <C-w>>
+nnoremap <C-w><up> <C-w>+
+nnoremap <C-w><down> <C-w>-
 
 if (has("termguicolors"))
     set termguicolors
 endif
 
-" Plugins
+" ***** Plugins *****
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'chaoren/vim-wordmotion'
@@ -183,61 +183,18 @@ call plug#end()
 
 " Theming
 colorscheme base16-tomorrow-night
-let g:airline_theme='nicer_tomorrow'
+let g:airline_theme='tomorrow'
 
 " Underscore cursor
 highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=steelblue
 set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 
-" Search for files
-noremap <leader>f :Files<CR>
-noremap <leader>a :Ag
-
-" Search for buffers
-noremap <leader>b :Buffers<CR>
-
-" Search for lines
-noremap <leader>l :BLines<CR>
-noremap <leader>L :Lines<CR>
-
-" Search for mappings
-noremap <leader>m :Maps<CR>
-
-" Search for filetypes
-noremap <leader>t :Filetypes<CR>
-
-" Shortcuts for fugitive
-noremap <leader>gf :GFiles<CR>
-noremap <leader>gs :Gstatus<CR>
-noremap <leader>gd :Gvdiffsplit<CR>
-noremap <leader>gw :Gwrite<CR>
-noremap <leader>gc :Gcommit<CR>
-
-" Run file using vim-run script, saves before.
-noremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
-
-" Plug bindings
-nmap <leader>pi :PlugInstall<CR>
-nmap <leader>pu :PlugUpdate<CR>
-nmap <leader>pc :PlugClean<CR>
-
-" Plugin Configs
-let g:javascript_plugin_jsdoc = 1
-
-" EasyAlign
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
-
 " Airline
 let g:airline#extensions#tabline#enabled = 1 " Show buffers as tabs
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_exclude_preview = 1
 let g:airline_powerline_fonts = 1
-
 let g:airline_mode_map = {
             \ '__'     : '-',
             \ 'c'      : 'C',
@@ -259,67 +216,16 @@ let g:airline_mode_map = {
             \ ''     : 'V',
             \ }
 let g:airline_skip_empty_sections = 1
-
-" Remove fileencoding section
 let g:airline_section_y = airline#section#create([])
 let g:airline_section_z = 'ℓ %2l/%L c %2c'
 
-" NERDTree
-noremap <F2> :NERDTreeToggle<CR>
-
-"vim-go
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
 let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 
-" COC
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 
-" Use <CR> to complete
-inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
-
-" Tab to cycle through completion options
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-imap <silent> <C-w> <Plug>(coc-snippets-expand-jump)
-let g:coc_snippet_next = '<C-a>'
-
-" Close preview window on leaving Insert Mode
-autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-nmap <leader>cr :CocRestart<CR>
-nmap <leader>ci :CocInstall
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Navigate diagnostics
-nmap <silent> <leader>w <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
-
-" Tmuxline
 let g:tmuxline_preset = {
       \'a'    : '#S',
       \'win' : '#I #W',
@@ -329,11 +235,6 @@ let g:tmuxline_preset = {
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
 
-" Preview window
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-" Colors
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -349,19 +250,112 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
+" ***** Plugin mappings *****
+
+" Search for files
+nnoremap <leader>f :Files<CR>
+nnoremap <leader>a :Ag
+
+" Search for buffers
+nnoremap <leader>b :Buffers<CR>
+
+" Search for lines
+nnoremap <leader>l :BLines<CR>
+nnoremap <leader>L :Lines<CR>
+
+" Search for mappings
+nnoremap <leader>m :Maps<CR>
+
+" Search for filetypes
+nnoremap <leader>t :Filetypes<CR>
+
+" Shortcuts for fugitive
+nnoremap <leader>gf :GFiles<CR>
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gd :Gvdiffsplit<CR>
+nnoremap <leader>gw :Gwrite<CR>
+nnoremap <leader>gc :Gcommit<CR>
+
+" Run file using vim-run script, saves before.
+nnoremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
+
+" Plug bindings
+nnoremap <leader>pi :PlugInstall<CR>
+nnoremap <leader>pu :PlugUpdate<CR>
+nnoremap <leader>pc :PlugClean<CR>
+
+" Rename current symbol
+nnoremap <leader>rn <Plug>(coc-rename)
+
+nnoremap <leader>cr :CocRestart<CR>
+nnoremap <leader>ci :CocInstall
+
+" Remap keys for gotos
+nnoremap <silent> gd <Plug>(coc-definition)
+nnoremap <silent> gy <Plug>(coc-type-definition)
+nnoremap <silent> gi <Plug>(coc-implementation)
+nnoremap <silent> gr <Plug>(coc-references)
+
+" Navigate diagnostics
+nnoremap <silent> <leader>w <Plug>(coc-diagnostic-prev)
+nnoremap <silent> <leader>e <Plug>(coc-diagnostic-next)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" Use <CR> to complete
+inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+" Tab to cycle through completion options
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+inoremap <silent> <C-w> <Plug>(coc-snippets-expand-jump)
+
+" EasyAlign
+xnoremap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
+
+" NERDTree
+noremap <F2> :NERDTreeToggle<CR>
+
+" ***** Commands *****
+
+" Preview window
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+autocmd VimEnter * echo "おかえりなさい！"
+
+" Close preview window on leaving Insert Mode
+autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 " File based changes
 autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
-autocmd FileType c,cpp,java,php,vim,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
-
-autocmd FileType go nmap <leader>d :GoDoc<CR>
+autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
 
 " Enable omni completion
-if has("autocmd") && exists("+omnifunc")
+if exists("+omnifunc")
     autocmd Filetype *
                 \	if &omnifunc == "" |
                 \		setlocal omnifunc=syntaxcomplete#Complete |
                 \	endif
 endif
+
+" ***** Functions *****
+
+" Show documentation for symbol
+" Opens :help for vim filetypes
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 " Credit to github.com/spf13
 function! StripTrailingWhitespace()
@@ -375,3 +369,4 @@ function! StripTrailingWhitespace()
     let @/=_s
     call cursor(l, c)
 endfunction
+

@@ -156,15 +156,17 @@ endif
 
 " ***** Plugins *****
 call plug#begin()
-Plug 'chriskempson/base16-vim'
 Plug 'chaoren/vim-wordmotion'
+Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
@@ -174,12 +176,11 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Lazy-loaded
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go'}
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'mxw/vim-jsx', {'for': 'javascript'}
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 call plug#end()
 
 " Theming

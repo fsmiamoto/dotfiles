@@ -18,5 +18,7 @@ install:
 	@echo "Installing dotfiles ..."
 	@for file in $(ALL_FILES); do \
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
+		dir=$$(dirname "$(HOME)/$$file");\
+		[ ! -d $$dir ] && mkdir -p $$dir;\
 		cp -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done

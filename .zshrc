@@ -19,16 +19,15 @@ ZSH_THEME="temaDaora"
 
 [ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
+# Alias expansion
+[ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
+
 # PyWal colors
 [ -f ~/.cache/wal/colors.sh ] && source ~/.cache/wal/colors.sh
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
-
-# zsh-vimto
-export VIMTO_COLOR_NORMAL_TEXT=$foreground
-export VIMTO_COLOR_NORMAL_BACKGROUND=$background
 
 # zsh-autosuggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
@@ -45,11 +44,15 @@ autoload edit-command-line
 zle -N edit-command-line
 bindkey '^w' edit-command-line
 
+########## Aliases ##########
 
-## Aliases
-alias c='clear'
-alias s='startx'
-alias clip="xclip -selection clipboard"
+# alias: Expand with whitespace at the end
+# balias: Expand without whitespace at the end
+# ialias: Don't expand
+
+balias c='clear'
+balias s='startx'
+balias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
 alias arduino="arduino-cli"
@@ -65,22 +68,26 @@ alias paci="sudo pacman -S"
 alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 
-alias gc="git commit -m"
-alias gco="git commit"
+balias gc="git commit"
+balias gca="git commit --amend"
+alias gcm="git commit -m"
 alias gC="git add -A && git commit -m"
 alias gck="git checkout"
 alias gcb="git checkout -b"
 alias gr="git remote"
 alias ga="git add"
-alias gaa="git add --all"
-alias gf="git fetch --all"
-alias gst="git status"
-alias gsta="git stash"
-alias gstap="git stash pop"
-alias gstal="git stash list"
+balias ga.="git add ."
+balias gaa="git add --all"
+alias gf="git fetch"
+balias gfa="git fetch --all"
+balias gst="git status"
+balias gsa"git stash"
+alias gsap="git stash pop"
+alias gsal="git stash list"
 alias gps="git push"
-alias gpl="git pull"
-alias glo="git log" --graph --decorate --all
+alias gpsu="git push -u origin"
+balias gpl="git pull"
+balias gl="git log --graph --decorate --all"
 
 alias tm="tmux"
 alias tma="tmux attach-session"
@@ -90,20 +97,35 @@ alias tmls="tmux ls"
 alias tmks="tmux kill-session"
 alias tmksv="tmux kill-server"
 
-alias i3c="$EDITOR ~/.config/i3/config"
-alias vimc="$EDITOR ~/.vimrc"
-alias pbc="$EDITOR ~/.config/polybar/config"
-alias xrc="$EDITOR ~/.Xresources"
-alias bsc="$EDITOR ~/.bashrc"
-alias zshc="$EDITOR ~/.zshrc"
-alias tmc="$EDITOR ~/.tmux.conf"
+alias d="docker"
+alias dps="docker container ls"
+alias dr="docker container run"
+alias dsp="docker container rm"
+balias dim="docker images"
 
-alias src="source $HOME/.zshrc"
+balias i3c="$EDITOR ~/.config/i3/config"
+balias vimc="$EDITOR ~/.vimrc"
+balias pbc="$EDITOR ~/.config/polybar/config"
+balias xrc="$EDITOR ~/.Xresources"
+balias bsc="$EDITOR ~/.bashrc"
+balias zshc="$EDITOR ~/.zshrc"
+balias tmc="$EDITOR ~/.tmux.conf"
 
-# Removes all letters with marks
-alias removeracentos='sed 'y/áÁàÀãÃâÂéÉêÊíÍóÓõÕôÔúÚçÇ/aAaAaAaAeEeEiIoOoOoOuUcC/''
+balias src="source $HOME/.zshrc"
 
-######  Functions #######
+ialias git="hub"
+ialias cat="bat -p --theme='OneHalfDark'"
+ialias sed='sed -E'
+ialias vim="nvim"
+ialias ls="exa"
+ialias l="exa -l"
+ialias grep="grep --color=auto"
+ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers --color=always {}'"
+ialias diff="diff --color=auto"
+
+ialias dot="cd ~/.dotfiles"
+
+########## Functions ##########
 
 # Auto ls when cd'ing
 chpwd(){
@@ -159,54 +181,4 @@ lfcd(){
 
 bindkey -s '^o' 'lfcd\n'
 
-# Expansion of aliases
-# Credit: https://blog.sebastian-daschner.com/entries/zsh-aliases
-
-# blank aliases
-typeset -a baliases
-baliases=()
-
-balias() {
-  alias $@
-  args="$@"
-  args=${args%%\=*}
-  baliases+=(${args##* })
-}
-
-# ignored aliases
-typeset -a ialiases
-ialiases=()
-
-ialias() {
-  alias $@
-  args="$@"
-  args=${args%%\=*}
-  ialiases+=(${args##* })
-}
-
-# functionality
-expand-alias-space() {
-  [[ $LBUFFER =~ "\<(${(j:|:)baliases})\$" ]]; insertBlank=$?
-  if [[ ! $LBUFFER =~ "\<(${(j:|:)ialiases})\$" ]]; then
-    zle _expand_alias
-  fi
-  zle self-insert
-  if [[ "$insertBlank" = "0" ]]; then
-    zle backward-delete-char
-  fi
-}
-zle -N expand-alias-space
-
-bindkey " " expand-alias-space
-bindkey -M isearch " " magic-space
-
-# Ignored aliases, not expanded
-ialias cat="bat -p --theme='OneHalfDark'"
-ialias sed='sed -E'
-ialias vim="nvim"
-ialias ls="exa"
-ialias l="exa -l"
-ialias grep="grep --color=auto"
-ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers --color=always {}'"
-ialias diff="diff --color=auto"
 

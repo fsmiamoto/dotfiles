@@ -128,6 +128,28 @@ nnoremap _ :m .-2<CR>==
 vnoremap - :m '>+1<CR>gv=gv
 vnoremap _ :m '<-2<CR>gv=gv
 
+" Operator pending mappings
+
+" Quotes and single quotes
+onoremap iq i"
+onoremap isq i'
+onoremap aq a"
+onoremap asq a'
+
+" Parenthesis
+onoremap ip i(
+onoremap ap a(
+" Next and 'last' (previous)
+onoremap inp :<c-u>normal! f(vi(<cr>
+onoremap ilp :<c-u>normal! F)vi(<cr>
+
+" Curly braces
+onoremap ib i{
+onoremap ab a{
+" Next and 'last' (previous)
+onoremap inb :<c-u>normal! f{vi{<cr>
+onoremap ilb :<c-u>normal! F}vi{<cr>
+
 " No highlight
 nnoremap <Esc><Esc> :nohlsearch<CR>
 
@@ -327,28 +349,39 @@ noremap <F2> :NERDTreeToggle<CR>
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-autocmd VimEnter * echo "おかえりなさい！"
+augroup startup
+    autocmd!
+    autocmd VimEnter * echo "おかえりなさい！"
+augroup END
 
-" Close preview window on leaving Insert Mode
-autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
+augroup coc
+    autocmd!
+    " Close preview window on leaving Insert Mode
+    autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+augroup END
 
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
+augroup filetypes
+    " Clear previous autocmd's
+    autocmd!
+    " File based changes
+    autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
+    autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+    " Go abbreviations
+    autocmd FileType go :cabbrev gi GoImport
+    autocmd FileType go :cabbrev gd GoDoc
+    autocmd FileType go :cabbrev gt GoTest
 
-" File based changes
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
-autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
-
-autocmd FileType go :cabbrev goi GoImport
-autocmd FileType go :cabbrev god GoDoc
+    if exists("+omnifunc")
+        autocmd Filetype *
+                    \	if &omnifunc == "" |
+                    \		setlocal omnifunc=syntaxcomplete#Complete |
+                    \	endif
+    endif
+augroup END
 
 " Enable omni completion
-if exists("+omnifunc")
-    autocmd Filetype *
-                \	if &omnifunc == "" |
-                \		setlocal omnifunc=syntaxcomplete#Complete |
-                \	endif
-endif
 
 " ***** Functions *****
 

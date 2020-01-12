@@ -10,6 +10,7 @@
   "coc.source.omni.enable": true,
   "coc.source.omni.filetypes": ["sh", "c"],
   "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "javascript", "javascriptreact","typescriptreact", "typescript"],
+  "coc.preferences.useQuickfixForLocations": true,
   "python.jediEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

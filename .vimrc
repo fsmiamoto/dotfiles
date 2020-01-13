@@ -152,10 +152,6 @@ onoremap ab a{
 onoremap inb :<c-u>normal! f{vi{<cr>
 onoremap ilb :<c-u>normal! F}vi{<cr>
 
-"TODO: Add to autocmd group
-onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
-onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
-
 " No highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 
@@ -265,6 +261,8 @@ let g:tmuxline_preset = {
       \'z'    : '%R',
       \'options' :{'status-justify': 'left'}}
 
+
+set rtp +=~/.fzf
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],

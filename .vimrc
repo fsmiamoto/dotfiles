@@ -325,8 +325,12 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Navigate diagnostics
-nmap <silent> <leader>w <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
+nmap <silent> <space>k <Plug>(coc-diagnostic-prev)
+nmap <silent> <space>j <Plug>(coc-diagnostic-next)
+
+nnoremap <silent> <space>o :<C-u>CocList outline<CR>
+nnoremap <silent> <space>s :<C-u>CocList -I symbols<CR>
+nnoremap <silent> <space>d :<C-u>CocList diagnostics<CR>
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -378,6 +382,7 @@ augroup filetypes
     autocmd FileType go :cabbrev gi GoImport
     autocmd FileType go :cabbrev gd GoDoc
     autocmd FileType go :cabbrev gt GoTest
+    autocmd FileType go nnoremap <space>t :GoTest<CR>
 
     " Markdown mappings to change a header
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>

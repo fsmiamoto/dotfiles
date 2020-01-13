@@ -124,6 +124,7 @@ ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers 
 ialias diff="diff --color=auto"
 
 ialias dot="cd ~/.dotfiles"
+ialias rdm="cd Dev/random"
 
 ########## Functions ##########
 

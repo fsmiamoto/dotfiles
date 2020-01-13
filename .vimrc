@@ -103,7 +103,9 @@ nnoremap <silent> <leader>yc :%y+<CR>
 
 " Easier to type
 nnoremap H ^
+vnoremap H ^
 nnoremap L $
+vnoremap L $
 
 " Move to T-op
 nnoremap T H
@@ -150,8 +152,12 @@ onoremap ab a{
 onoremap inb :<c-u>normal! f{vi{<cr>
 onoremap ilb :<c-u>normal! F}vi{<cr>
 
+"TODO: Add to autocmd group
+onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
+onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
+
 " No highlight
-nnoremap <Esc><Esc> :nohlsearch<CR>
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 
 " Reload vimrc
 nnoremap <leader>r :source $HOME/.vimrc<CR>
@@ -241,7 +247,7 @@ let g:airline_mode_map = {
             \ }
 let g:airline_skip_empty_sections = 1
 let g:airline_section_y = airline#section#create([])
-let g:airline_section_z = 'ℓ %2l/%L c %2c'
+let g:airline_section_z = 'ℓ %2l/%L : %2c'
 
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
 let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
@@ -365,13 +371,19 @@ augroup END
 augroup filetypes
     " Clear previous autocmd's
     autocmd!
+
     " File based changes
     autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
     autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+
     " Go abbreviations
     autocmd FileType go :cabbrev gi GoImport
     autocmd FileType go :cabbrev gd GoDoc
     autocmd FileType go :cabbrev gt GoTest
+
+    " Markdown mappings to change a header
+    autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
+    autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
 
     if exists("+omnifunc")
         autocmd Filetype *

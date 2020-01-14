@@ -253,30 +253,30 @@ let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 
 let g:tmuxline_preset = {
-      \'a'    : '#S',
-      \'win' : '#I #W',
-      \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}'],
-      \'x'    : '#(jp-date a)',
-      \'y'    : '%m月%d日',
-      \'z'    : '%R',
-      \'options' :{'status-justify': 'left'}}
+            \'a'    : '#S',
+            \'win' : '#I #W',
+            \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}'],
+            \'x'    : '#(jp-date a)',
+            \'y'    : '%m月%d日',
+            \'z'    : '%R',
+            \'options' :{'status-justify': 'left'}}
 
 
 set rtp +=~/.fzf
 let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
+            \ { 'fg':      ['fg', 'Normal'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Comment'],
+            \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+            \ 'hl+':     ['fg', 'Statement'],
+            \ 'info':    ['fg', 'PreProc'],
+            \ 'border':  ['fg', 'Ignore'],
+            \ 'prompt':  ['fg', 'Conditional'],
+            \ 'pointer': ['fg', 'Exception'],
+            \ 'marker':  ['fg', 'Keyword'],
+            \ 'spinner': ['fg', 'Label'],
+            \ 'header':  ['fg', 'Comment'] }
 
 " ***** Plugin mappings *****
 
@@ -355,11 +355,12 @@ noremap <F2> :NERDTreeToggle<CR>
 
 " Preview window
 command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 augroup startup
     autocmd!
     autocmd VimEnter * echo "おかえりなさい！"
+    autocmd CursorMoved * call MaybeCenter()
 augroup END
 
 augroup coc
@@ -403,11 +404,11 @@ augroup END
 " Show documentation for symbol
 " Opens :help for vim filetypes
 function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
+    if &filetype == 'vim'
+        execute 'h '.expand('<cword>')
+    else
+        call CocAction('doHover')
+    endif
 endfunction
 
 " Credit to github.com/spf13
@@ -421,5 +422,20 @@ function! StripTrailingWhitespace()
     " clean up: restore previous search history, and cursor position
     let @/=_s
     call cursor(l, c)
+endfunction
+
+" Auto-zz after a big jump
+" Credit: https://www.reddit.com/r/vim/comments/cgpnbf/automatically_zz_after_jump/eujeimv?utm_source=share&utm_medium=web2x
+function! MaybeCenter() abort
+    let curr = line('.')
+    let prev = get(b:, 'prev_line', curr)
+    let top = line('w0')
+    let bot = line('w$')
+
+    if abs(curr - prev) >= 15 && (curr - top < 15 || bot - curr < 15)
+        normal! zz
+    endif
+
+    let b:prev_line = curr
 endfunction
 

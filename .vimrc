@@ -53,6 +53,9 @@ set autoread
 " Folding
 set foldenable
 set foldcolumn=1
+set foldmethod=indent
+set foldlevel=0
+set foldnestmax=1
 set foldmarker=\ {{{,\ }}}
 
 set noswapfile
@@ -81,7 +84,7 @@ nnoremap ; :
 vnoremap ; :
 
 " Open fold
-nnoremap <space> za
+nnoremap <space><space> za
 
 cnoremap <C-e> <End>
 cnoremap <C-w> <Home>
@@ -249,6 +252,7 @@ let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
 let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
+let g:go_fold_enable = ['block', 'import']
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 

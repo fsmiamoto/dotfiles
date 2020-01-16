@@ -51,7 +51,7 @@ bindkey '^w' edit-command-line
 # ialias: Don't expand
 
 balias c='clear'
-balias s='startx'
+alias s='startx'
 balias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
@@ -73,17 +73,19 @@ balias gca="git commit --amend"
 alias gcm="git commit -m"
 alias gC="git add -A && git commit -m"
 alias gck="git checkout"
-alias gcb="git checkout -b"
+alias gckb="git checkout -b"
+alias gckm="git checkout master"
 alias gr="git remote"
+alias grs="git reset --soft"
 alias ga="git add"
 balias ga.="git add ."
 balias gaa="git add --all"
 alias gf="git fetch"
 balias gfa="git fetch --all"
 balias gst="git status"
-balias gsa"git stash"
-alias gsap="git stash pop"
-alias gsal="git stash list"
+balias gsh"git stash"
+alias gshp="git stash pop"
+alias gshl="git stash list"
 alias gps="git push"
 alias gpsu="git push -u origin"
 balias gpl="git pull"

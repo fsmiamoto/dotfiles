@@ -53,10 +53,13 @@ set autoread
 " Folding
 set foldenable
 set foldcolumn=1
-set foldmethod=indent
 set foldlevel=0
+set foldmethod=syntax
 set foldnestmax=1
 set foldmarker=\ {{{,\ }}}
+
+set fillchars=vert:┃
+set fillchars+=fold:·
 
 set noswapfile
 set nobackup
@@ -177,6 +180,9 @@ nnoremap <C-w><right> <C-w>>
 nnoremap <C-w><up> <C-w>+
 nnoremap <C-w><down> <C-w>-
 
+" Avoid going into ex mode
+nmap Q q
+
 if (has("termguicolors"))
     set termguicolors
 endif
@@ -249,6 +255,7 @@ let g:airline_section_y = airline#section#create([])
 let g:airline_section_z = 'ℓ %2l/%L : %2c'
 
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
+let g:go_fmt_experimental = 1         " Don't refold on every save
 let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
 let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
 let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
@@ -400,6 +407,7 @@ augroup filetypes
                     \	endif
     endif
 augroup END
+
 
 " Enable omni completion
 

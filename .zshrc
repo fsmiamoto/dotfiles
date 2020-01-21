@@ -33,6 +33,10 @@ export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 bindkey '^e' autosuggest-accept
 
+# asdf
+[ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
+[ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
+
 # Better autocompletion
 autoload -U compinit
 zmodload zsh/complist

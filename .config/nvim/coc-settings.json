@@ -11,6 +11,12 @@
   "coc.source.omni.filetypes": ["sh", "c"],
   "coc.preferences.formatOnSaveFiletypes": ["python", "go","json", "javascript", "javascriptreact","typescriptreact", "typescript"],
   "coc.preferences.useQuickfixForLocations": true,
+  "emmet.syntaxProfiles": {
+      "javascript": "jsx"
+  },
+  "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+  },
   "python.jediEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

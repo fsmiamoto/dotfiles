@@ -8,9 +8,9 @@ ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[cyan]%}#"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[yellow]%}?"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[yellow]%}(%{$fg[red]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="$(git_prompt_status)%{$fg_bold[yellow]%})"
-ZSH_THEME_GIT_PROMPT_DIRTY=""
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg_bold[yellow]%})"
+ZSH_THEME_GIT_PROMPT_DIRTY="$(git_prompt_status)"
 
-PROMPT='%{$fg_bold[green]%}%c $(git_prompt_info)${ret_status}
+PROMPT='%{$fg_bold[green]%}%c $(git_prompt_info)$(git_prompt_status)${ret_status}
 %{$fg[blue]%}$%{$reset_color%}: '
 

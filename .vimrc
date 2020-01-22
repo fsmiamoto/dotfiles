@@ -88,6 +88,8 @@ vnoremap ; :
 
 " Open fold
 nnoremap <space><space> za
+nnoremap <space>r zR
+nnoremap <space>m zM
 
 cnoremap <C-e> <End>
 cnoremap <C-w> <Home>

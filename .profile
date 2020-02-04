@@ -2,7 +2,7 @@
 export TERMINAL=st
 export TERM=st-256color
 export EDITOR=nvim
-export BROWSER=firefox
+export BROWSER=brave
 export FILE=ranger
 export GOBIN="$HOME/go/bin"
 export GO111MODULE=on

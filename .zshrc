@@ -37,6 +37,9 @@ bindkey '^e' autosuggest-accept
 [ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
 [ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
 
+# tabtab
+[[ -f ~/.config/tabtab/__tabtab.zsh ]] && source ~/.config/tabtab/__tabtab.zsh
+
 # Better autocompletion
 autoload -U compinit
 zmodload zsh/complist
@@ -108,6 +111,11 @@ alias dps="docker container ls"
 alias dr="docker container run"
 alias dsp="docker container rm"
 balias dim="docker images"
+
+alias gog="go get"
+alias gor="go run"
+alias gorm="go run main.go"
+alias gob="go build"
 
 balias i3c="$EDITOR ~/.config/i3/config"
 balias vimc="$EDITOR ~/.vimrc"
@@ -184,6 +192,11 @@ lfcd(){
     dir="$(cat "$tmp")"
     rm -f "$tmp"
     [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+}
+
+# Colorizes go test output
+gotest(){
+    go test $* | sed ''/PASS/s//$(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//$(printf "\033[31mFAIL\033[0m")/''
 }
 
 bindkey -s '^o' 'lfcd\n'

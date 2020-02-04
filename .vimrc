@@ -94,10 +94,6 @@ nnoremap <space>m zM
 cnoremap <C-e> <End>
 cnoremap <C-w> <Home>
 
-" Change buffers
-nnoremap <silent> <Tab> :bn<CR>
-nnoremap <silent> <S-Tab> :bp<CR>
-
 " Make current word uppercase
 inoremap <C-u> <Esc>viWgUEa
 
@@ -141,6 +137,7 @@ vnoremap _ :m '<-2<CR>gv=gv
 " Operator pending mappings
 
 " Quotes and single quotes
+onoremap tq t"
 onoremap iq i"
 onoremap isq i'
 onoremap aq a"
@@ -184,6 +181,10 @@ nnoremap <C-w><down> <C-w>-
 
 " Avoid going into ex mode
 nmap Q q
+
+" Skip quickfix when switching buffers
+nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
+nnoremap <silent> <S-Tab> :bp<Bar>if &buftype ==# 'quickfix'<Bar>bp<Bar>endif<CR>
 
 if (has("termguicolors"))
     set termguicolors

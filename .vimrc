@@ -210,6 +210,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'easymotion/vim-easymotion'
 
 " Lazy-loaded
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go'}
@@ -265,6 +266,7 @@ let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 let g:go_fold_enable = ['block', 'import']
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
+let g:coc_snippet_next = '<c-w>'
 
 let g:tmuxline_preset = {
             \'a'    : '#S',
@@ -291,6 +293,10 @@ let g:fzf_colors =
             \ 'marker':  ['fg', 'Keyword'],
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
+
+
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_smartcase = 1
 
 " ***** Plugin mappings *****
 
@@ -356,7 +362,6 @@ inoremap <expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-inoremap <silent> <C-w> <Plug>(coc-snippets-expand-jump)
 
 " EasyAlign
 xnoremap ga <Plug>(EasyAlign)
@@ -364,6 +369,12 @@ nnoremap ga <Plug>(EasyAlign)
 
 " NERDTree
 noremap <F2> :NERDTreeToggle<CR>
+
+" easymotion
+nmap s <Plug>(easymotion-s2)
+map <space>l <Plug>(easymotion-bd-jk)
+map <space>s <Plug>(easymotion-sl)
+map  <space>w <Plug>(easymotion-bd-w)
 
 " ***** Commands *****
 
@@ -453,4 +464,5 @@ function! MaybeCenter() abort
 
     let b:prev_line = curr
 endfunction
+
 

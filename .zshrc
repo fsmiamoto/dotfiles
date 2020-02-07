@@ -46,6 +46,7 @@ ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[path]='fg=green'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 
 # asdf
 [ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
@@ -121,6 +122,7 @@ alias tmks="tmux kill-session"
 alias tmksv="tmux kill-server"
 
 alias d="docker"
+alias dc="docker container"
 alias dcl="docker container ls"
 alias dcr="docker container run"
 alias dcrm="docker container rm"

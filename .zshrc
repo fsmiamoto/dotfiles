@@ -17,6 +17,7 @@ plugins=(
 
 ZSH_THEME="temaDaora"
 
+
 [ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
 # Alias expansion
@@ -32,6 +33,19 @@ export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 # zsh-autosuggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 bindkey '^e' autosuggest-accept
+
+# zsh-syntax-highlighting
+# (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+typeset -A ZSH_HIGHLIGHT_STYLES
+
+ZSH_HIGHLIGHT_STYLES[command]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=yellow,bold'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=yellow,bold'
+ZSH_HIGHLIGHT_STYLES[path]='fg=green'
 
 # asdf
 [ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
@@ -107,9 +121,9 @@ alias tmks="tmux kill-session"
 alias tmksv="tmux kill-server"
 
 alias d="docker"
-alias dps="docker container ls"
-alias dr="docker container run"
-alias dsp="docker container rm"
+alias dcl="docker container ls"
+alias dcr="docker container run"
+alias dcrm="docker container rm"
 balias dim="docker images"
 
 alias gog="go get"

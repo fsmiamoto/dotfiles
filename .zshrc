@@ -126,7 +126,7 @@ alias dc="docker container"
 alias dcl="docker container ls"
 alias dcr="docker container run"
 alias dcrm="docker container rm"
-balias dim="docker images"
+alias dn="docker network"
 
 alias gog="go get"
 alias gor="go run"

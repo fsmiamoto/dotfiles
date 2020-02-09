@@ -179,6 +179,9 @@ nnoremap <C-w><right> <C-w>>
 nnoremap <C-w><up> <C-w>+
 nnoremap <C-w><down> <C-w>-
 
+" Add blank line
+nnoremap <CR> :normal o<Esc>k
+
 " Avoid going into ex mode
 nmap Q q
 
@@ -195,10 +198,10 @@ call plug#begin()
 Plug 'chaoren/vim-wordmotion'
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'easymotion/vim-easymotion'
 Plug 'edkolev/tmuxline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -211,7 +214,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'easymotion/vim-easymotion'
+Plug 'yuki-ycino/fzf-preview.vim'
 
 " Lazy-loaded
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go'}
@@ -302,11 +305,10 @@ let g:EasyMotion_smartcase = 1
 " ***** Plugin mappings *****
 
 " Search for files
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>a :Ag
+nnoremap <leader>f :FzfPreviewProjectFiles<CR>
 
 " Search for buffers
-nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>b :FzfPreviewBuffers<CR>
 
 " Search for lines
 nnoremap <leader>l :BLines<CR>
@@ -319,8 +321,7 @@ nnoremap <leader>m :Maps<CR>
 nnoremap <leader>t :Filetypes<CR>
 
 " Shortcuts for fugitive
-nnoremap <leader>gf :GFiles<CR>
-nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gs :FzfPreviewGitStatus<CR>
 nnoremap <leader>gd :Gvdiffsplit<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :Gcommit<CR>
@@ -380,12 +381,11 @@ map  <space>w <Plug>(easymotion-bd-w)
 " ***** Commands *****
 
 " Preview window
-command! -bang -nargs=? -complete=dir Files
-            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+" command! -bang -nargs=? -complete=dir Files
+"             \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 augroup startup
     autocmd!
-    autocmd VimEnter * echo "おかえりなさい！"
     autocmd CursorMoved * call MaybeCenter()
 augroup END
 
@@ -465,5 +465,4 @@ function! MaybeCenter() abort
 
     let b:prev_line = curr
 endfunction
-
 

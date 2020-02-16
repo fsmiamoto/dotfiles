@@ -326,6 +326,8 @@ nnoremap <leader>gd :Gvdiffsplit<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gc :Gcommit<CR>
 
+nnoremap <C-f> :FzfPreviewProjectGrep<CR>
+
 " Run file using vim-run script, saves before.
 nnoremap <silent><leader>rf :w<bar>!vim-run %:p<CR><CR>
 

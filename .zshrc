@@ -150,7 +150,7 @@ ialias vim="nvim"
 ialias ls="exa"
 ialias l="exa -l"
 ialias grep="grep --color=auto"
-ialias fzf="fzf --color=16 --preview 'bat --theme='OneHalfDark' --style=numbers --color=always {}'"
+ialias fzf="fzf --color=16 --preview 'bat --theme='base16' --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 
 ialias dot="cd ~/.dotfiles"

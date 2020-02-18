@@ -5,32 +5,28 @@
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-export ZSH=~/.oh-my-zsh
+source ~/.zplug/init.zsh
 
-# Oh my zsh
-plugins=(
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-    zsh-vimto
-)
+zplug "zsh-users/zsh-completions",              defer:0
+zplug "zsh-users/zsh-autosuggestions",          defer:2, on:"zsh-users/zsh-completions"
+zplug "zsh-users/zsh-syntax-highlighting",      defer:3, on:"zsh-users/zsh-autosuggestions"
 
-ZSH_THEME="temaDaora"
-
-[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
+zplug load
 
 # Alias expansion
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
 
-# PyWal colors
-[ -f ~/.cache/wal/colors.sh ] && source ~/.cache/wal/colors.sh
-
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
 # zsh-autosuggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 bindkey '^e' autosuggest-accept
+
+# vim mode
+bindkey -v
 
 # zsh-syntax-highlighting
 # (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)
@@ -51,7 +47,7 @@ ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 [ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
 
 # tabtab
-[[ -f ~/.config/tabtab/__tabtab.zsh ]] && source ~/.config/tabtab/__tabtab.zsh
+# [[ -f ~/.config/tabtab/__tabtab.zsh ]] && source ~/.config/tabtab/__tabtab.zsh
 
 # Better autocompletion
 autoload -U compinit

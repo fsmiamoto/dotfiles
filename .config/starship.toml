@@ -1,0 +1,56 @@
+add_newline = false
+prompt_order = [
+    "username",
+    "hostname",
+    "kubernetes",
+    "directory",
+    "git_branch",
+    "git_commit",
+    "git_state",
+    "git_status",
+    "package",
+    "golang",
+    "nodejs",
+    "python",
+    "rust",
+    "memory_usage",
+    "aws",
+    "env_var",
+    "cmd_duration",
+    "line_break",
+    "jobs",
+    "time",
+    "character",
+]
+
+[directory]
+truncation_length = 1
+
+[package]
+disable = true
+
+[python]
+symbol = "python "
+
+[golang]
+symbol = "go "
+
+[nodejs]
+symbol = "node "
+
+[git_status]
+prefix = ""
+suffix = ""
+style = "bold #b294bb"
+
+deleted.value = "-"
+deleted.style = "#cc6666"
+
+modified.value = "!"
+modified.style = "#de935f"
+
+untracked.value = "?"
+untracked.style = "#f0c674"
+
+staged.value = "+"
+staged.style = "#b5bd68"

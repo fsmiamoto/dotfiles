@@ -27,6 +27,9 @@ bindkey '^e' autosuggest-accept
 
 # vim mode
 bindkey -v
+# Fix backspace not working after returning from cmd mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
 
 # zsh-syntax-highlighting
 # (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)

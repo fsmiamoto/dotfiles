@@ -9,14 +9,12 @@ export ZSH=~/.oh-my-zsh
 
 # Oh my zsh
 plugins=(
-    git
     zsh-syntax-highlighting
     zsh-autosuggestions
     zsh-vimto
 )
 
 ZSH_THEME="temaDaora"
-
 
 [ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
@@ -40,12 +38,12 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
 typeset -A ZSH_HIGHLIGHT_STYLES
 
-ZSH_HIGHLIGHT_STYLES[command]='fg=cyan,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=cyan,bold'
-ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=blue,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=yellow,bold'
-ZSH_HIGHLIGHT_STYLES[path]='fg=green'
+ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 
 # asdf
@@ -97,6 +95,7 @@ alias gC="git add -A && git commit -m"
 alias gck="git checkout"
 alias gckb="git checkout -b"
 alias gckm="git checkout master"
+alias gd="git diff"
 alias gr="git remote"
 alias grs="git reset --soft"
 alias ga="git add"
@@ -217,4 +216,6 @@ gotest(){
 
 bindkey -s '^o' 'lfcd\n'
 
+eval "$(starship init zsh)"
 
+source /home/shigueo/.config/broot/launcher/bash/br

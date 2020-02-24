@@ -5,13 +5,14 @@
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-source ~/.zplug/init.zsh
+export ZSH=~/.oh-my-zsh
+plugins=(
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    zsh-vimto
+)
 
-zplug "zsh-users/zsh-completions",              defer:0
-zplug "zsh-users/zsh-autosuggestions",          defer:2, on:"zsh-users/zsh-completions"
-zplug "zsh-users/zsh-syntax-highlighting",      defer:3, on:"zsh-users/zsh-autosuggestions"
-
-zplug load
+[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
 
 # Alias expansion
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
@@ -24,12 +25,6 @@ export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 # zsh-autosuggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 bindkey '^e' autosuggest-accept
-
-# vim mode
-bindkey -v
-# Fix backspace not working after returning from cmd mode
-bindkey '^?' backward-delete-char
-bindkey '^h' backward-delete-char
 
 # zsh-syntax-highlighting
 # (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)
@@ -87,8 +82,8 @@ alias paci="sudo pacman -S"
 alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 
-balias gc="git commit"
-balias gca="git commit --amend"
+alias gc="git commit"
+alias gca="git commit --amend"
 alias gcm="git commit -m"
 alias gC="git add -A && git commit -m"
 alias gck="git checkout"
@@ -98,18 +93,18 @@ alias gd="git diff"
 alias gr="git remote"
 alias grs="git reset --soft"
 alias ga="git add"
-balias ga.="git add ."
-balias gaa="git add --all"
+alias ga.="git add ."
+alias gaa="git add --all"
 alias gf="git fetch"
-balias gfa="git fetch --all"
-balias gst="git status"
-balias gsh"git stash"
+alias gfa="git fetch --all"
+alias gst="git status"
+alias gsh"git stash"
 alias gshp="git stash pop"
 alias gshl="git stash list"
 alias gps="git push"
 alias gpsu="git push -u origin"
-balias gpl="git pull"
-balias gl="git log --graph --decorate --all"
+alias gpl="git pull"
+alias gl="git log --graph --decorate --all"
 
 alias tm="tmux"
 alias tma="tmux attach-session"

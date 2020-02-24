@@ -38,6 +38,9 @@ symbol = "go "
 [nodejs]
 symbol = "node "
 
+[rust]
+symbol = "rust "
+
 [git_status]
 prefix = ""
 suffix = " "

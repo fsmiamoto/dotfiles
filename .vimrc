@@ -227,7 +227,7 @@ call plug#end()
 
 " Theming
 colorscheme base16-tomorrow-night
-let g:airline_theme='tomorrow'
+let g:airline_theme='base16_tomorrow'
 
 " Underscore cursor
 highlight Cursor guifg=white guibg=black
@@ -260,8 +260,10 @@ let g:airline_mode_map = {
             \ ''     : 'V',
             \ }
 let g:airline_skip_empty_sections = 1
-let g:airline_section_y = airline#section#create([])
 let g:airline_section_z = 'ℓ %2l/%L : %2c'
+
+" Hides file encoding section
+" let g:airline_section_y = airline#section#create([])
 
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
 let g:go_fmt_experimental = 1         " Don't refold on every save
@@ -271,16 +273,17 @@ let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
 let g:go_fold_enable = ['block', 'import']
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
-let g:coc_snippet_next = '<c-w>'
+let g:coc_snippet_next = '<C-w>'
 
 let g:tmuxline_preset = {
             \'a'    : '#S',
             \'win' : '#I #W',
-            \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}'],
+            \'cwin'  : ['#I','#W#{?window_zoomed_flag, 🔍,}', '#F' ],
             \'x'    : '#(jp-date a)',
             \'y'    : '%m月%d日',
             \'z'    : '%R',
             \'options' :{'status-justify': 'left'}}
+
 
 
 set rtp +=~/.fzf

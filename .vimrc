@@ -226,8 +226,8 @@ Plug 'styled-components/vim-styled-components', { 'for': ['typescriptreact', 'ja
 call plug#end()
 
 " Theming
-colorscheme base16-tomorrow-night
-let g:airline_theme='base16_tomorrow'
+colorscheme base16-ocean
+let g:airline_theme='base16_ocean'
 
 " Underscore cursor
 " highlight Cursor guifg=white guibg=black

@@ -20,6 +20,11 @@ plugins=(
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+
+# GCloud
+[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]       && source  "$HOME/google-cloud-sdk/path.zsh.inc"
+[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
+
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
 # zsh-autosuggestions

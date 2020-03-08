@@ -199,25 +199,25 @@ Plug 'chaoren/vim-wordmotion'
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'easymotion/vim-easymotion'
-Plug 'edkolev/tmuxline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
-Plug 'scrooloose/nerdtree'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'sheerun/vim-polyglot'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'yuki-ycino/fzf-preview.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'tpope/vim-fugitive'
+Plug 'edkolev/tmuxline.vim'
+Plug 'vim-airline/vim-airline-themes'
 
 " Lazy-loaded
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go'}
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'mxw/vim-jsx', {'for': 'javascript'}
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
@@ -230,9 +230,12 @@ colorscheme base16-tomorrow-night
 let g:airline_theme='base16_tomorrow'
 
 " Underscore cursor
-highlight Cursor guifg=white guibg=black
-highlight iCursor guifg=white guibg=steelblue
-set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
+" highlight Cursor guifg=white guibg=black
+" highlight iCursor guifg=white guibg=steelblue
+" set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
+
+
+let g:polyglot_disabled = ['go']
 
 " Airline
 let g:airline#extensions#tabline#enabled = 1 " Show buffers as tabs
@@ -265,12 +268,15 @@ let g:airline_section_z = 'ℓ %2l/%L : %2c'
 " Hides file encoding section
 " let g:airline_section_y = airline#section#create([])
 
-let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
-let g:go_fmt_experimental = 1         " Don't refold on every save
-let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
-let g:go_def_mapping_enabled = 0      " Disable default mapping for go to def
-let g:go_doc_keywordprg_enabled = 0   " Disable default mapping to see doc
+let g:go_fmt_command = "goimports"  " Run goimports along gofmt on each save
+let g:go_fmt_experimental = 1       " Don't refold on every save
+let g:go_auto_type_info = 1         " Automatically get signature/type info for object under cursor
+" let g:go_auto_sameids = 1           " Highlight same variable in view
+let g:go_doc_keywordprg_enabled = 0 " Disable default mapping to see doc
+let g:go_def_mapping_enabled = 0    " Disable default mapping for go to def
 let g:go_fold_enable = ['block', 'import']
+let g:go_def_mode='gopls'
+" let g:go_info_mode='gopls'
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 let g:coc_snippet_next = '<C-w>'
@@ -283,8 +289,6 @@ let g:tmuxline_preset = {
             \'y'    : '%m月%d日',
             \'z'    : '%R',
             \'options' :{'status-justify': 'left'}}
-
-
 
 set rtp +=~/.fzf
 let g:fzf_colors =
@@ -302,6 +306,10 @@ let g:fzf_colors =
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
 
+let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
+let g:fzf_preview_directories_file_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
+let g:fzf_preview_use_dev_icons = 1
+let g:fzf_preview_command = 'bat --color=always --style=grid {-1} --theme "base16" '
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 let g:EasyMotion_smartcase = 1
@@ -372,8 +380,8 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 
 " EasyAlign
-xnoremap ga <Plug>(EasyAlign)
-nnoremap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
 " NERDTree
 noremap <F2> :NERDTreeToggle<CR>

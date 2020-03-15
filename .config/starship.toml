@@ -46,6 +46,8 @@ prefix = ""
 suffix = " "
 style = "bold #b294bb"
 
+stashed.style = "#cc6666"
+
 deleted.value = "-"
 deleted.style = "#cc6666"
 

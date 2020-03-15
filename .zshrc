@@ -69,14 +69,13 @@ bindkey '^w' edit-command-line
 # balias: Expand without whitespace at the end
 # ialias: Don't expand
 
-balias c='clear'
+alias c='clear'
 alias s='startx'
-balias clip="xclip -selection clipboard"
+alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
 alias arduino="arduino-cli"
 alias sv="sudo $EDITOR"
-alias v="$EDITOR"
 alias trt="transmission-remote-cli"
 alias v.="$EDITOR ."
 

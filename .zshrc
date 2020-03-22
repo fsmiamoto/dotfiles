@@ -110,6 +110,8 @@ alias gpsu="git push -u origin"
 alias gpl="git pull"
 alias gl="git log --graph --decorate --all"
 
+alias lg='lazygit'
+
 alias tm="tmux"
 alias tma="tmux attach-session"
 alias tmd="tmux detach"

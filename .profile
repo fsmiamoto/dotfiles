@@ -1,6 +1,6 @@
 # Enviroment variables
-export TERMINAL=kitty
-export TERM=xterm-kitty
+export TERMINAL=st
+export TERM=st-256color
 export EDITOR=nvim
 export BROWSER=brave
 export FILE=ranger

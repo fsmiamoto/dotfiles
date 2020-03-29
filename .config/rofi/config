@@ -1,5 +1,5 @@
 rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
-rofi.font: Fira Code, 15
+rofi.font: JetBrains Mono, 13
 rofi.lines: 10
 rofi.opacity: 85
 

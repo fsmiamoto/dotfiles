@@ -20,7 +20,6 @@ plugins=(
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-
 # GCloud
 [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]       && source  "$HOME/google-cloud-sdk/path.zsh.inc"
 [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
@@ -85,6 +84,7 @@ alias pac="sudo pacman"
 alias paci="sudo pacman -S"
 alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
+alias pacr="sudo pacman -Rsn"
 
 alias gc="git commit"
 alias gca="git commit --amend"
@@ -218,4 +218,3 @@ bindkey -s '^o' 'lfcd\n'
 
 eval "$(starship init zsh)"
 
-source /home/shigueo/.config/broot/launcher/bash/br

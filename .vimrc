@@ -226,14 +226,10 @@ Plug 'styled-components/vim-styled-components', { 'for': ['typescriptreact', 'ja
 call plug#end()
 
 " Theming
+set t_Co=256
 colorscheme base16-ocean
 let g:airline_theme='base16_ocean'
-
-" Underscore cursor
-" highlight Cursor guifg=white guibg=black
-" highlight iCursor guifg=white guibg=steelblue
-" set guicursor=n-v-c-sm:hor20,i-ci-ve:ver25-Cursor,r-cr-o:hor20
-
+hi Normal ctermbg=NONE guibg=NONE
 
 let g:polyglot_disabled = ['go']
 

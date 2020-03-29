@@ -1,4 +1,4 @@
-*.font:  FuraCode Nerd Font Mono:size=12
-*.alpha: 0.87
+*.font: JetBrainsMono Nerd Font:size=12
+*.alpha: 0.93
 *.dpi: 120
 Xcursor.size: 16

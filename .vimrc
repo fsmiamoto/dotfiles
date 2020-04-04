@@ -80,6 +80,8 @@ set smartcase
 set ignorecase
 set hlsearch
 
+set noemoji
+
 "  ***** Basic Mappings *****
 let mapleader=","
 

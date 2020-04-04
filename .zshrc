@@ -20,6 +20,9 @@ plugins=(
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# broot
+[ -f ~/.config/broot/launcher/bash/br ] && source ~/.config/broot/launcher/bash/br
+
 # GCloud
 [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]       && source  "$HOME/google-cloud-sdk/path.zsh.inc"
 [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
@@ -132,6 +135,9 @@ alias gor="go run"
 alias gorm="go run main.go"
 alias gob="go build"
 
+alias mk="make"
+alias mki="sudo make install"
+
 balias i3c="$EDITOR ~/.config/i3/config"
 balias vimc="$EDITOR ~/.vimrc"
 balias pbc="$EDITOR ~/.config/polybar/config"
@@ -214,7 +220,6 @@ gotest(){
     go test $* | sed ''/PASS/s//$(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//$(printf "\033[31mFAIL\033[0m")/''
 }
 
-bindkey -s '^o' 'lfcd\n'
+bindkey -s '^o' 'br\n'
 
 eval "$(starship init zsh)"
-

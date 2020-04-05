@@ -5,8 +5,7 @@ This repo contains my config files, a.k.a dotfiles, that I change probably more 
 ###
 
 - Distro: Arch Linux
-- WM: i3-gaps
-- Status bar: Polybar
+- WM: dwm
 - Notifications: dunst
 - Shell: zsh
 - Terminal Emulator: st
@@ -17,7 +16,7 @@ Colorscheme generated with PyWal
 
 ### Installing
 
-```bash
+```sh
     # Clone the repo
     $ git clone git@github.com/fsmiamoto/dotfiles ~/.dotfiles
     $ cd ~/.dotfiles
@@ -30,9 +29,9 @@ Colorscheme generated with PyWal
     $ make install
 ```
 
-### Screenshots
-
 ![neofetch](setup.png)
+
+
 
 ### Todo's
 

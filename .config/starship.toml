@@ -1,8 +1,8 @@
 add_newline = false
 prompt_order = [
-    "username",
-    "hostname",
-    "kubernetes",
+    # "username",
+    # "hostname",
+    # "kubernetes",
     "directory",
     "git_branch",
     "git_commit",
@@ -23,6 +23,13 @@ prompt_order = [
     "character",
 ]
 
+[character]
+symbol = "$"
+vicmd_symbol = ":"
+
+[cmd_duration]
+prefix = ""
+
 [directory]
 truncation_length = 1
 
@@ -40,6 +47,9 @@ symbol = "node "
 
 [rust]
 symbol = "rust "
+
+[git_branch]
+prefix = ""
 
 [git_status]
 prefix = ""

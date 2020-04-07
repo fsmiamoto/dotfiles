@@ -36,7 +36,7 @@ unclutter &
 mpd &
 
 # DWM Status
-slstatus &
+dwmblocks &
 
 # Initiate WM
 while :; do

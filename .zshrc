@@ -175,6 +175,17 @@ mkd() {
     mkdir $1 && cd $1
 }
 
+# Kill a process
+k(){
+    pid=$(ps -exo 'user,pid,cmd' | sed '1d' | fzf --preview-window=hidden |  awk '{printf $2}')
+
+    if [ "$1" != "" ]; then
+        kill -"$1" "$pid"
+    else
+        kill "$pid"
+    fi
+}
+
 # Lists my config files and opens it on $EDITOR
 cfg() {
     file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
@@ -204,7 +215,7 @@ ide(){
 }
 
 # Credit to github.com/connermcd
-pi() {
+pacman_install() {
     sudo pacman -Sy
     sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
 }
@@ -218,7 +229,7 @@ cd_with_fzf() {
 }
 
 bindkey -s '^f' 'cd_with_fzf\n'
-bindkey -s '^i' 'pi\n'
+bindkey -s '^i' 'pacman_install\n'
 bindkey -s '^o' 'open_with_fzf\n'
 
 # Change directories with lf

@@ -30,8 +30,10 @@ plugins=(
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
 # zsh-autosuggestions
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
 bindkey '^e' autosuggest-accept
+
+bindkey -s '^v' 'vim .\n'
 
 # zsh-syntax-highlighting
 # (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)
@@ -50,9 +52,6 @@ ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 # asdf
 [ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
 [ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
-
-# tabtab
-# [[ -f ~/.config/tabtab/__tabtab.zsh ]] && source ~/.config/tabtab/__tabtab.zsh
 
 # Better autocompletion
 autoload -U compinit
@@ -138,6 +137,8 @@ alias gob="go build"
 alias mk="make"
 alias mki="sudo make install"
 
+alias ka="killall"
+
 balias i3c="$EDITOR ~/.config/i3/config"
 balias vimc="$EDITOR ~/.vimrc"
 balias pbc="$EDITOR ~/.config/polybar/config"
@@ -191,7 +192,7 @@ get-thumbnail(){
 
 clone(){
     PROJECT_DIR="$HOME/Dev"
-    test  -n "$1" && cd $PROJECT_DIR > /dev/null && git clone $1
+    test -n "$1" && cd $PROJECT_DIR > /dev/null && git clone $1
     echo "Missing repository URL"
 }
 
@@ -201,6 +202,24 @@ ide(){
     tmux select-pane -L
     $EDITOR .
 }
+
+# Credit to github.com/connermcd
+pi() {
+    sudo pacman -Sy
+    sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
+}
+
+open_with_fzf() {
+    fd -t f -H -I | fzf -m --preview="xdg-mime query default {}" | xargs -ro -d "\n" xdg-open 2>&-
+}
+
+cd_with_fzf() {
+    cd $HOME > /dev/null && cd "$(fd -t d | fzf --preview="tree -L 1 {}" --bind="space:toggle-preview" --preview-window=:hidden)"
+}
+
+bindkey -s '^f' 'cd_with_fzf\n'
+bindkey -s '^i' 'pi\n'
+bindkey -s '^o' 'open_with_fzf\n'
 
 # Change directories with lf
 # Credit to Luke Smith
@@ -219,7 +238,5 @@ lfcd(){
 gotest(){
     go test $* | sed ''/PASS/s//$(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//$(printf "\033[31mFAIL\033[0m")/''
 }
-
-bindkey -s '^o' 'br\n'
 
 eval "$(starship init zsh)"

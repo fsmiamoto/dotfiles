@@ -212,7 +212,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'yuki-ycino/fzf-preview.vim'
+" Plug 'yuki-ycino/fzf-preview.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
@@ -304,21 +304,21 @@ let g:fzf_colors =
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
 
-let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
-let g:fzf_preview_directories_file_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
-let g:fzf_preview_use_dev_icons = 1
-let g:fzf_preview_command = 'bat --color=always --style=grid {-1} --theme "base16" '
+" let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
+" let g:fzf_preview_directories_file_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
+" let g:fzf_preview_use_dev_icons = 1
+" let g:fzf_preview_command = 'bat --color=always --style=grid {-1} --theme "base16" '
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 let g:EasyMotion_smartcase = 1
 
 " ***** Plugin mappings *****
 
-" Search for files
-nnoremap <leader>f :FzfPreviewProjectFiles<CR>
+" Search for files in the current directory
+nnoremap <leader>f :Files .<CR>
 
 " Search for buffers
-nnoremap <leader>b :FzfPreviewBuffers<CR>
+nnoremap <leader>b :Buffers<CR>
 
 " Search for lines
 nnoremap <leader>l :BLines<CR>
@@ -393,8 +393,8 @@ map  <space>w <Plug>(easymotion-bd-w)
 " ***** Commands *****
 
 " Preview window
-" command! -bang -nargs=? -complete=dir Files
-"             \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=? -complete=dir Files
+            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 augroup startup
     autocmd!

@@ -27,7 +27,7 @@ plugins=(
 [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]       && source  "$HOME/google-cloud-sdk/path.zsh.inc"
 [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
 
-export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
 
 # zsh-autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
@@ -186,21 +186,6 @@ k(){
     fi
 }
 
-# Lists my config files and opens it on $EDITOR
-cfg() {
-    file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
-}
-
-pdf(){
-    FILE=$(find UTFPR | grep \.pdf | cut -f 1 --complement -d '/' |fzf  --layout=reverse --prompt='Choose a PDF: ')
-   zathura "UTFPR/$FILE" & disown;
-   exit;
-}
-
-get-thumbnail(){
-    ffmpeg  -itsoffset -105 -i $1 -vcodec mjpeg -vframes 1 -an -f rawvideo -s 300x300 $2;
-}
-
 clone(){
     PROJECT_DIR="$HOME/Dev"
     test -n "$1" && cd $PROJECT_DIR > /dev/null && git clone $1
@@ -215,35 +200,19 @@ ide(){
 }
 
 # Credit to github.com/connermcd
-pacman_install() {
+pi() {
     sudo pacman -Sy
     sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
 }
-
 open_with_fzf() {
     fd -t f -H -I | fzf -m --preview="xdg-mime query default {}" | xargs -ro -d "\n" xdg-open 2>&-
 }
-
 cd_with_fzf() {
-    cd $HOME > /dev/null && cd "$(fd -t d | fzf --preview="tree -L 1 {}" --bind="space:toggle-preview" --preview-window=:hidden)"
+    cd $HOME > /dev/null
+    cd "$(fd -t d | fzf --preview="tree -L 1 {}")" > /dev/null
 }
 
-bindkey -s '^f' 'cd_with_fzf\n'
-bindkey -s '^i' 'pacman_install\n'
-bindkey -s '^o' 'open_with_fzf\n'
-
-# Change directories with lf
-# Credit to Luke Smith
-lfcd(){
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ ! -f "$tmp" ]; then
-        return
-    fi
-    dir="$(cat "$tmp")"
-    rm -f "$tmp"
-    [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-}
+bindkey -s '^o' 'cd_with_fzf\n'
 
 # Colorizes go test output
 gotest(){

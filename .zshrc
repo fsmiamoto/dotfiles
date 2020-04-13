@@ -201,7 +201,7 @@ ide(){
 
 # Credit to github.com/connermcd
 pi() {
-    sudo pacman -Sy
+    [ "$1" = "-u" ] && sudo pacman -Sy
     sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
 }
 open_with_fzf() {

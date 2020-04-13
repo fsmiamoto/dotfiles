@@ -304,6 +304,8 @@ let g:fzf_colors =
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
 
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+
 " let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
 " let g:fzf_preview_directories_file_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
 " let g:fzf_preview_use_dev_icons = 1

@@ -12,6 +12,7 @@ prompt_order = [
     "golang",
     "nodejs",
     "python",
+    "php",
     "rust",
     "memory_usage",
     "aws",
@@ -44,6 +45,9 @@ symbol = "go "
 
 [nodejs]
 symbol = "node "
+
+[php]
+symbol = "php "
 
 [rust]
 symbol = "rust "

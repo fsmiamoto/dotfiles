@@ -79,7 +79,7 @@ alias arduino="arduino-cli"
 alias sv="sudo $EDITOR"
 alias trt="transmission-remote-cli"
 alias v.="$EDITOR ."
-alias e="$EDITOR"
+alias v="$EDITOR"
 
 alias pyenv="source env/bin/activate"
 
@@ -159,6 +159,8 @@ ialias l="exa -l"
 ialias grep="grep --color=auto"
 ialias fzf="fzf --color=16 --preview 'bat --theme='base16' --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
+ialias vlang="/usr/bin/v"
+ialias mkdir="mkdir -pv"
 
 ialias dot="cd ~/.dotfiles"
 ialias rdm="cd Dev/random"

@@ -101,6 +101,9 @@ cnoremap <C-w> <Home>
 " Make current word uppercase
 inoremap <C-u> <Esc>viWgUEa
 
+" Duplicate the current line
+nnoremap <space>d :t.<CR>
+
 " Yank until the end of line
 nnoremap Y y$
 
@@ -186,8 +189,8 @@ nnoremap <C-w><down> <C-w>-
 " Add blank line
 nnoremap <CR> :normal o<Esc>k
 
-" Avoid going into ex mode
-nmap Q q
+" Get the hell out
+nnoremap Q :q!<CR>
 
 " Skip quickfix when switching buffers
 nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
@@ -367,8 +370,8 @@ nmap <silent> <space>k <Plug>(coc-diagnostic-prev)
 nmap <silent> <space>j <Plug>(coc-diagnostic-next)
 
 nnoremap <silent> <space>o :<C-u>CocList outline<CR>
-nnoremap <silent> <space>s :<C-u>CocList -I symbols<CR>
-nnoremap <silent> <space>d :<C-u>CocList diagnostics<CR>
+nnoremap <silent> <leader>s :<C-u>CocList -I symbols<CR>
+nnoremap <silent> <leader>d :<C-u>CocList diagnostics<CR>
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -420,6 +423,8 @@ augroup filetypes
     " File based changes
     autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
     autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+
+    autocmd FileType php inoremap .. ->
 
     " Go abbreviations
     autocmd FileType go :cabbrev gi GoImport

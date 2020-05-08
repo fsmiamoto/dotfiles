@@ -174,7 +174,7 @@ nnoremap <leader>r :source $HOME/.vimrc<CR>
 nnoremap <leader>v :vsplit $MYVIMRC<CR>
 
 " Close buffer
-nnoremap <C-q> :bd<CR>
+nnoremap <C-q> :Sayonara<CR>
 
 " Split window
 noremap <leader>ss :split<Return><C-w>w
@@ -189,8 +189,7 @@ nnoremap <C-w><down> <C-w>-
 " Add blank line
 nnoremap <CR> :normal o<Esc>k
 
-" Get the hell out
-nnoremap Q :q!<CR>
+nnoremap Q :Sayonara<CR>
 
 " Skip quickfix when switching buffers
 nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
@@ -210,14 +209,15 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
+Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'sheerun/vim-polyglot'
+Plug 'stsewd/fzf-checkout.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-" Plug 'yuki-ycino/fzf-preview.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
@@ -266,20 +266,15 @@ let g:airline_mode_map = {
             \ ''     : 'V',
             \ }
 let g:airline_skip_empty_sections = 1
-let g:airline_section_z = 'ℓ %2l/%L : %2c'
-
-" Hides file encoding section
-" let g:airline_section_y = airline#section#create([])
+let g:airline_section_z = 'ℓ %2l:%2c/%L'
 
 let g:go_fmt_command = "goimports"  " Run goimports along gofmt on each save
 let g:go_fmt_experimental = 1       " Don't refold on every save
 let g:go_auto_type_info = 1         " Automatically get signature/type info for object under cursor
-" let g:go_auto_sameids = 1           " Highlight same variable in view
 let g:go_doc_keywordprg_enabled = 0 " Disable default mapping to see doc
 let g:go_def_mapping_enabled = 0    " Disable default mapping for go to def
 let g:go_fold_enable = ['block', 'import']
 let g:go_def_mode='gopls'
-" let g:go_info_mode='gopls'
 
 let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets']
 let g:coc_snippet_next = '<C-w>'
@@ -309,12 +304,7 @@ let g:fzf_colors =
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
 
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
-
-" let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
-" let g:fzf_preview_directories_file_command = 'rg --files --hidden --follow --no-messages -g "!{.git}"'
-" let g:fzf_preview_use_dev_icons = 1
-" let g:fzf_preview_command = 'bat --color=always --style=grid {-1} --theme "base16" '
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.9 } }
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 let g:EasyMotion_smartcase = 1
@@ -328,8 +318,8 @@ nnoremap <leader>f :Files .<CR>
 nnoremap <leader>b :Buffers<CR>
 
 " Search for lines
-nnoremap <leader>l :BLines<CR>
-nnoremap <leader>L :Lines<CR>
+nnoremap <space>f :BLines<CR>
+nnoremap <space>F :Lines<CR>
 
 " Search for mappings
 nnoremap <leader>m :Maps<CR>
@@ -479,8 +469,9 @@ function! MaybeCenter() abort
     let prev = get(b:, 'prev_line', curr)
     let top = line('w0')
     let bot = line('w$')
+    let jumpSize = 15 "lines
 
-    if abs(curr - prev) >= 15 && (curr - top < 15 || bot - curr < 15)
+    if abs(curr - prev) >= jumpSize && (curr - top < jumpSize || bot - curr < jumpSize)
         normal! zz
     endif
 

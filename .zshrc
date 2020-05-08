@@ -157,7 +157,7 @@ ialias vim="nvim"
 ialias ls="exa"
 ialias l="exa -l"
 ialias grep="grep --color=auto"
-ialias fzf="fzf --color=16 --preview 'bat --theme='base16' --style=numbers --color=always {}'"
+ialias fzf="fzf --color=16 --preview 'bat --theme='base16 --color=always --style=grid {-1}' --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias vlang="/usr/bin/v"
 ialias mkdir="mkdir -pv"
@@ -200,6 +200,11 @@ ide(){
     tmux split-window -v -p 60
     tmux select-pane -L
     $EDITOR .
+}
+
+ck(){
+    local branch=$(git branch -v | rg -v '\*' | fzf --preview-window=hidden | awk '{ print $1 }')
+    git checkout "$branch"
 }
 
 # Credit to github.com/connermcd

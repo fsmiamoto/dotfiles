@@ -5,14 +5,8 @@
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-export ZSH=~/.oh-my-zsh
-plugins=(
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-    zsh-vimto
-)
-
-[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] && source ~/.oh-my-zsh/oh-my-zsh.sh
+# Plugins using Antibody
+[ -f ~/.zsh_plugins.sh ] && source ~/.zsh_plugins.sh
 
 # Alias expansion
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
@@ -20,27 +14,17 @@ plugins=(
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# broot
-[ -f ~/.config/broot/launcher/bash/br ] && source ~/.config/broot/launcher/bash/br
-
-# GCloud
-[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]       && source  "$HOME/google-cloud-sdk/path.zsh.inc"
-[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
-
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
 
 # zsh-autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
+ZSH_AUTOSUGGEST_STRATEGY=(history)
 bindkey '^e' autosuggest-accept
-
-bindkey -s '^v' 'vim .\n'
 
 # zsh-syntax-highlighting
 # (https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md)
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-
 typeset -A ZSH_HIGHLIGHT_STYLES
-
 ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
 ZSH_HIGHLIGHT_STYLES[function]='fg=blue,bold'
 ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
@@ -48,10 +32,6 @@ ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
-
-# asdf
-[ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
-[ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
 
 # Better autocompletion
 autoload -U compinit
@@ -63,6 +43,13 @@ compinit
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^w' edit-command-line
+
+# cd without cd
+setopt auto_cd
+
+export HISTFILE=$HOME/.zsh_history
+export HISTSIZE=950000
+export SAVEHIST=950000
 
 ########## Aliases ##########
 
@@ -151,6 +138,7 @@ balias tmc="$EDITOR ~/.tmux.conf"
 balias src="source $HOME/.zshrc"
 
 ialias git="hub"
+ialias mkdir="mkdir -p"
 ialias cat="bat -p --theme='OneHalfDark'"
 ialias sed='sed -E'
 ialias vim="nvim"
@@ -163,14 +151,13 @@ ialias vlang="/usr/bin/v"
 ialias mkdir="mkdir -pv"
 
 ialias dot="cd ~/.dotfiles"
-ialias rdm="cd Dev/random"
 
 ########## Functions ##########
 
 # Auto ls when cd'ing
 chpwd(){
     emulate -L zsh
-    exa --group-directories-first
+    ls --group-directories-first
 }
 
 # Creates a directory and cd's into it
@@ -187,6 +174,16 @@ k(){
     else
         kill "$pid"
     fi
+}
+
+# Colorizes go test output
+gotest(){
+    go test $* | sed ''/PASS/s//$(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//$(printf "\033[31mFAIL\033[0m")/''
+}
+
+# Lists my config files and opens it on $EDITOR
+cfg() {
+    file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
 }
 
 clone(){
@@ -212,19 +209,16 @@ pi() {
     [ "$1" = "-u" ] && sudo pacman -Sy
     sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
 }
+
 open_with_fzf() {
     fd -t f -H -I | fzf -m --preview="xdg-mime query default {}" | xargs -ro -d "\n" xdg-open 2>&-
 }
+
 cd_with_fzf() {
     cd $HOME > /dev/null
-    cd "$(fd -t d | fzf --preview="tree -L 1 {}")" > /dev/null
+    cd "$(fd -t d --ignore-file="$HOME/.ignore" | fzf --preview="tree -L 1 {}")"
 }
 
 bindkey -s '^o' 'cd_with_fzf\n'
-
-# Colorizes go test output
-gotest(){
-    go test $* | sed ''/PASS/s//$(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//$(printf "\033[31mFAIL\033[0m")/''
-}
 
 eval "$(starship init zsh)"

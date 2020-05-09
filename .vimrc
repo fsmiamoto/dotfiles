@@ -88,7 +88,8 @@ set cursorline
 let mapleader=","
 
 nnoremap ; :
-vnoremap ; :
+nnoremap : ;
+vnoremap : ;
 
 " Open fold
 nnoremap <space><space> za
@@ -201,10 +202,13 @@ endif
 
 " ***** Plugins *****
 call plug#begin()
+Plug 'antoinemadec/coc-fzf'
 Plug 'chaoren/vim-wordmotion'
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'easymotion/vim-easymotion'
+Plug 'edkolev/tmuxline.vim'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
@@ -212,16 +216,13 @@ Plug 'junegunn/vim-slash'
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdtree'
-Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
-Plug 'edkolev/tmuxline.vim'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Lazy-loaded
@@ -359,9 +360,10 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <silent> <space>k <Plug>(coc-diagnostic-prev)
 nmap <silent> <space>j <Plug>(coc-diagnostic-next)
 
-nnoremap <silent> <space>o :<C-u>CocList outline<CR>
-nnoremap <silent> <leader>s :<C-u>CocList -I symbols<CR>
-nnoremap <silent> <leader>d :<C-u>CocList diagnostics<CR>
+nnoremap <silent> <space>o  :<C-u> CocFzfList outline<CR>
+nnoremap <silent> <leader>s :<C-u> CocFzfList -I symbols<CR>
+nnoremap <silent> <leader>d :<C-u> CocFzfList diagnostics<CR>
+
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -378,8 +380,8 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
-" NERDTree
-noremap <F2> :NERDTreeToggle<CR>
+" explorer
+noremap <F2> :CocCommand explorer<CR>
 
 " easymotion
 nmap s <Plug>(easymotion-s2)

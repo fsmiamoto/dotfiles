@@ -89,7 +89,6 @@ let mapleader=","
 
 nnoremap ; :
 nnoremap : ;
-vnoremap : ;
 
 " Open fold
 nnoremap <space><space> za
@@ -213,12 +212,12 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'

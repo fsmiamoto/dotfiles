@@ -178,7 +178,6 @@ nnoremap <leader>r :source $HOME/.vimrc<CR>
 " Open vimrc on a vertical split
 nnoremap <leader>v :vsplit $MYVIMRC<CR>
 
-
 " Split window
 noremap <leader>ss :split<Return><C-w>w
 noremap <leader>sv :vsplit<Return><C-w>w

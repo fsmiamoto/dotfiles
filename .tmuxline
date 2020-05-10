@@ -1,0 +1,21 @@
+# This tmux statusbar config was created by tmuxline.vim
+# on Sun, 08 Mar 2020
+
+set -g status-justify "left"
+set -g status "on"
+set -g status-left-style "none"
+set -g message-command-style "fg=#dfe1e8,bg=#4f5b66"
+set -g status-right-style "none"
+set -g pane-active-border-style "fg=#a3be8c"
+set -g status-style "none,bg=#343d46"
+set -g message-style "fg=#dfe1e8,bg=#4f5b66"
+set -g pane-border-style "fg=#4f5b66"
+set -g status-right-length "100"
+set -g status-left-length "100"
+setw -g window-status-activity-style "none,fg=#a3be8c,bg=#343d46"
+setw -g window-status-separator ""
+setw -g window-status-style "none,fg=#d08770,bg=#343d46"
+set -g status-left "#[fg=#343d46,bg=#a3be8c] #S #[fg=#a3be8c,bg=#343d46,nobold,nounderscore,noitalics]"
+set -g status-right "#[fg=#343d46,bg=#343d46,nobold,nounderscore,noitalics]#[fg=#d08770,bg=#343d46] #(jp-date a) #[fg=#4f5b66,bg=#343d46,nobold,nounderscore,noitalics]#[fg=#dfe1e8,bg=#4f5b66] %m月%d日 #[fg=#a3be8c,bg=#4f5b66,nobold,nounderscore,noitalics]#[fg=#343d46,bg=#a3be8c] %R "
+setw -g window-status-format "#[fg=#343d46,bg=#343d46,nobold,nounderscore,noitalics]#[default] #I #W #[fg=#343d46,bg=#343d46,nobold,nounderscore,noitalics]"
+setw -g window-status-current-format "#[fg=#343d46,bg=#4f5b66,nobold,nounderscore,noitalics]#[fg=#dfe1e8,bg=#4f5b66] #I  #W#{?window_zoomed_flag, 🔍,}  #F #[fg=#4f5b66,bg=#343d46,nobold,nounderscore,noitalics]"

@@ -6,7 +6,8 @@
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
 # Plugins using Antibody
-[ -f ~/.zsh_plugins.sh ] && source ~/.zsh_plugins.sh
+[ ! -f ~/.zsh/plugins.sh ] && antibody bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
+source ~/.zsh/plugins.sh
 
 # Alias expansion
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh

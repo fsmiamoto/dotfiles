@@ -35,10 +35,14 @@ ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 
 # Better autocompletion
-autoload -U compinit
 zmodload zsh/complist
 zstyle ":completion:*" menu select
-compinit
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+	compinit;
+else
+	compinit -C;
+fi;
 
 # <C-w> to edit line in editor
 autoload edit-command-line

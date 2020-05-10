@@ -220,10 +220,11 @@ open_with_fzf() {
 }
 
 cd_with_fzf() {
-    cd $HOME > /dev/null
-    cd "$(fd -t d --ignore-file="$HOME/.ignore" | fzf --preview="tree -L 1 {}")"
+    if [ "$1" != "-r" ] && cd $HOME > /dev/null
+    cd "$(fd -t d | fzf --preview="tree -L 1 {}")"
 }
 
-bindkey -s '^o' 'cd_with_fzf\n'
+bindkey -s '^O' 'cd_with_fzf\n'
+bindkey -s '^o' 'cd_with_fzf -r\n'
 
 eval "$(starship init zsh)"

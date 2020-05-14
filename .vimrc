@@ -34,6 +34,7 @@ set virtualedit=onemore
 " Show more lines at top/bottom
 set scrolloff=3
 
+
 " Store a ton of history (default is 20)
 set history=2000
 
@@ -174,6 +175,10 @@ nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 
 " Reload vimrc
 nnoremap <leader>r :source $HOME/.vimrc<CR>
+
+" Replace selected text
+nnoremap <leader>rp :%s///g<Left><Left>
+xnoremap <leader>rp :s///g<Left><Left>
 
 " Open vimrc on a vertical split
 nnoremap <leader>v :vsplit $MYVIMRC<CR>

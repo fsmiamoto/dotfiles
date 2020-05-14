@@ -1,4 +1,4 @@
-let g:sneak#label = 1
+"let g:sneak#label = 1
 
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F

@@ -54,22 +54,22 @@ symbol = "rust "
 
 [git_branch]
 prefix = ""
+style = "bold #b16286"
 
 [git_status]
 prefix = ""
 suffix = " "
-style = "bold #b294bb"
 
-stashed.style = "#cc6666"
+stashed.style = "#cc241d"
 
 deleted.value = "-"
-deleted.style = "#cc6666"
+deleted.style = "#cc241d"
 
 modified.value = "!"
-modified.style = "#de935f"
+modified.style = "#fe8019"
 
 untracked.value = "?"
 untracked.style = "#f0c674"
 
 staged.value = "+"
-staged.style = "#b5bd68"
+staged.style = "#b8bb26"

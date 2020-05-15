@@ -34,7 +34,6 @@ set virtualedit=onemore
 " Show more lines at top/bottom
 set scrolloff=3
 
-
 " Store a ton of history (default is 20)
 set history=2000
 

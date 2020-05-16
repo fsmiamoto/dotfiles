@@ -1,4 +1,4 @@
 fsmiamoto/zsh-vimto
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
-zdharma/fast-syntax-highlighting
+zsh-users/zsh-syntax-highlighting

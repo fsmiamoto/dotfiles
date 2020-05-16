@@ -215,24 +215,6 @@ ide(){
     $EDITOR .
 }
 
-# Checkout to a given branch or create it if it does not exist
-ck(){
-    # Check if we're in a git repo
-    git rev-parse --is-inside-work-tree > /dev/null 2>&1
-    [ "$?" != "0" ] &&  return;
-
-    local branch=$(git branch -v | rg -v '\*' | fzf --preview-window=hidden --print-query | tail -1 | awk '{ print $1 }')
-
-    git show-branch "$branch" &>/dev/null
-    if [ "$?" = "0" ]; then
-        echo "Checking out: $branch"
-        git checkout "$branch"
-    else
-        echo "Creating new branch: $branch"
-        git checkout -b "$branch"
-    fi
-}
-
 # Credit to github.com/connermcd
 pi() {
     [ "$1" = "-u" ] && sudo pacman -Sy

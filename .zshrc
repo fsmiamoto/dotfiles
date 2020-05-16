@@ -84,6 +84,8 @@ alias pacr="sudo pacman -Rsn"
 alias g="git"
 alias gc="git commit"
 alias gb="git branch"
+alias gbd="git branch -d"
+alias gbD="git branch -D"
 alias gca="git commit --amend"
 alias gcm="git commit -m"
 alias gC="git add -A && git commit -m"
@@ -153,7 +155,8 @@ ialias sed='sed -E'
 ialias vim="nvim"
 ialias ls="exa"
 ialias l="exa -l"
-ialias grep="grep --color=auto"
+ialias grep="rg"
+ialias find="fd"
 ialias fzf="fzf --color=16 --preview 'bat --theme=base16 --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias vlang="/usr/bin/v"
@@ -192,7 +195,11 @@ gotest(){
 
 # Lists my config files and opens it on $EDITOR
 cfg() {
-    file=$( find $HOME/.config -type f | fzf ) && $EDITOR $file
+    file=$( find $HOME/.config -t f | fzf ) && $EDITOR $file
+}
+
+vc() {
+    file=$( find $HOME/.config/nvim -t f | fzf ) && $EDITOR $file
 }
 
 clone(){
@@ -208,13 +215,22 @@ ide(){
     $EDITOR .
 }
 
+# Checkout to a given branch or create it if it does not exist
 ck(){
     # Check if we're in a git repo
-    git rev-parse --is-inside-work-tree 2> /dev/null
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1
     [ "$?" != "0" ] &&  return;
 
-    local branch=$(git branch -v | rg -v '\*' | fzf --preview-window=hidden | awk '{ print $1 }')
-    git checkout "$branch"
+    local branch=$(git branch -v | rg -v '\*' | fzf --preview-window=hidden --print-query | tail -1 | awk '{ print $1 }')
+
+    git show-branch "$branch" &>/dev/null
+    if [ "$?" = "0" ]; then
+        echo "Checking out: $branch"
+        git checkout "$branch"
+    else
+        echo "Creating new branch: $branch"
+        git checkout -b "$branch"
+    fi
 }
 
 # Credit to github.com/connermcd

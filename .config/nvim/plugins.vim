@@ -25,6 +25,7 @@ Plug 'stsewd/fzf-checkout.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'voldikss/vim-floaterm'
 
 " Lazy-loaded
 Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }

@@ -180,7 +180,8 @@ nnoremap <leader>rp :%s///g<Left><Left>
 xnoremap <leader>rp :s///g<Left><Left>
 
 " Open vimrc on a vertical split
-nnoremap <leader>v :vsplit $MYVIMRC<CR>
+nnoremap <leader>vr :vsplit $MYVIMRC<CR>
+nnoremap <leader>vp :vsplit ~/.config/nvim/plugins.vim<CR>
 
 " Split window
 noremap <leader>ss :split<Return><C-w>w
@@ -198,6 +199,9 @@ nnoremap <CR> :normal o<Esc>k
 " Skip quickfix when switching buffers
 nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
 nnoremap <silent> <S-Tab> :bp<Bar>if &buftype ==# 'quickfix'<Bar>bp<Bar>endif<CR>
+
+" Editing a protected file as 'sudo'
+cmap W w !sudo tee % >/dev/null<CR>
 
 if (has("termguicolors"))
     set termguicolors

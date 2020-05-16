@@ -5,3 +5,5 @@ let g:floaterm_wintitle=0
 let g:floaterm_autoclose=1
 
 nnoremap <space>lg :FloatermNew lazygit<CR>
+nnoremap <space>ck :FloatermNew ck<CR>
+

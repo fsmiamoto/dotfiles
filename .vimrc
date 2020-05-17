@@ -180,8 +180,7 @@ nnoremap <leader>rp :%s///g<Left><Left>
 xnoremap <leader>rp :s///g<Left><Left>
 
 " Open vimrc on a vertical split
-nnoremap <leader>vr :vsplit $MYVIMRC<CR>
-nnoremap <leader>vp :vsplit ~/.config/nvim/plugins.vim<CR>
+nnoremap <leader>v :vsplit $MYVIMRC<CR>
 
 " Split window
 noremap <leader>ss :split<Return><C-w>w
@@ -214,6 +213,9 @@ hi Normal ctermbg=NONE guibg=NONE
 augroup startup
     autocmd!
     autocmd CursorMoved * call MaybeCenter()
+    " Changed wd for dotfiles
+    autocmd BufEnter ~/.dotfiles/* :lcd %:h
+    autocmd BufEnter ~/.config/nvim/init.vim   :lcd ~/.dotfiles
 augroup END
 
 augroup filetypes

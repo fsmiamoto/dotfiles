@@ -194,11 +194,7 @@ gotest(){
 
 # Lists my config files and opens it on $EDITOR
 cfg() {
-    file=$( find $HOME/.config -t f | fzf ) && $EDITOR $file
-}
-
-vc() {
-    file=$( find $HOME/.config/nvim -t f | fzf ) && $EDITOR $file
+    file=$( fd -t f . "$HOME/.config" | fzf ) && $EDITOR $file
 }
 
 clone(){

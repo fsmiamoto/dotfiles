@@ -96,6 +96,7 @@ vnoremap ; :
 
 nnoremap : ;
 
+
 " Open fold
 nnoremap <space><space> za
 nnoremap <space>r zR
@@ -266,5 +267,5 @@ function! MaybeCenter() abort
 endfunction
 
 if has("nvim")
-     source $HOME/.config/nvim/plugin/plug.vim
+     source $HOME/.config/nvim/plug.vim
 endif

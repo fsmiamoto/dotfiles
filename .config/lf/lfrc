@@ -20,7 +20,7 @@ cmd mkdir ${{
 cmd mkfile ${{
   printf "File Name: "
   read ans
-  $EDITOR $ans
+  touch $ans
 }}
 
 cmd chmod ${{
@@ -35,6 +35,16 @@ cmd chmod ${{
 
 cmd setwallpaper %wal -i "$f"
 
+# Remove some defaults
+map m
+map o
+map n
+map "'"
+map '"'
+map d
+map c
+map e
+
 map DD delete
 map . set hidden!
 map ch chmod
@@ -46,8 +56,6 @@ map x cut
 map v invert
 map <enter> open
 map P & sxiv $(dirname "$f")
-
-map - $draw_img.sh "$f"
 
 map gdf cd ~/.dotfiles
 map gcf cd ~/.config

@@ -1,0 +1,53 @@
+set preview true
+set color256 true
+set icons true
+set ignorecase true
+
+cmd open ${{
+    case $(file --mime-type "$f" -bL) in 
+        text/*|application/json) $EDITOR "$fx";;
+        video/*|application/pdf) xdg-open "$f" &;;
+        *) for f in "$fx"; do xdg-ogen "$f" &> /dev/null & done;; 
+    esac
+}}
+    
+cmd mkdir ${{
+  printf "Directory Name: "
+  read ans
+  mkdir $ans
+}}
+
+cmd mkfile ${{
+  printf "File Name: "
+  read ans
+  $EDITOR $ans
+}}
+
+cmd chmod ${{
+  printf "Mode Bits: "
+  read ans
+
+  for file in "$fx"
+  do
+    chmod $ans $file
+  done
+}}
+
+cmd setwallpaper %wal -i "$f"
+
+map DD delete
+map . set hidden!
+map ch chmod
+map md mkdir
+map mf mkfile
+map bg setwallpaper
+map y copy
+map x cut
+map v invert
+map <enter> open
+map P & sxiv $(dirname "$f")
+
+map - $draw_img.sh "$f"
+
+map gdf cd ~/.dotfiles
+map gcf cd ~/.config

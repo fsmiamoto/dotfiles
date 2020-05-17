@@ -15,6 +15,9 @@ source ~/.zsh/plugins.sh
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# asdf
+[ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
+
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
 
 # zsh-autosuggestions
@@ -138,13 +141,9 @@ alias mki="sudo make install"
 
 alias ka="killall"
 
-balias i3c="$EDITOR ~/.config/i3/config"
-balias vimc="$EDITOR ~/.vimrc"
-balias pbc="$EDITOR ~/.config/polybar/config"
-balias xrc="$EDITOR ~/.Xresources"
-balias bsc="$EDITOR ~/.bashrc"
-balias zshc="$EDITOR ~/.zshrc"
-balias tmc="$EDITOR ~/.tmux.conf"
+balias vimc="$EDITOR ~/.dotfiles/.vimrc"
+balias zshc="$EDITOR ~/.dotfiles/.zshrc"
+balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 

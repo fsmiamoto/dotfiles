@@ -267,5 +267,6 @@ function! MaybeCenter() abort
 endfunction
 
 if has("nvim")
-     source $HOME/.config/nvim/plug.vim
+    source $HOME/.config/nvim/plug.vim
+    source $HOME/.config/nvim/theme.vim
 endif

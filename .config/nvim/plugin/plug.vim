@@ -21,7 +21,6 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'sheerun/vim-polyglot'
-Plug 'stsewd/fzf-checkout.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'

@@ -266,8 +266,5 @@ function! MaybeCenter() abort
 endfunction
 
 if has("nvim")
-    source $HOME/.config/nvim/plugins.vim
-    for f in split(glob('~/.config/nvim/plugins/*.vim'), '\n')
-      exec 'source' f
-    endfor
+     source $HOME/.config/nvim/plugin/plug.vim
 endif

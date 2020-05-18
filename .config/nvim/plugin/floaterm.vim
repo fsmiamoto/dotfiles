@@ -6,5 +6,5 @@ let g:floaterm_autoclose=1
 
 nnoremap <space>lg :FloatermNew lazygit<CR>
 nnoremap <space>lf :FloatermNew lf<CR>
-nnoremap <space>ck :FloatermNew ck<CR>
+nnoremap <space>ck :FloatermNew ck -w<CR>
 

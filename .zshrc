@@ -114,6 +114,16 @@ alias gpsu="git push -u origin"
 alias gpl="git pull"
 alias gl="git log --graph --decorate --all"
 
+alias gi="gh issue"
+alias gil="gh issue list"
+alias gic="gh issue create"
+alias giv="gh issue view"
+
+alias gpr="gh pr"
+alias gprc="gh pr create"
+alias gprl="gh pr list"
+alias gprv="gh pr view"
+
 alias lg='lazygit'
 
 alias tm="tmux"
@@ -140,6 +150,8 @@ alias mk="make"
 alias mki="sudo make install"
 
 alias ka="killall"
+
+alias chx="chmod +x"
 
 balias vimc="$EDITOR ~/.dotfiles/.vimrc"
 balias zshc="$EDITOR ~/.dotfiles/.zshrc"

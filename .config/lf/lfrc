@@ -7,7 +7,7 @@ cmd open ${{
     case $(file --mime-type "$f" -bL) in 
         text/*|application/json) $EDITOR "$fx";;
         video/*|application/pdf) xdg-open "$f" &;;
-        *) for f in "$fx"; do xdg-ogen "$f" &> /dev/null & done;; 
+        *) for f in "$fx"; do xdg-open "$f" &> /dev/null & done;; 
     esac
 }}
     

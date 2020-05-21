@@ -193,9 +193,6 @@ nnoremap <C-w><right> <C-w>>
 nnoremap <C-w><up> <C-w>+
 nnoremap <C-w><down> <C-w>-
 
-" Add blank line
-nnoremap <CR> :normal o<Esc>k
-
 " Skip quickfix when switching buffers
 nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
 nnoremap <silent> <S-Tab> :bp<Bar>if &buftype ==# 'quickfix'<Bar>bp<Bar>endif<CR>

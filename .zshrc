@@ -161,14 +161,14 @@ balias src="source $HOME/.zshrc"
 
 ialias git="hub"
 ialias mkdir="mkdir -p"
-ialias cat="bat -p --theme='OneHalfDark'"
+ialias cat="bat"
 ialias sed='sed -E'
 ialias vim="nvim"
 ialias ls="exa"
 ialias l="exa -l"
 ialias grep="rg"
 ialias find="fd"
-ialias fzf="fzf --color=16 --preview 'bat --theme=base16 --style=numbers --color=always {}'"
+ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias vlang="/usr/bin/v"
 ialias mkdir="mkdir -pv"
@@ -241,3 +241,4 @@ bindkey -s '^O' 'cd_with_fzf\n'
 bindkey -s '^o' 'cd_with_fzf -r\n'
 
 eval "$(starship init zsh)"
+

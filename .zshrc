@@ -55,6 +55,9 @@ bindkey '^w' edit-command-line
 # cd without cd
 setopt auto_cd
 
+# Disable ctrl-s to freeze terminal.
+stty stop undef
+
 export HISTFILE=$HOME/.zsh_history
 export HISTSIZE=950000
 export SAVEHIST=950000

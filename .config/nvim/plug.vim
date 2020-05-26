@@ -15,6 +15,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-slash'
 Plug 'justinmk/vim-sneak'
+Plug 'machakann/vim-highlightedyank'
 Plug 'mengelbrecht/lightline-bufferline'
 Plug 'morhetz/gruvbox'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}

@@ -25,7 +25,7 @@ let g:lightline = {
       \ },
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' },
-      \ 'mode_map':{
+      "\ 'mode_map':{
             \ '__'     : '-',
             \ 'c'      : 'C',
             \ 'i'      : 'I',
@@ -44,7 +44,7 @@ let g:lightline = {
             \ 'v'      : 'V',
             \ 'V'      : 'V',
             \ '\<C-v>'  : 'V',
-      \ }
+      "\ }
       \ }
 
 let g:lightline#bufferline#show_number  = 2

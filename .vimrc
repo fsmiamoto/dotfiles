@@ -197,15 +197,11 @@ nnoremap <C-w><down> <C-w>-
 nnoremap <silent> <Tab> :bn<Bar>if &buftype ==# 'quickfix'<Bar>bn<Bar>endif<CR>
 nnoremap <silent> <S-Tab> :bp<Bar>if &buftype ==# 'quickfix'<Bar>bp<Bar>endif<CR>
 
-" Editing a protected file as 'sudo'
-cmap W w !sudo tee % >/dev/null<CR>
-
-if (has("termguicolors"))
+if (has("termguicolors") && has("nvim"))
     set termguicolors
 endif
 
 " Theming
-set t_Co=256
 hi Normal ctermbg=NONE guibg=NONE
 
 augroup startup
@@ -263,7 +259,10 @@ function! MaybeCenter() abort
     let b:prev_line = curr
 endfunction
 
-if has("nvim")
+if !empty(glob("~/.config/nvim/plug.vim"))
     source $HOME/.config/nvim/plug.vim
+endif
+
+if !empty(glob("~/.config/nvim/theme.vim"))
     source $HOME/.config/nvim/theme.vim
 endif

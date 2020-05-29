@@ -177,6 +177,7 @@ ialias vlang="/usr/bin/v"
 ialias mkdir="mkdir -pv"
 
 ialias dot="cd ~/.dotfiles"
+ialias scs="cd ~/.scripts"
 
 ########## Functions ##########
 

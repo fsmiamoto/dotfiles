@@ -3,7 +3,7 @@
     frame_color = "#e6e0e2"
     
     # Font
-    font = Inconsolata 16
+    font = JetBrains Mono 12
     word_wrap = yes 
     ignore_newline = no
     alignment = left # left, center or right
@@ -19,7 +19,6 @@
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
     
-    
     # The frequency with wich text that is longer than the notification
     # window allows bounces back and forth.
     # This option conflicts with "word_wrap".
@@ -30,7 +29,6 @@
     # seconds.
     # Set to -1 to disable.
     show_age_threshold = 60
-    
     
     geometry = "0x4-25+25"
     

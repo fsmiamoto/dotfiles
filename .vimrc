@@ -28,8 +28,7 @@ set showtabline=2
 
 set nowrap
 
-" Allow for cursor beyond last character
-set virtualedit=onemore
+set virtualedit=block
 
 " Show more lines at top/bottom
 set scrolloff=3
@@ -151,24 +150,32 @@ vnoremap _ :m '<-2<CR>gv=gv
 " Operator pending mappings
 " Quotes and single quotes
 onoremap tq t"
+onoremap tQ t'
+
 onoremap iq i"
-onoremap isq i'
+onoremap iQ i'
+
 onoremap aq a"
-onoremap asq a'
+onoremap aQ a'
 
 " Parenthesis
 onoremap ip i(
 onoremap ap a(
-" Next and 'last' (previous)
-onoremap inp :<c-u>normal! f(vi(<cr>
-onoremap ilp :<c-u>normal! F)vi(<cr>
+
+" Paragraph as 'block'
+onoremap b p
 
 " Curly braces
-onoremap ib i{
-onoremap ab a{
-" Next and 'last' (previous)
-onoremap inb :<c-u>normal! f{vi{<cr>
-onoremap ilb :<c-u>normal! F}vi{<cr>
+onoremap ic i{
+onoremap ac a{
+
+" Angle brackets
+onoremap ia i<
+onoremap aa a<
+
+" Square brackets
+onoremap is i[
+onoremap as a[
 
 " No highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR>

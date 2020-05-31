@@ -7,11 +7,7 @@
 # Merge Xmodmap
 [ -f "$HOME/.Xmodmap" ] && xmodmap "$HOME/.Xmodmap"
 
-# Map Caps to Esc
-setxkbmap -option caps:escape
-
 # Set monitor layout
-# mons -e right
 [ -f "$HOME/.screenlayout/main.sh" ] && source ~/.screenlayout/main.sh
 
 # Restore PyWal settings

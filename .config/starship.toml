@@ -1,22 +1,15 @@
 add_newline = false
 prompt_order = [
-    # "username",
-    # "hostname",
-    # "kubernetes",
     "directory",
     "git_branch",
     "git_commit",
     "git_state",
     "git_status",
-    "package",
     "golang",
     "nodejs",
     "python",
     "php",
     "rust",
-    "memory_usage",
-    "aws",
-    "env_var",
     "cmd_duration",
     "line_break",
     "jobs",
@@ -53,12 +46,12 @@ symbol = "php "
 symbol = "rust "
 
 [git_branch]
-prefix = ""
+symbol = ""
 style = "bold #b16286"
 
 [git_status]
 prefix = ""
-suffix = " "
+suffix = ""
 
 stashed.style = "#cc241d"
 

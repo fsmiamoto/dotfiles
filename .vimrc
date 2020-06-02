@@ -87,6 +87,8 @@ set noemoji
 
 set cursorline
 
+set spelllang=en,pt,ja
+
 "  ***** Basic Mappings *****
 let mapleader=","
 

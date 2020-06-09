@@ -162,7 +162,6 @@ balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
-ialias git="hub"
 ialias mkdir="mkdir -p"
 ialias cat="bat"
 ialias sed='sed -E'

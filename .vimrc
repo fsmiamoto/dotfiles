@@ -231,6 +231,7 @@ augroup filetypes
     autocmd FileType php inoremap ;; =>
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
+    autocmd Filetype gitcommit setlocal spell
     if exists("+omnifunc")
         autocmd Filetype *
                     \	if &omnifunc == "" |

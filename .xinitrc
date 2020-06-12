@@ -19,17 +19,11 @@ nm-applet &
 # Compton for transparency
 compton -b &
 
-# Transmisssion
-transmission-daemon &
-
 # Redshift
 redshift &
 
 # Unclutter for hiding cursor when idle
 unclutter &
-
-# Start MPD
-mpd &
 
 # DWM Status
 dwmblocks &

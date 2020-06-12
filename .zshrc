@@ -213,7 +213,6 @@ cfg() {
 }
 
 clone(){
-    PROJECT_DIR="$HOME/Dev"
     test -n "$1" && cd $PROJECT_DIR > /dev/null && git clone $1
     echo "Missing repository URL"
 }
@@ -243,5 +242,40 @@ cd_with_fzf() {
 bindkey -s '^O' 'cd_with_fzf\n'
 bindkey -s '^o' 'cd_with_fzf -r\n'
 
-eval "$(starship init zsh)"
+# VI Mode
+bindkey -v
+export KEYTIMEOUT=1
 
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+precmd() { benri }
+preexec () { export BENRI_PREEXEC=$(date +"%s"); }
+
+function set-prompt () {
+    case ${KEYMAP} in
+      (vicmd)      SYMBOL="!" ;;
+      (main|viins) SYMBOL="$" ;;
+      (*)          SYMBOL="$" ;;
+    esac
+
+    # 2: Block ("█")
+    # 4: Underline ("_")
+    # 6: Bar ("|")
+	if [[ -z "${TMUX}" ]]; then
+		local cursor_seq="\e[2 q"
+	else
+		local cursor_seq="\ePtmux;\e\e[2 q\e\\"
+	fi
+
+    echo -ne $cursor_seq
+    PROMPT="%(?.%F{green}.%F{red})${SYMBOL}%f "
+}
+
+function zle-line-init zle-keymap-select {
+    set-prompt
+    zle reset-prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select

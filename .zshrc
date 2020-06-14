@@ -245,6 +245,7 @@ bindkey -s '^o' 'cd_with_fzf -r\n'
 # VI Mode
 bindkey -v
 export KEYTIMEOUT=1
+export BENRI_PREEXEC=$(date +"%s")
 
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char

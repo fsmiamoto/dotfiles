@@ -1,7 +1,7 @@
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename', 'cocstatus' ] ],
       \   'right': [ [ 'lineinfo' ],
       \              [ 'filetype' ],
       \              [ 'fileformat', 'fileencoding' ] ]
@@ -15,7 +15,8 @@ let g:lightline = {
       \ },
       \ 'component_function': {
       \   'readonly': 'LightlineReadonly',
-      \   'fugitive': 'LightlineFugitive'
+      \   'fugitive': 'LightlineFugitive',
+      \   'cocstatus': 'coc#status',
       \ },
       \ 'component_expand': {
       \   'buffers': 'lightline#bufferline#buffers'

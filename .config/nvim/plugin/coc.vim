@@ -1,4 +1,3 @@
-let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python', 'coc-prettier', 'coc-omni', 'coc-rls', 'coc-snippets', 'coc-go']
 let g:coc_snippet_next = '<C-w>'
 
 " Rename current symbol
@@ -18,9 +17,6 @@ nmap <silent> <space>k <Plug>(coc-diagnostic-prev)
 nmap <silent> <space>j <Plug>(coc-diagnostic-next)
 
 nnoremap <silent> <space>o  :<C-u> CocFzfList outline<CR>
-nnoremap <silent> <leader>s :<C-u> CocFzfList -I symbols<CR>
-nnoremap <silent> <leader>d :<C-u> CocFzfList diagnostics<CR>
-
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -34,6 +30,16 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Explorer
 noremap <F2> :CocCommand explorer<CR>
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
 
 " Show documentation for symbol
 " Opens :help for vim filetypes

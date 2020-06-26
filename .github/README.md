@@ -9,8 +9,8 @@ This repo contains my config files, a.k.a dotfiles, that I change probably more 
 - Notifications: dunst
 - Shell: zsh
 - Terminal Emulator: st
-- File manager: ranger
-- Editor: NeoVim
+- File manager: lf
+- Editor: Neovim
 
 Colorscheme generated with PyWal
 
@@ -28,10 +28,6 @@ Colorscheme generated with PyWal
     $ make backup
     $ make install
 ```
-
-![neofetch](setup.png)
-
-
 
 ### Todo's
 

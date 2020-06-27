@@ -11,7 +11,7 @@ preexec () { export BENRI_PREEXEC=$(date +"%s"); }
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 local formats="%c%u"
-local actionformats="${formats}%F{red}%a "
+local actionformats="%B%F{red}%a ${formats}"
 
 zstyle ':vcs_info:*:*' formats           $formats
 zstyle ':vcs_info:*:*' actionformats     $actionformats
@@ -20,8 +20,8 @@ zstyle ':vcs_info:*:*' unstagedstr       "%F{yellow}•"
 zstyle ':vcs_info:*:*' check-for-changes true
 
 function precmd () {
-    $(go env GOBIN)/benri
-    vcs_info
+    benri;
+    vcs_info;
 }
 
 function set-prompt () {
@@ -52,4 +52,3 @@ function zle-line-init zle-keymap-select {
 
 zle -N zle-line-init
 zle -N zle-keymap-select
-add-zsh-hook precmd vcs_info

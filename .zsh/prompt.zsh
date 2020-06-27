@@ -6,8 +6,6 @@ export BENRI_PREEXEC=$(date +"%s")
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 
-preexec () { export BENRI_PREEXEC=$(date +"%s"); }
-
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 local formats="%c%u"
@@ -22,6 +20,10 @@ zstyle ':vcs_info:*:*' check-for-changes true
 function precmd () {
     benri;
     vcs_info;
+}
+
+function preexec () {
+    export BENRI_PREEXEC=$(date +"%s");
 }
 
 function set-prompt () {
@@ -41,6 +43,7 @@ function set-prompt () {
 	fi
 
     echo -ne $cursor_seq
+
     PROMPT="%(?.%F{green}.%F{red})${SYMBOL}%f "
     RPROMPT="%B${vcs_info_msg_0_} %F{grey}$(date +'%H:%M')%F{none}"
 }

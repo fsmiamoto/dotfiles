@@ -159,6 +159,8 @@ alias ka="killall"
 
 alias chx="chmod +x"
 
+alias rc="rclone"
+
 balias vimc="$EDITOR ~/.dotfiles/.vimrc"
 balias zshc="$EDITOR ~/.dotfiles/.zshrc"
 balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"

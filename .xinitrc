@@ -28,6 +28,8 @@ unclutter &
 # DWM Status
 dwmblocks &
 
+fcitx5 &
+
 # Initiate WM
 while :; do
 	ssh-agent dbus-launch dwm

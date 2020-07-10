@@ -18,7 +18,7 @@ zstyle ':vcs_info:*:*' unstagedstr       "%F{yellow}•"
 zstyle ':vcs_info:*:*' check-for-changes true
 
 function precmd () {
-    benri;
+    $GOBIN/benri;
     vcs_info;
 }
 

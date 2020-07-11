@@ -71,7 +71,6 @@ export SAVEHIST=950000
 # balias: Expand without whitespace at the end
 # ialias: Don't expand
 
-alias c='clear'
 alias s='startx'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
@@ -167,18 +166,18 @@ balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
-ialias mkdir="mkdir -p"
-ialias cat="bat"
 ialias sed='sed -E'
-ialias vim="nvim"
-ialias ls="exa"
-ialias l="exa -l"
-ialias grep="rg"
-ialias find="fd"
+ialias mkdir="mkdir -pv"
 ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias vlang="/usr/bin/v"
-ialias mkdir="mkdir -pv"
+ialias c="clear"
+
+ialias vim="nvim"
+ialias ls="exa"
+ialias ll="exa -l"
+ialias cat="bat"
+
 
 ialias dot="cd ~/.dotfiles"
 ialias scs="cd ~/.scripts"

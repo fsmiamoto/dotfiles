@@ -24,8 +24,6 @@ let g:lightline = {
       \ 'component_type': {
       \   'buffers': 'tabsel'
       \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' },
       "\ 'mode_map':{
             \ '__'     : '-',
             \ 'c'      : 'C',

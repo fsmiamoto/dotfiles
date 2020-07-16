@@ -21,6 +21,8 @@ source ~/.zsh/plugins.sh
 # My prompt
 [ -f ~/.zsh/prompt.zsh ] && source ~/.zsh/prompt.zsh
 
+[ -f /usr/share/z/z.sh ] && source /usr/share/z/z.sh
+
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
 
 # zsh-autosuggestions
@@ -75,7 +77,7 @@ alias s='startx'
 alias clip="xclip -selection clipboard"
 alias oct="octave-cli"
 alias py='python'
-alias arduino="arduino-cli"
+alias ino="arduino-cli"
 alias sv="sudo $EDITOR"
 alias trt="transmission-remote-cli"
 alias v.="$EDITOR ."
@@ -140,10 +142,11 @@ alias tmks="tmux kill-session"
 alias tmksv="tmux kill-server"
 
 alias d="docker"
-alias dc="docker container"
-alias dcl="docker container ls"
-alias dcr="docker container run"
-alias dcrm="docker container rm"
+alias dc="docker-compose"
+alias dco="docker container"
+alias dcol="docker container ls"
+alias dcor="docker container run"
+alias dcorm="docker container rm"
 alias dn="docker network"
 
 alias gog="go get"
@@ -172,6 +175,7 @@ ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias vlang="/usr/bin/v"
 ialias c="clear"
+ialias z="_z 2>&1"
 
 ialias vim="nvim"
 ialias ls="exa"

@@ -149,6 +149,8 @@ alias dcor="docker container run"
 alias dcorm="docker container rm"
 alias dn="docker network"
 
+alias kc="kubectl"
+
 alias gog="go get"
 alias gor="go run"
 alias gorm="go run main.go"
@@ -180,6 +182,7 @@ ialias z="_z 2>&1"
 ialias vim="nvim"
 ialias ls="exa"
 ialias ll="exa -l"
+ialias l="exa -l"
 ialias cat="bat"
 
 

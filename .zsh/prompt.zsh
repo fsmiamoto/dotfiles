@@ -27,19 +27,24 @@ function preexec () {
 }
 
 function set-prompt () {
+    # 1: Blinking Block ("█")
+    # 2: Steady Block ("█")
+    # 3: Blinking Underline ("_")
+    # 4: Underline ("_")
+    # 5: Blinking bar ("|")
+    # 6: Steady Bar ("|")
+    local cursor_option="1"
+
     case ${KEYMAP} in
-      (vicmd)      SYMBOL="!" ;;
+       # Change the cursor on visual mode
+      (vicmd) SYMBOL="!" cursor_option="2";;
       (main|viins) SYMBOL="$" ;;
-      (*)          SYMBOL="$" ;;
+      (*) SYMBOL="$" ;;
     esac
 
-    # 2: Block ("█")
-    # 4: Underline ("_")
-    # 6: Bar ("|")
-	if [[ -z "${TMUX}" ]]; then
-		local cursor_seq="\e[2 q"
-	else
-		local cursor_seq="\ePtmux;\e\e[2 q\e\\"
+    local cursor_seq="\x1b[\x3$cursor_option q"
+	if [[ ! -z "${TMUX}" ]]; then
+        cursor_seq="\ePtmux;\e$cursor_seq\e\\";
 	fi
 
     echo -ne $cursor_seq

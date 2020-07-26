@@ -13,7 +13,8 @@ source ~/.zsh/plugins.sh
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
 
 # fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf/shell/completion.zsh ] && source ~/.fzf/shell/completion.zsh
+[ -f ~/.fzf/shell/key-bindings.zsh ] && source ~/.fzf/shell/key-bindings.zsh
 
 # asdf
 [ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
@@ -246,9 +247,9 @@ open_with_fzf() {
 }
 
 cd_with_fzf() {
-    if [ "$1" != "-r" ] && cd $HOME > /dev/null
-    cd "$(fd -t d | fzf --preview="tree -L 1 {}")"
+    local exclude="go"
+    local dir="$(fd -t d --exclude ${exclude} | fzf --preview="tree -L 1 {}")"
+    cd "$dir"
 }
 
-bindkey -s '^O' 'cd_with_fzf\n'
-bindkey -s '^o' 'cd_with_fzf -r\n'
+bindkey -s '^o' 'cd_with_fzf \n'

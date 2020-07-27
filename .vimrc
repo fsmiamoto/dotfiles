@@ -26,6 +26,9 @@ set relativenumber
 set cmdheight=1
 set showtabline=2
 
+" display tabs and trailing spaces
+set list listchars=tab:>-,trail:.,extends:>,precedes:<
+
 set nowrap
 
 set virtualedit=block
@@ -88,6 +91,13 @@ set noemoji
 set cursorline
 
 set spelllang=en_us,pt_br,cjk
+
+set undofile
+if has("nvim")
+    set undodir=~/.config/nvim/undo
+else
+    set undodir=~/.vim/undo
+endif
 
 "  ***** Basic Mappings *****
 let mapleader=","
@@ -271,10 +281,12 @@ function! MaybeCenter() abort
     let b:prev_line = curr
 endfunction
 
-if !empty(glob("~/.config/nvim/plug.vim"))
-    source $HOME/.config/nvim/plug.vim
-endif
+if has("nvim")
+    if !empty(glob("~/.config/nvim/plug.vim"))
+        source $HOME/.config/nvim/plug.vim
+    endif
 
-if !empty(glob("~/.config/nvim/theme.vim"))
-    source $HOME/.config/nvim/theme.vim
+    if !empty(glob("~/.config/nvim/theme.vim"))
+        source $HOME/.config/nvim/theme.vim
+    endif
 endif

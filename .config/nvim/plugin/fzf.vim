@@ -38,3 +38,4 @@ nnoremap <leader>m :Maps<CR>
 nnoremap <leader>t :Filetypes<CR>
 
 nnoremap <C-f> :Rg<CR>
+nnoremap <space>h :Rg <C-R>=expand("<cword>")<CR><CR>

@@ -1,5 +1,5 @@
 rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
-rofi.font: JetBrains Mono, 13
+rofi.font: Sarasa Term J, 13
 rofi.lines: 10
 rofi.opacity: 85
 

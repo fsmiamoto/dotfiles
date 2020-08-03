@@ -29,6 +29,8 @@ Colorscheme generated with PyWal
     $ make install
 ```
 
+![Preview](https://user-images.githubusercontent.com/20388082/89146362-d4df4980-d529-11ea-9f04-9f5550860104.png)
+
 ### Todo's
 
 - Add command to Makefile for restoring backed up dotfiles

@@ -26,12 +26,13 @@ set relativenumber
 set cmdheight=1
 set showtabline=2
 
-" display tabs and trailing spaces
-set list listchars=tab:>-,trail:.,extends:>,precedes:<
-
 set nowrap
 
 set virtualedit=block
+
+" Display whitespace chars
+set list
+set listchars=tab:▸-,space:·,extends:>,precedes:<,trail:·
 
 " Show more lines at top/bottom
 set scrolloff=3
@@ -106,7 +107,6 @@ nnoremap ; :
 vnoremap ; :
 
 nnoremap : ;
-
 
 " Open fold
 nnoremap <space><space> za
@@ -241,6 +241,7 @@ augroup filetypes
     autocmd FileType php inoremap ;; =>
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
+    autocmd FileType markdown set list&
     autocmd Filetype gitcommit setlocal spell
     if exists("+omnifunc")
         autocmd Filetype *

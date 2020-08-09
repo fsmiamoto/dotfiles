@@ -5,7 +5,6 @@ ALL_FILES := $(shell find . -path '*/.*' -type f -printf '%P\n' | grep -v git)
 
 all: backup install
 
-
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
 	@mkdir -p $(HOME)/.dotfiles.backup

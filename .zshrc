@@ -166,6 +166,8 @@ alias chx="chmod +x"
 
 alias rc="rclone"
 
+ialias o="xdg-open"
+
 balias vimc="$EDITOR ~/.dotfiles/.vimrc"
 balias zshc="$EDITOR ~/.dotfiles/.zshrc"
 balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"

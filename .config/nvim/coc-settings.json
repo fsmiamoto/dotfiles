@@ -1,43 +1,38 @@
 {
-    "suggest.echodocSupport": true,
-    "suggest.maxCompleteItemCount": 20,
-    "suggest.enablePreview": true,
-    "suggest.floatEnable": true,
-    "suggest.triggerAfterInsertEnter": true,
-    "snippets.ultisnips.directories": [
-        "UltiSnips",
-        "gosnippets/UltiSnips"
-    ],
-    "coc.source.ultisnips.enable": true,
-    "coc.source.omni.enable": true,
-    "coc.source.omni.filetypes": [
-        "sh",
-        "c"
-    ],
-    "coc.preferences.formatOnSaveFiletypes": [
-        "python",
-        "go",
-        "json",
-        "javascript",
-        "javascriptreact",
-        "typescriptreact",
-        "typescript",
-        "c",
-        "cpp"
-    ],
-    "coc.preferences.useQuickfixForLocations": true,
-    "emmet.syntaxProfiles": {
-        "javascript": "jsx",
-        "typescript": "tsx"
-    },
-    "emmet.includeLanguages": {
-        "javascript": "javascriptreact",
-        "typescript": "typescriptreact"
-    },
-    "python.jediEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.lintOnSave": true,
-    "python.formatting.provider": "yapf",
-    "go.enable": true
+  "suggest.echodocSupport": true,
+  "suggest.maxCompleteItemCount": 20,
+  "suggest.enablePreview": true,
+  "suggest.floatEnable": true,
+  "suggest.triggerAfterInsertEnter": true,
+  "snippets.ultisnips.directories": ["UltiSnips", "gosnippets/UltiSnips"],
+  "coc.source.ultisnips.enable": true,
+  "coc.source.omni.enable": true,
+  "coc.source.omni.filetypes": ["sh", "c"],
+  "coc.preferences.formatOnSaveFiletypes": [
+    "python",
+    "go",
+    "json",
+    "javascript",
+    "javascriptreact",
+    "typescriptreact",
+    "typescript",
+    "c",
+    "cpp",
+    "elixir"
+  ],
+  "coc.preferences.useQuickfixForLocations": true,
+  "emmet.syntaxProfiles": {
+    "javascript": "jsx",
+    "typescript": "tsx"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "python.jediEnabled": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.lintOnSave": true,
+  "python.formatting.provider": "yapf",
+  "go.enable": true
 }

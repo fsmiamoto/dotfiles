@@ -182,7 +182,6 @@ ialias vlang="/usr/bin/v"
 ialias c="clear"
 ialias z="_z 2>&1"
 
-ialias vim="nvim"
 ialias ls="exa"
 ialias ll="exa -l"
 ialias l="exa -l"

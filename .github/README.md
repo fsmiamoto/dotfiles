@@ -8,6 +8,7 @@ This repo contains my config files, a.k.a dotfiles, that I change probably more 
 - WM: dwm
 - Notifications: dunst
 - Shell: zsh
+- Prompt: [Benri](https://github.com/fsmiamoto/benri)
 - Terminal Emulator: st
 - File manager: lf
 - Editor: Neovim

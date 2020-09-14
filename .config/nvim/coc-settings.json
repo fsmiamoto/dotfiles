@@ -34,5 +34,15 @@
   "python.linting.pylintEnabled": true,
   "python.linting.lintOnSave": true,
   "python.formatting.provider": "yapf",
-  "go.enable": true
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true
+      }
+    }
+  },
+  "go.enable": false
 }

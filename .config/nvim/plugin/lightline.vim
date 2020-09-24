@@ -1,7 +1,7 @@
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename', 'cocstatus' ] ],
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'relativepath', 'cocstatus' ] ],
       \   'right': [ [ 'lineinfo' ],
       \              [ 'filetype' ],
       \              [ 'fileformat', 'fileencoding' ] ]

@@ -251,6 +251,8 @@ augroup filetypes
     endif
 augroup END
 
+let g:polyglot_disabled = ['go']
+
 " ***** Functions *****
 
 " Credit to github.com/spf13

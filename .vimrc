@@ -152,6 +152,8 @@ noremap <C-p> "+p
 " Save the file
 noremap <C-s> :w<CR>
 
+nnoremap <C-x> <C-i>
+
 " Move lines up and down
 nnoremap - :m .+1<CR>==
 nnoremap _ :m .-2<CR>==

@@ -50,7 +50,6 @@ function set-prompt () {
     echo -ne $cursor_seq
 
     PROMPT="%(?.%F{green}.%F{red})${SYMBOL}%f "
-    RPROMPT="%B${vcs_info_msg_0_} %F{grey}$(date +'%H:%M')%F{none}"
 }
 
 function zle-line-init zle-keymap-select {

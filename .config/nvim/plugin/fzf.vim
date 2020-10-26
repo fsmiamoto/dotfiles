@@ -33,6 +33,7 @@ nnoremap <space>F :Lines<CR>
 
 " Search for mappings
 nnoremap <leader>m :Maps<CR>
+nnoremap <space>m :Marks<CR>
 
 " Search for filetypes
 nnoremap <leader>t :Filetypes<CR>

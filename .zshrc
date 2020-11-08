@@ -230,13 +230,6 @@ clone(){
     echo "Missing repository URL"
 }
 
-ide(){
-    tmux split-window -h -p 35
-    tmux split-window -v -p 60
-    tmux select-pane -L
-    $EDITOR .
-}
-
 # Credit to github.com/connermcd
 pi() {
     [ "$1" = "-u" ] && sudo pacman -Sy

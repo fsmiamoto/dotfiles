@@ -246,4 +246,8 @@ cd_with_fzf() {
     cd "$dir"
 }
 
+rs() {
+	rsync -avzrP $@
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'

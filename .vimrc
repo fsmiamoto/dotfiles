@@ -145,6 +145,8 @@ nnoremap B L
 " Open help for the word under the cursor
 nnoremap <silent> <leader>h :<C-u>help <C-r><C-w><CR>
 
+nnoremap <C-y> yyp
+
 " Copy and paste
 noremap <C-c> "+y
 noremap <C-p> "+p

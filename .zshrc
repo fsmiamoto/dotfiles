@@ -250,4 +250,10 @@ rs() {
 	rsync -avzrP $@
 }
 
+todo() {
+	local file="todo-$(date +"%Y-%m-%d").md"
+	nb search "$file" > /dev/null 2>&1 || nb add "$file" -c " " > /dev/null
+	echo "- $@"| nb edit "$file"
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'

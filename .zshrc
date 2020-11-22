@@ -256,4 +256,10 @@ todo() {
 	echo "- $@"| nb edit "$file"
 }
 
+pw() {
+	file=$(fd . '.password-store/' -e '.gpg' | sed 's!\.password-store/!!g; s!\.gpg!!g' | fzf)
+	pass show $file | tr -d '\n' |clip
+	echo "Copied password to clipboard"
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'

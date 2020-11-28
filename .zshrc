@@ -262,4 +262,9 @@ pw() {
 	echo "Copied password to clipboard"
 }
 
+dsync(){
+	cd $HOME/drive/fsmiamoto
+	rclone  sync -L -P . drive_fsmiamoto_crypt:
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'

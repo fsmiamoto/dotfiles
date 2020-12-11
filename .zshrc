@@ -25,9 +25,10 @@ source ~/.zsh/plugins.sh
 [ -f /usr/share/z/z.sh ] && source /usr/share/z/z.sh
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
+[ -f ~/.zsh/fzf.theme.zsh ] && source ~/.zsh/fzf.theme.zsh
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4f4f4f"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
 ZSH_AUTOSUGGEST_STRATEGY=(history)
 bindkey '^e' autosuggest-accept
 
@@ -47,11 +48,11 @@ ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=magenta'
 zmodload zsh/complist
 zstyle ":completion:*" menu select
 autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-	compinit;
+if [ $(date +'%j') != $(date -r ~/.zcompdump '+%j') ]; then
+  compinit
 else
-	compinit -C;
-fi;
+  compinit -C
+fi
 
 # <C-w> to edit line in editor
 autoload edit-command-line
@@ -61,7 +62,7 @@ bindkey '^w' edit-command-line
 # cd without cd
 setopt auto_cd
 
-# Disable ctrl-s to freeze terminal.
+# Disable <C-s> for freezing the terminal
 stty stop undef
 
 export HISTFILE=$HOME/.zsh_history
@@ -120,7 +121,8 @@ alias gshl="git stash list"
 alias gps="git push"
 alias gpsu="git push -u origin"
 alias gpl="git pull"
-alias gl="git log --graph --decorate --all"
+alias gl="git log --graph --decorate --all --oneline"
+alias glo="git log --graph --decorate --all"
 
 alias gi="gh issue"
 alias gil="gh issue list"
@@ -165,6 +167,8 @@ alias ka="killall"
 alias chx="chmod +x"
 
 alias rc="rclone"
+
+alias pa="php artisan"
 
 ialias o="xdg-open"
 
@@ -268,3 +272,5 @@ dsync(){
 }
 
 bindkey -s '^o' 'cd_with_fzf \n'
+
+[ -f ~/vars.sh ] && source ~/vars.sh

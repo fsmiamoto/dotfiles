@@ -27,6 +27,7 @@ Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'voldikss/vim-floaterm'
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
 " Lazy-loaded
 Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }

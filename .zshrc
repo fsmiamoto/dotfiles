@@ -137,7 +137,8 @@ alias gprv="gh pr view"
 alias lg='lazygit'
 
 alias tm="tmux"
-alias tma="tmux attach-session"
+alias tls="tmux list-sessions"
+alias tma="tmux attach-session -t"
 alias tmd="tmux detach"
 alias tmn="tmux new-session"
 alias tmls="tmux ls"

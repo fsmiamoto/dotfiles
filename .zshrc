@@ -272,6 +272,11 @@ dsync(){
 	rclone  sync -L -P . drive_fsmiamoto_crypt:
 }
 
+prck() {
+  local pr_number=$(gh pr list | fzf | awk '{print $1}')
+  gh pr checkout "$pr_number"
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'
 
 [ -f ~/vars.sh ] && source ~/vars.sh

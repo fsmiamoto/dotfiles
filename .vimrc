@@ -250,6 +250,7 @@ augroup filetypes
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
     autocmd FileType markdown set list&
     autocmd Filetype gitcommit setlocal spell
+    autocmd BufNewFile,BufRead openapi*.* set filetype=yaml
     if exists("+omnifunc")
         autocmd Filetype *
                     \	if &omnifunc == "" |

@@ -28,7 +28,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.gi
 [ -f ~/.zsh/fzf.theme.zsh ] && source ~/.zsh/fzf.theme.zsh
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=blue"
 ZSH_AUTOSUGGEST_STRATEGY=(history)
 bindkey '^e' autosuggest-accept
 

@@ -194,6 +194,8 @@ onoremap aa a<
 onoremap is i[
 onoremap as a[
 
+inoremap ;; =>
+
 " No highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 

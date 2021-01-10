@@ -32,9 +32,7 @@ Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " Lazy-loaded
 Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
-Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
-Plug 'mxw/vim-jsx', {'for': 'javascript'}
-Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+Plug 'HerringtonDarkholme/yats.vim'
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'styled-components/vim-styled-components', { 'for': ['typescriptreact', 'javascriptreact'], 'branch': 'main' }
 call plug#end()

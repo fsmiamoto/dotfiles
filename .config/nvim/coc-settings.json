@@ -43,6 +43,5 @@
         "usePlaceholders": true
       }
     }
-  },
-  "go.enable": false
+  }
 }

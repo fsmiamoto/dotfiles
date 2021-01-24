@@ -1,4 +1,5 @@
 let g:coc_snippet_next = '<C-w>'
+let g:coc_global_extensions = ['coc-go', 'coc-tsserver', 'coc-json', 'coc-css', 'coc-html']
 
 " Rename current symbol
 nmap <leader>rn <Plug>(coc-rename)

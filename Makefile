@@ -21,3 +21,5 @@ install:
 		[ ! -d $$dir ] && mkdir -p $$dir;\
 		cp -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
+	@echo "Installing packages..."
+	@sudo pacman -S --needed - < pkglist.txt

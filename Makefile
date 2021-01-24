@@ -3,7 +3,7 @@ WORKING_DIR = $(PWD)
 # List all files and remove git related ones
 ALL_FILES := $(shell find . -path '*/.*' -type f -printf '%P\n' | grep -v git)
 
-all: backup install
+all: backup install packages yay
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
@@ -21,5 +21,13 @@ install:
 		[ ! -d $$dir ] && mkdir -p $$dir;\
 		cp -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
+
+packages:
 	@echo "Installing packages..."
 	@sudo pacman -S --needed - < pkglist.txt
+
+yay:
+	@echo "Installing Yay..."
+	@./install_yay.sh
+	@echo "Installing Yay Pacages..."
+	@yay -S --needed - < yaylist.txt

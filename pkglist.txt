@@ -34,3 +34,4 @@ yarn
 npm
 elixir
 inotify-tools
+ripgrep

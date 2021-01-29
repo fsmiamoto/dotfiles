@@ -22,6 +22,9 @@ source ~/.zsh/plugins.sh
 # My prompt
 [ -f ~/.zsh/prompt.zsh ] && source ~/.zsh/prompt.zsh
 
+# Profile
+[ -f ~/.profile ] && source ~/.profile
+
 [ -f /usr/share/z/z.sh ] && source /usr/share/z/z.sh
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'

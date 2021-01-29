@@ -3,7 +3,7 @@ WORKING_DIR = $(PWD)
 # List all files and remove git related ones
 ALL_FILES := $(shell find . -path '*/.*' -type f -printf '%P\n' | grep -v git)
 
-all: backup install packages yay
+all: backup install packages benri
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
@@ -31,3 +31,8 @@ yay:
 	@./install_yay.sh
 	@echo "Installing Yay Pacages..."
 	@yay -S --needed - < yaylist.txt
+
+benri:
+	@echo "Installing Benri..."
+	git clone "https://github.com/fsmiamoto/benri.git"
+	cd benri && sudo make install

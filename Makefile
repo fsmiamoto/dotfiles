@@ -1,7 +1,7 @@
 WORKING_DIR = $(PWD)
 
 # List all files and remove git related ones
-ALL_FILES := $(shell find . -path '*/.*' -type f -printf '%P\n' | grep -v git)
+ALL_FILES := $(shell find . -path '*/.*' -type f,l -printf '%P\n' | grep -v git)
 
 all: backup install packages yay benri
 
@@ -19,18 +19,18 @@ install:
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
 		dir=$$(dirname "$(HOME)/$$file");\
 		[ ! -d $$dir ] && mkdir -p $$dir;\
-		cp -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
+		cp -as "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
 
 packages:
 	@echo "Installing packages..."
-	@sudo pacman -S --needed - < pkglist.txt
+	sudo pacman -S --needed - < pkglist.txt
 
 yay:
 	@echo "Installing Yay..."
-	@./install_yay.sh
+	./install_yay.sh
 	@echo "Installing Yay Pacages..."
-	@yay -S --needed - < yaylist.txt
+	yay -S --needed - < yaylist.txt
 
 benri:
 	@echo "Installing Benri..."

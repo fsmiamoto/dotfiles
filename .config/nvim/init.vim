@@ -1,1 +1,1 @@
-/home/shigueo/.vimrc
+../../.vimrc

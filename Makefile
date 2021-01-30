@@ -3,7 +3,7 @@ WORKING_DIR = $(PWD)
 # List all files and remove git related ones
 ALL_FILES := $(shell find . -path '*/.*' -type f -printf '%P\n' | grep -v git)
 
-all: backup install packages benri
+all: backup install packages yay benri
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."

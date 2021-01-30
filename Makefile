@@ -31,8 +31,12 @@ yay:
 	./install_yay.sh
 	@echo "Installing Yay Pacages..."
 	yay -S --needed - < yaylist.txt
+	@echo "Removing yay clone"
+	rm -rf yay
 
 benri:
 	@echo "Installing Benri..."
 	git clone "https://github.com/fsmiamoto/benri.git"
 	cd benri && sudo make install
+	@echo "Removing benri clone"
+	rm -rf benri

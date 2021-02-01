@@ -57,10 +57,10 @@ else
   compinit -C
 fi
 
-# <C-w> to edit line in editor
+# <C-f> to edit line in editor
 autoload edit-command-line
 zle -N edit-command-line
-bindkey '^w' edit-command-line
+bindkey '^f' edit-command-line
 
 # cd without cd
 setopt auto_cd

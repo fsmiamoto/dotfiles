@@ -35,3 +35,4 @@ npm
 elixir
 inotify-tools
 ripgrep
+octave

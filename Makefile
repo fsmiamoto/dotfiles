@@ -3,7 +3,7 @@ WORKING_DIR = $(PWD)
 # List all files and remove git related ones
 ALL_FILES := $(shell find . -path '*/.*' -type f,l -printf '%P\n' | grep -v git)
 
-all: backup install packages yay benri plug
+all: backup install packages yay scripts benri plug
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
@@ -21,6 +21,10 @@ install:
 		[ ! -d $$dir ] && mkdir -p $$dir;\
 		cp -as "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
+
+scripts:
+	@echo "Installing my scripts..."
+	git clone https://github.com/fsmiamoto/scripts.git ~/.scripts
 
 xorg:
 	@echo "Installing XOrg packages..."

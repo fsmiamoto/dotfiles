@@ -28,6 +28,10 @@ unclutter &
 # DWM Status
 dwmblocks &
 
+# Increase repeat keystroke rate
+xset r rate 300 60 &
+
+# Japanese input
 fcitx5 &
 
 # Initiate WM

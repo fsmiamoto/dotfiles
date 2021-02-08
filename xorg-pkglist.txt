@@ -17,3 +17,4 @@ feh
 dunst
 pulsemixer
 rofi
+flameshot

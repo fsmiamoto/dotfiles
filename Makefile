@@ -28,7 +28,7 @@ scripts:
 
 xorg:
 	@echo "Installing XOrg packages..."
-	# sudo pacman -S --needed - < xorg-pkglist.txt
+	sudo pacman -S --needed - < xorg-pkglist.txt
 	yay -S --needed - < xorg-yaylist.txt
 	$(MAKE) dwm
 	$(MAKE) dwmblocks

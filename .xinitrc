@@ -7,6 +7,9 @@
 # Merge Xmodmap
 [ -f "$HOME/.Xmodmap" ] && xmodmap "$HOME/.Xmodmap"
 
+# Fix misbehaving Java apps
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 # Set monitor layout
 [ -f "$HOME/.screenlayout/main.sh" ] && source ~/.screenlayout/main.sh
 

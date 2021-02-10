@@ -276,7 +276,7 @@ dsync(){
 }
 
 prck() {
-  local pr_number=$(gh pr list | fzf | awk '{print $1}')
+  local pr_number=$(gh pr list | fzf --preview='gh pr view {1}'| awk '{print $1}')
   gh pr checkout "$pr_number"
 }
 

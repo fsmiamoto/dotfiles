@@ -29,6 +29,9 @@
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
   },
+  "yaml.schemas": {
+    "kubernetes": "/*.yaml"
+  },
   "python.jediEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

@@ -210,7 +210,7 @@ xnoremap <leader>rp :s///g<Left><Left>
 nnoremap <leader>v :vsplit $MYVIMRC<CR>
 
 " Split window
-noremap <leader>ss :split<Return><C-w>w
+noremap <leader>sh :split<Return><C-w>w
 noremap <leader>sv :vsplit<Return><C-w>w
 
 " Resize window

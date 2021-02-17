@@ -7,5 +7,5 @@ export FILE=lf
 export GOBIN="$HOME/go/bin"
 export GOPATH="$HOME/go"
 export GO111MODULE=on
-export PATH="$PATH:${HOME}/.local/bin/:${HOME}/.scripts/:$GOBIN:$HOME/.cargo/bin"
+export PATH="$PATH:${HOME}/.local/bin/:${HOME}/.scripts/:$GOBIN:$HOME/.cargo/bin/:$HOME/.config/composer/vendor/bin/"
 export PROJECT_DIR="$HOME/dev"

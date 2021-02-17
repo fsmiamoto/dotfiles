@@ -35,6 +35,9 @@ xset r rate 300 60 &
 # Japanese input
 fcitx5 &
 
+# Map Caps to Escape
+setxkbmap us_intl -option caps:escape
+
 # Fix misbehaving Java apps
 export _JAVA_AWT_WM_NONREPARENTING=1
 

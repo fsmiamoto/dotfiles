@@ -3,7 +3,7 @@
     frame_color = "#e6e0e2"
     
     # Font
-    font = JetBrains Mono 12
+    font = Sarasa Term J 12
     word_wrap = yes 
     ignore_newline = no
     alignment = left # left, center or right
@@ -44,7 +44,7 @@
     monitor = 0
 
     # Follow what (mouse, keyboard or none)
-    follow = none
+    follow = mouse
     
     # Should a notification popped up from history be sticky or timeout
     # as if it would normally do.

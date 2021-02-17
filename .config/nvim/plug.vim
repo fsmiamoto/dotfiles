@@ -30,6 +30,7 @@ Plug 'voldikss/vim-floaterm'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
 " Lazy-loaded
+Plug 'stephpy/vim-php-cs-fixer', { 'for': 'php' }
 Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 Plug 'HerringtonDarkholme/yats.vim'

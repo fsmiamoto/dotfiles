@@ -85,8 +85,6 @@ alias py='python'
 alias ino="arduino-cli"
 alias sv="sudo $EDITOR"
 alias trt="transmission-remote-cli"
-alias v.="$EDITOR ."
-alias v="$EDITOR"
 
 alias pyenv="source env/bin/activate"
 
@@ -278,6 +276,14 @@ dsync(){
 prck() {
   local pr_number=$(gh pr list | fzf --preview='gh pr view {1}'| awk '{print $1}')
   gh pr checkout "$pr_number"
+}
+
+v() {
+    if [ $# -eq 0 ]; then
+        command "$EDITOR" "."
+    else
+        command "$EDITOR" "$@"
+    fi
 }
 
 bindkey -s '^o' 'cd_with_fzf \n'

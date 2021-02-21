@@ -36,3 +36,5 @@ elixir
 inotify-tools
 ripgrep
 octave
+aws-cli
+vagrant

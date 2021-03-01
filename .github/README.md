@@ -42,4 +42,4 @@ Colorscheme generated with PyWal
     $ make backup
 ```
 
-![Preview](https://user-images.githubusercontent.com/20388082/89146362-d4df4980-d529-11ea-9f04-9f5550860104.png)
+![Preview](./setup.png)

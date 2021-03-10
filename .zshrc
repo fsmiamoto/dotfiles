@@ -172,8 +172,6 @@ alias rc="rclone"
 
 alias pa="php artisan"
 
-ialias o="xdg-open"
-
 balias vimc="$EDITOR ~/.dotfiles/.vimrc"
 balias zshc="$EDITOR ~/.dotfiles/.zshrc"
 balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
@@ -275,7 +273,7 @@ dsync(){
 
 prck() {
   local pr_number=$(gh pr list | fzf --preview='gh pr view {1}'| awk '{print $1}')
-  gh pr checkout "$pr_number"
+  gh pr checkout "$pr_number" --detach
 }
 
 v() {
@@ -284,6 +282,10 @@ v() {
     else
         command "$EDITOR" "$@"
     fi
+}
+
+o() {
+  xdg-open $1 & disown
 }
 
 bindkey -s '^o' 'cd_with_fzf \n'

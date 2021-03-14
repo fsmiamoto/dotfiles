@@ -285,7 +285,8 @@ v() {
 }
 
 o() {
-  xdg-open $1 & disown
+  nohup xdg-open $1 & disown
+  exit
 }
 
 bindkey -s '^o' 'cd_with_fzf \n'

@@ -285,7 +285,7 @@ v() {
 }
 
 o() {
-  nohup xdg-open $1 & disown
+  xdg-open $1 & disown
   exit
 }
 

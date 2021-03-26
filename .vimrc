@@ -195,6 +195,7 @@ onoremap is i[
 onoremap as a[
 
 inoremap ;; =>
+inoremap .. ->
 
 " No highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
@@ -246,8 +247,6 @@ augroup filetypes
     " File based changes
     autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx,html setlocal shiftwidth=2 softtabstop=2 tabstop=2
     autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
-    autocmd FileType php inoremap .. ->
-    autocmd FileType php inoremap ;; =>
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
     autocmd FileType markdown set list&

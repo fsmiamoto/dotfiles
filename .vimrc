@@ -194,8 +194,6 @@ onoremap aa a<
 onoremap is i[
 onoremap as a[
 
-inoremap ;; =>
-inoremap .. ->
 
 " No highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
@@ -250,7 +248,9 @@ augroup filetypes
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
     autocmd FileType markdown set list&
-    autocmd Filetype gitcommit setlocal spell
+    autocmd FileType gitcommit setlocal spell
+    autocmd FileType php,c,typescript,javascript inoremap ;; =>
+    autocmd FileType php,c,typescript,javascript inoremap .. ->
     autocmd BufNewFile,BufRead openapi*.* set filetype=yaml
     if exists("+omnifunc")
         autocmd Filetype *

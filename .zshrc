@@ -179,7 +179,8 @@ balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
 balias src="source $HOME/.zshrc"
 
 ialias df='df -h'
-ialias du='df -h'
+ialias du='du -h'
+ialias ip='ip -c'
 ialias sed='sed -E'
 ialias mkdir="mkdir -pv"
 ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"

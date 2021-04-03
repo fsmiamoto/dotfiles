@@ -249,8 +249,8 @@ augroup filetypes
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
     autocmd FileType markdown set list&
     autocmd FileType gitcommit setlocal spell
-    autocmd FileType php,c,typescript,javascript inoremap ;; =>
-    autocmd FileType php,c,typescript,javascript inoremap .. ->
+    autocmd FileType php,c,typescript,javascript,haskell inoremap ;; =>
+    autocmd FileType php,c,typescript,javascript,haskell inoremap .. ->
     autocmd BufNewFile,BufRead openapi*.* set filetype=yaml
     if exists("+omnifunc")
         autocmd Filetype *

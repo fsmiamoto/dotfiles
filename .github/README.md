@@ -1,13 +1,12 @@
 # dotfiles
 
-This repo contains my config files, a.k.a dotfiles, that I change probably more than I should.
+This repository contains my configuration files - a.k.a dotfiles - that I change probably more than I should.
 
-It also contains some helper files for bootstraping an Arch-based environment with 
-my most used packages.
+It also contains some helper recipes for bootstrapping an Arch-based environment with 
+my most used packages. Thus, you can run the provided recipes on a fresh Arch installation 
+and get an environment similar to mine. 
 
-You can take a look at the Makefile for more details.
-
-### Include
+Take a look at the Makefile for more details.
 
 - Distro: Arch Linux
 - WM: dwm
@@ -37,9 +36,6 @@ Colorscheme generated with PyWal
 
     # Install packages for graphical environment
     $ make xorg
-
-    # Backup your curent dotfiles to avoid losing anything
-    $ make backup
 ```
 
 ![Preview](./setup.png)

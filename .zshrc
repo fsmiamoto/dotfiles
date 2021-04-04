@@ -80,13 +80,7 @@ export SAVEHIST=950000
 
 alias s='startx'
 alias clip="xclip -selection clipboard"
-alias oct="octave-cli"
-alias py='python'
-alias ino="arduino-cli"
 alias sv="sudo $EDITOR"
-alias trt="transmission-remote-cli"
-
-alias pyenv="source env/bin/activate"
 
 alias pac="sudo pacman"
 alias paci="sudo pacman -S"
@@ -137,14 +131,13 @@ alias gprv="gh pr view"
 
 alias lg='lazygit'
 
-alias tm="tmux"
+alias t="tmux"
+alias tt="tmux attach-session"
+alias tk="tmux kill-session"
 alias tls="tmux list-sessions"
-alias tma="tmux attach-session -t"
-alias tmd="tmux detach"
-alias tmn="tmux new-session"
-alias tmls="tmux ls"
-alias tmks="tmux kill-session"
-alias tmksv="tmux kill-server"
+alias ta="tmux attach-session -t"
+alias td="tmux detach"
+alias tkv="tmux kill-server"
 
 alias d="docker"
 alias dc="docker-compose"
@@ -156,11 +149,6 @@ alias dn="docker network"
 
 alias kc="kubectl"
 
-alias gog="go get"
-alias gor="go run"
-alias gorm="go run main.go"
-alias gob="go build"
-
 alias mk="make"
 alias mki="sudo make install"
 
@@ -169,8 +157,6 @@ alias ka="killall"
 alias chx="chmod +x"
 
 alias rc="rclone"
-
-alias pa="php artisan"
 
 balias vimc="$EDITOR ~/.dotfiles/.vimrc"
 balias zshc="$EDITOR ~/.dotfiles/.zshrc"
@@ -193,7 +179,6 @@ ialias ls="exa"
 ialias ll="exa -l"
 ialias l="exa -l"
 ialias cat="bat"
-
 
 ialias dot="cd ~/.dotfiles"
 ialias scs="cd ~/.scripts"

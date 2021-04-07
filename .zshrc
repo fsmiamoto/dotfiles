@@ -78,7 +78,8 @@ export SAVEHIST=950000
 # balias: Expand without whitespace at the end
 # ialias: Don't expand
 
-alias s='startx'
+alias s="sudo"
+alias sx='startx'
 alias clip="xclip -selection clipboard"
 alias sv="sudo $EDITOR"
 
@@ -171,12 +172,11 @@ ialias sed='sed -E'
 ialias mkdir="mkdir -pv"
 ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
-ialias vlang="/usr/bin/v"
 ialias c="clear"
 ialias z="_z 2>&1"
-
 ialias ls="exa"
 ialias ll="exa -l"
+ialias la="exa -la"
 ialias l="exa -l"
 ialias cat="bat"
 

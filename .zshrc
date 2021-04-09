@@ -89,6 +89,8 @@ alias pacs="pacman -Ss"
 alias pacu="sudo pacman -Syu"
 alias pacr="sudo pacman -Rsn"
 
+alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
+
 alias g="git"
 alias gc="git commit"
 alias gb="git branch"

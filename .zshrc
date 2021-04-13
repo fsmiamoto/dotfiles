@@ -5,6 +5,7 @@
 # ███████╗███████║██║  ██║██║  ██║╚██████╗
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
+
 # Plugins using Antibody
 [ ! -f ~/.zsh/plugins.sh ] && antibody bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
 source ~/.zsh/plugins.sh
@@ -226,8 +227,11 @@ clone(){
 
 # Credit to github.com/connermcd
 pi() {
-    [ "$1" = "-u" ] && sudo pacman -Sy
     sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
+}
+
+pkr() {
+    sudo pacman -Rsn $(pacman -Qe | awk '{print $1}' | fzf -m --preview="yay -Si {}")
 }
 
 open_with_fzf() {

@@ -37,9 +37,9 @@ function set-prompt () {
 
     case ${KEYMAP} in
        # Change the cursor on visual mode
-      (vicmd) SYMBOL="!" cursor_option="2";;
-      (main|viins) SYMBOL="$" ;;
-      (*) SYMBOL="$" ;;
+      (vicmd) SYMBOL=":" cursor_option="2";;
+      (main|viins) SYMBOL=">" ;;
+      (*) SYMBOL=">" ;;
     esac
 
     local cursor_seq="\x1b[\x3$cursor_option q"
@@ -49,7 +49,7 @@ function set-prompt () {
 
     echo -ne $cursor_seq
 
-    PROMPT="%(?.%F{green}.%F{red})${SYMBOL}%f "
+    PROMPT="%B%(?.%F{green}.%F{red})${SYMBOL}%f%b "
 }
 
 function zle-line-init zle-keymap-select {

@@ -1,0 +1,15 @@
+exa
+ripgrep
+bat
+neovim
+octave 
+awscli
+fzf
+antibody
+asdf
+lf
+gh
+tmux
+lazygit
+node
+docker

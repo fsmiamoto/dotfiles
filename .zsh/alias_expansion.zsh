@@ -1,5 +1,4 @@
 # Expansion of aliases
-# Credit: https://blog.sebastian-daschner.com/entries/zsh-aliases
 
 # blank aliases
 typeset -a baliases

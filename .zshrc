@@ -283,6 +283,12 @@ o() {
   exit
 }
 
+n() {
+  local date=$(date +"%Y-%m-%d-%H:%M:%S")
+  local file="/tmp/note-$date.txt"
+  $EDITOR "$file"
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'
 
 [ -f ~/vars.sh ] && source ~/vars.sh

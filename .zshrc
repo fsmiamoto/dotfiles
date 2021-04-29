@@ -182,6 +182,7 @@ ialias ll="exa -l"
 ialias la="exa -la"
 ialias l="exa -l"
 ialias cat="bat"
+ialias sctl="systemctl"
 ialias psc='ps xawf -eo pid,user,cgroup,args'
 
 ialias dot="cd ~/.dotfiles"

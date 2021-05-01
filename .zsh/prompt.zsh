@@ -33,7 +33,7 @@ function set-prompt () {
     # 4: Underline ("_")
     # 5: Blinking bar ("|")
     # 6: Steady Bar ("|")
-    local cursor_option="1"
+    local cursor_option="3"
 
     case ${KEYMAP} in
        # Change the cursor on visual mode

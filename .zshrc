@@ -262,11 +262,6 @@ pw() {
 	echo "Copied password to clipboard"
 }
 
-dsync(){
-	cd $HOME/drive/fsmiamoto
-	rclone  sync -L -P . drive_fsmiamoto_crypt:
-}
-
 prck() {
   local pr_number=$(gh pr list | fzf --preview='gh pr view {1}'| awk '{print $1}')
   gh pr checkout "$pr_number" --detach

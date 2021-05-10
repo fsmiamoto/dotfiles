@@ -6,20 +6,8 @@ export BENRI_PREEXEC=$(date +"%s")
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-local formats="%c%u"
-local actionformats="%B%F{red}%a ${formats}"
-
-zstyle ':vcs_info:*:*' formats           $formats
-zstyle ':vcs_info:*:*' actionformats     $actionformats
-zstyle ':vcs_info:*:*' stagedstr         "%F{green}•"
-zstyle ':vcs_info:*:*' unstagedstr       "%F{yellow}•"
-zstyle ':vcs_info:*:*' check-for-changes true
-
 function precmd () {
     benri;
-    vcs_info;
 }
 
 function preexec () {
@@ -46,7 +34,6 @@ function set-prompt () {
 	if [[ ! -z "${TMUX}" ]]; then
         cursor_seq="\ePtmux;\e$cursor_seq\e\\";
 	fi
-
     echo -ne $cursor_seq
 
     PROMPT="%B%(?.%F{green}.%F{red})${SYMBOL}%f%b "

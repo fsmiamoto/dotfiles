@@ -184,6 +184,7 @@ ialias l="exa -l"
 ialias cat="bat"
 ialias sctl="systemctl"
 ialias psc='ps xawf -eo pid,user,cgroup,args'
+ialias pls="sudo"
 
 ialias dot="cd ~/.dotfiles"
 ialias scs="cd ~/.scripts"

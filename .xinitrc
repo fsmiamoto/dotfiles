@@ -32,8 +32,7 @@ dwmblocks &
 # Increase repeat keystroke rate
 xset r rate 300 60 &
 
-# Japanese input
-fcitx5 &
+opensnitch-ui &
 
 # Fix misbehaving Java apps
 export _JAVA_AWT_WM_NONREPARENTING=1

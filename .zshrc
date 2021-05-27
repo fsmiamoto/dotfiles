@@ -150,6 +150,7 @@ alias dcol="docker container ls"
 alias dcor="docker container run"
 alias dcorm="docker container rm"
 alias dn="docker network"
+alias ds="sudo systemctl start docker.service"
 
 alias kc="kubectl"
 

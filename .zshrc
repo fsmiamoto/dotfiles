@@ -290,4 +290,12 @@ n() {
 
 bindkey -s '^o' 'cd_with_fzf \n'
 
+# https://github.com/slavistan/dwm-dynamicswallow-patch
+bindkey '^X^m' accept-line-swallow
+zle -N accept-line-swallow acceptandswallow
+acceptandswallow() {
+  dwmswallow $WINDOWID
+  zle accept-line
+}
+
 [ -f ~/vars.sh ] && source ~/vars.sh

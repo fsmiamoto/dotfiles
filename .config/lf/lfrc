@@ -6,8 +6,8 @@ set ignorecase true
 cmd open ${{
     case $(file --mime-type "$f" -bL) in 
         text/*|application/json) $EDITOR "$fx";;
-        video/*|application/pdf) xdg-open "$f" &;;
-        *) for f in "$fx"; do xdg-open "$f" &> /dev/null & done;; 
+        video/*|application/pdf) dwmswallow $WINDOWID && xdg-open "$f" &;;
+        *) for f in "$fx"; do dwmswallow $WINDOWID && xdg-open "$f" &> /dev/null & done;; 
     esac
 }}
     

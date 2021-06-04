@@ -247,7 +247,9 @@ augroup filetypes
     autocmd FileType c,cpp,java,php,vim,zsh,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
     autocmd FileType markdown :onoremap ih :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rkvg_"<cr>
     autocmd FileType markdown :onoremap ah :<c-u>execute "normal! ?^\\([=-]\\)\\1\\+$\r:nohlsearch\rg_vk0"<cr>
-    autocmd FileType markdown set list&
+    autocmd FileType markdown setlocal list&
+    autocmd FileType markdown setlocal textwidth=90
+    autocmd FileType markdown setlocal spell
     autocmd FileType gitcommit setlocal spell
     autocmd FileType php,c,typescript,javascript,haskell inoremap ;; =>
     autocmd FileType php,c,typescript,javascript,haskell inoremap .. ->

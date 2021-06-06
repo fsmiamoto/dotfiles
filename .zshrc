@@ -288,6 +288,12 @@ n() {
   $EDITOR "$file"
 }
 
+vmhost() {
+  local hostname="$1"
+  local ip=$(virsh net-dhcp-leases default | grep "$1" | awk '{print $5}' | sed -E 's/^([0-9\.]+).*/\1/')
+  printf "%s %s\n" "$ip" "$hostname" | sudo tee -a /etc/hosts
+}
+
 bindkey -s '^o' 'cd_with_fzf \n'
 
 # https://github.com/slavistan/dwm-dynamicswallow-patch

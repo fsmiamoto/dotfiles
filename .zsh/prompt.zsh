@@ -26,8 +26,8 @@ function set-prompt () {
     case ${KEYMAP} in
        # Change the cursor on visual mode
       (vicmd) SYMBOL=":" cursor_option="2";;
-      (main|viins) SYMBOL=">" ;;
-      (*) SYMBOL=">" ;;
+      (main|viins) SYMBOL="$" cursor_option="3" ;;
+      (*) SYMBOL="$" cursor_option="3";;
     esac
 
     local cursor_seq="\x1b[\x3$cursor_option q"

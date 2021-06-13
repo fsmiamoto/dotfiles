@@ -304,4 +304,23 @@ acceptandswallow() {
   zle accept-line
 }
 
+function makecurl() {
+  if [ "$#" -ne 2 ]; then
+    echo "makecurl [url] [token]"
+    echo  "invalid number of arguments"
+    return 1;
+  fi
+
+  export MAKECURL_URL="$1"
+  export MAKECURL_AUTH_HEADER="Authorization: Bearer $2"
+
+  shift;shift
+
+  function curl() {
+    local endpoint="$1"
+    shift;
+    command curl -H "$MAKECURL_AUTH_HEADER" "$MAKECURL_URL/$endpoint" "$@"
+  }
+}
+
 [ -f ~/vars.sh ] && source ~/vars.sh

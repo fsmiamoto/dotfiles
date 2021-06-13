@@ -9,11 +9,11 @@ and get an environment similar to mine.
 Take a look at the Makefile for more details.
 
 - Distro: Arch Linux
-- WM: dwm
+- WM: [dwm](https://github.com/fsmiamoto/dwm)
 - Notifications: dunst
 - Shell: zsh
 - Prompt: [Benri](https://github.com/fsmiamoto/benri)
-- Terminal Emulator: st
+- Terminal Emulator: [st](https://github.com/fsmiamoto/st)
 - File manager: lf
 - Editor: Neovim
 

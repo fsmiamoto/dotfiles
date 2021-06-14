@@ -314,13 +314,27 @@ function makecurl() {
   export MAKECURL_URL="$1"
   export MAKECURL_AUTH_HEADER="Authorization: Bearer $2"
 
-  shift;shift
-
   function curl() {
     local endpoint="$1"
     shift;
-    command curl -H "$MAKECURL_AUTH_HEADER" "$MAKECURL_URL/$endpoint" "$@"
+    local headers="$(mktemp)"
+    local output="$(mktemp)"
+    command curl -D "$headers" -H "$MAKECURL_AUTH_HEADER" "$MAKECURL_URL/$endpoint" "$@" > "$output"
+
+    if grep -qi "Content-type: application/json" "$headers"; then
+      jq < "$output"
+    else
+      cat "$output"
+    fi
+
+    rm "$headers" "$output"
   }
+}
+
+function rmcurl() {
+  unset MAKECURL_URL
+  unset MAKECURL_AUTH_HEADER
+  unset -f curl
 }
 
 [ -f ~/vars.sh ] && source ~/vars.sh

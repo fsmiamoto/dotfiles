@@ -21,6 +21,13 @@ let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.9 } }
 command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
+command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
+      \ 1,
+      \ fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}),
+      \ <bang>0)
+
 " Search for files in the current directory
 nnoremap <leader>f :Files .<CR>
 

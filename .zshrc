@@ -283,9 +283,7 @@ o() {
 }
 
 n() {
-  local date=$(date +"%Y-%m-%d-%H:%M:%S")
-  local file="/tmp/note-$date.txt"
-  $EDITOR "$file"
+  $EDITOR ~/notes/"$1.md"
 }
 
 vmhost() {

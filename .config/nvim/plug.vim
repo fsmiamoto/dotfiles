@@ -20,6 +20,7 @@ Plug 'mengelbrecht/lightline-bufferline'
 Plug 'lifepillar/vim-gruvbox8'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'rodjek/vim-puppet'
 Plug 'ryanoasis/vim-devicons'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'

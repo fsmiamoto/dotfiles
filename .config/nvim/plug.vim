@@ -8,7 +8,6 @@ call plug#begin()
 Plug 'antoinemadec/coc-fzf'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'itchyny/lightline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
@@ -30,6 +29,8 @@ Plug 'tpope/vim-surround'
 Plug 'voldikss/vim-floaterm'
 Plug 'ptzz/lf.vim'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 
 " Lazy-loaded
 Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }

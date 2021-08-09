@@ -63,6 +63,7 @@ set foldcolumn=1
 set foldlevel=0
 set foldmethod=syntax
 set foldnestmax=1
+set foldminlines=10
 set foldmarker=\ {{{,\ }}}
 
 set fillchars=vert:┃
@@ -296,6 +297,10 @@ function! MaybeCenter() abort
 endfunction
 
 if has("nvim")
+    syntax off
+    set foldmethod=expr
+    set foldexpr=nvim_treesitter#foldexpr()
+
     if !empty(glob("~/.config/nvim/plug.vim"))
         source $HOME/.config/nvim/plug.vim
     endif

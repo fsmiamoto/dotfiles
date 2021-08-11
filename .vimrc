@@ -165,8 +165,8 @@ nnoremap <C-x> <C-i>
 nnoremap - :m .+1<CR>==
 nnoremap _ :m .-2<CR>==
 
-vnoremap - :m '>+1<CR>gv=gv
-vnoremap _ :m '<-2<CR>gv=gv
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 " Operator pending mappings
 " Quotes and single quotes

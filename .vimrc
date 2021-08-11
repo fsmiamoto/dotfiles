@@ -126,6 +126,10 @@ nnoremap <space>d :t.<CR>
 " Yank until the end of line
 nnoremap Y y$
 
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+
 " Yank entire file
 nnoremap <silent> <leader>ya :%y<CR>
 " Yank to clipboard

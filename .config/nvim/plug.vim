@@ -5,11 +5,14 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 
 call plug#begin()
-Plug 'antoinemadec/coc-fzf'
+" Plug 'antoinemadec/coc-fzf'
+" Plug 'ryanoasis/vim-devicons'
+" Plug 'sheerun/vim-polyglot'
+" Plug 'jiangmiao/auto-pairs'
+Plug 'windwp/nvim-autopairs'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'itchyny/lightline.vim'
-Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
@@ -18,10 +21,11 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'mengelbrecht/lightline-bufferline'
 Plug 'lifepillar/vim-gruvbox8'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'rodjek/vim-puppet'
-Plug 'ryanoasis/vim-devicons'
-Plug 'sheerun/vim-polyglot'
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-compe'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'gfanto/fzf-lsp.nvim'
+Plug 'ray-x/go.nvim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
@@ -31,13 +35,9 @@ Plug 'ptzz/lf.vim'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
-
-" Lazy-loaded
-Plug 'edkolev/tmuxline.vim', { 'on': 'Tmuxline' }
-Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'styled-components/vim-styled-components', { 'for': ['typescriptreact', 'javascriptreact'], 'branch': 'main' }
+Plug 'mhinz/vim-sayonara'
+Plug 'edkolev/tmuxline.vim'
+Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}
 call plug#end()
 
 " Plug bindings

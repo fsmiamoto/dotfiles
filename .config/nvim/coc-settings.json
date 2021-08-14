@@ -32,6 +32,9 @@
   "yaml.schemas": {
     "kubernetes": "/*.yaml"
   },
+  "go.goplsOptions": {
+    "completeUnimported": true
+  },
   "python.jediEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

@@ -63,6 +63,7 @@ set foldcolumn=1
 set foldlevel=0
 set foldmethod=syntax
 set foldnestmax=1
+set foldminlines=10
 set foldmarker=\ {{{,\ }}}
 
 set fillchars=vert:┃
@@ -125,6 +126,10 @@ nnoremap <space>d :t.<CR>
 " Yank until the end of line
 nnoremap Y y$
 
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+
 " Yank entire file
 nnoremap <silent> <leader>ya :%y<CR>
 " Yank to clipboard
@@ -160,8 +165,8 @@ nnoremap <C-x> <C-i>
 nnoremap - :m .+1<CR>==
 nnoremap _ :m .-2<CR>==
 
-vnoremap - :m '>+1<CR>gv=gv
-vnoremap _ :m '<-2<CR>gv=gv
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 " Operator pending mappings
 " Quotes and single quotes
@@ -296,6 +301,10 @@ function! MaybeCenter() abort
 endfunction
 
 if has("nvim")
+    syntax off
+    set foldmethod=expr
+    set foldexpr=nvim_treesitter#foldexpr()
+
     if !empty(glob("~/.config/nvim/plug.vim"))
         source $HOME/.config/nvim/plug.vim
     endif

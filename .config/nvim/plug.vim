@@ -9,16 +9,18 @@ call plug#begin()
 " Plug 'ryanoasis/vim-devicons'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'jiangmiao/auto-pairs'
+" Plug 'edkolev/tmuxline.vim'
+" Plug 'itchyny/lightline.vim'
+" Plug 'mengelbrecht/lightline-bufferline'
 Plug 'windwp/nvim-autopairs'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'itchyny/lightline.vim'
+Plug 'windwp/windline.nvim'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 Plug 'justinmk/vim-sneak'
 Plug 'machakann/vim-highlightedyank'
-Plug 'mengelbrecht/lightline-bufferline'
 Plug 'lifepillar/vim-gruvbox8'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'neovim/nvim-lspconfig'
@@ -32,11 +34,9 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'voldikss/vim-floaterm'
 Plug 'ptzz/lf.vim'
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'mhinz/vim-sayonara'
-Plug 'edkolev/tmuxline.vim'
 Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}
 call plug#end()
 

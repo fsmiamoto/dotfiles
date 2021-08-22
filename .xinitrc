@@ -37,6 +37,8 @@ opensnitch-ui &
 # Fix misbehaving Java apps
 export _JAVA_AWT_WM_NONREPARENTING=1
 
+sudo mount -t cifs -o credentials=/etc/samba/credentials/share,nodfs,iocharset=utf8,noperm //nas/shigueo /home/shigueo/nas
+
 # Initiate WM
 while :; do
 	ssh-agent dbus-launch dwm

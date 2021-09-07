@@ -5,17 +5,12 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 
 call plug#begin()
-" Plug 'antoinemadec/coc-fzf'
-" Plug 'ryanoasis/vim-devicons'
-" Plug 'sheerun/vim-polyglot'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'edkolev/tmuxline.vim'
-" Plug 'itchyny/lightline.vim'
-" Plug 'mengelbrecht/lightline-bufferline'
+Plug 'michaelb/vim-tips'
 Plug 'windwp/nvim-autopairs'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'windwp/windline.nvim'
+Plug 'tpope/vim-repeat'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'

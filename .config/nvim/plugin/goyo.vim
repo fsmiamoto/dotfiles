@@ -4,7 +4,6 @@ function! s:goyo_enter()
     set scrolloff=999
     set spell
     set list!
-    CocDisable
     set textwidth=80
     let b:quitting = 0
     let b:quitting_bang = 0
@@ -17,7 +16,6 @@ function! s:goyo_leave()
     set showcmd
     set scrolloff=3
     set list!
-    CocEnable
     set textwidth=0
     " Quit Vim if this is the only remaining buffer
     if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1

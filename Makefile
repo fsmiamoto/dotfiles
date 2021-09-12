@@ -1,7 +1,8 @@
 WORKING_DIR = $(PWD)
 
 # List all files and remove git related ones
-ALL_FILES := $(shell find . -path '*/.*' -type f,l -printf '%P\n' | grep -v git)
+ALL_FILES := $(shell find . -path '*/.*' -type f,l -printf '%P\n' | grep -v '\.git')
+VERBOSE ?= 0
 
 all: backup install packages yay scripts benri plug
 
@@ -16,6 +17,7 @@ backup:
 install:
 	@echo "Installing dotfiles ..."
 	@for file in $(ALL_FILES); do \
+		[ $(VERBOSE) -ne 0 ] && echo "Installing $$file"; \
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
 		dir=$$(dirname "$(HOME)/$$file");\
 		[ ! -d $$dir ] && mkdir -p $$dir;\

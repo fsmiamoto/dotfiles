@@ -1,5 +1,7 @@
 set completeopt=menuone,noselect
 
+nnoremap <leader>cr :LspRestart<CR>
+
 lua << EOF
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
@@ -12,7 +14,12 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
 end
+
+require "lsp_signature".setup({
+    use_lspsaga = true;
+})
 
 -- Compe setup
 require'compe'.setup {

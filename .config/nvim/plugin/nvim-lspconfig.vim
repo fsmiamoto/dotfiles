@@ -1,6 +1,8 @@
 set completeopt=menuone,noselect
 
-nnoremap <leader>cr :LspRestart<CR>
+nnoremap <leader>lr :LspRestart<CR>
+nnoremap <leader>ls :LspStart<CR>
+nnoremap <leader>lt :LspStop<CR>
 
 lua << EOF
 local nvim_lsp = require('lspconfig')

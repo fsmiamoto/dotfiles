@@ -6,6 +6,7 @@ endif
 
 call plug#begin()
 Plug 'michaelb/vim-tips'
+Plug 'rodjek/vim-puppet'
 Plug 'windwp/nvim-autopairs'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'

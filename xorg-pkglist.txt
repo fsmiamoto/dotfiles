@@ -18,3 +18,8 @@ dunst
 pulsemixer
 rofi
 flameshot
+arc-icon-theme
+arc-gtk-theme
+lxappearence
+xclip
+picom

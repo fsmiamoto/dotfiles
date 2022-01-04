@@ -36,4 +36,8 @@ inotify-tools
 ripgrep
 octave
 aws-cli
-vagrant
+ttf-nerd-fonts-symbols-mono
+powertop
+s-tui
+acpi
+blueman

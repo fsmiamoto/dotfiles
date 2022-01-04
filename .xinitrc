@@ -18,7 +18,7 @@ wal -R
 nm-applet &
 
 # Compton for transparency
-compton -b &
+picom -b &
 
 # Redshift
 redshift &

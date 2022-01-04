@@ -43,3 +43,7 @@ acpi
 blueman
 lazygit
 github-cli
+fcitx5
+fcitx5-qt
+fcitx5-anthy
+fcitx5-configtool

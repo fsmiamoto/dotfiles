@@ -41,3 +41,5 @@ powertop
 s-tui
 acpi
 blueman
+lazygit
+github-cli

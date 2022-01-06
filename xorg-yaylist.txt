@@ -1,3 +1,4 @@
+libxft-bgra-git
 ttf-sarasa-gothic
 skippy-xd
 brave-bin

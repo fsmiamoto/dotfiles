@@ -6,7 +6,7 @@ xorg-xrandr
 xorg-xmodmap
 xorg-xkill
 xorg-xset
-libxft
+xorg-xinput
 libxinerama
 python-pywal
 arandr
@@ -20,6 +20,6 @@ rofi
 flameshot
 arc-icon-theme
 arc-gtk-theme
-lxappearence
 xclip
 picom
+lxappearance

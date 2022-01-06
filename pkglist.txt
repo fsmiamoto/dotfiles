@@ -47,3 +47,8 @@ fcitx5
 fcitx5-qt
 fcitx5-anthy
 fcitx5-configtool
+man-db
+man-pages
+pulseaudio-bluetooth
+bash-languague-server
+pyright

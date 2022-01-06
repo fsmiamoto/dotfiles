@@ -30,11 +30,17 @@ scripts:
 
 xorg:
 	@echo "Installing XOrg packages..."
-	sudo pacman -S --needed - < xorg-pkglist.txt
-	yay -S --needed - < xorg-yaylist.txt
+	$(MAKE) xorg-packages
+	$(MAKE) xorg-yay
 	$(MAKE) dwm
 	$(MAKE) dwmblocks
 	$(MAKE) st
+
+xorg-packages:
+	sudo pacman -S --needed - < xorg-pkglist.txt
+
+xorg-yay:
+	yay -S --needed - < xorg-yaylist.txt
 
 packages:
 	@echo "Installing packages..."

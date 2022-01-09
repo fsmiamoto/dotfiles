@@ -50,5 +50,6 @@ fcitx5-configtool
 man-db
 man-pages
 pulseaudio-bluetooth
-bash-languague-server
+bash-language-server
 pyright
+smbclient

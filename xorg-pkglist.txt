@@ -7,6 +7,7 @@ xorg-xmodmap
 xorg-xkill
 xorg-xset
 xorg-xinput
+xorg-xsetroot
 libxinerama
 python-pywal
 arandr
@@ -23,3 +24,6 @@ arc-gtk-theme
 xclip
 picom
 lxappearance
+sxiv
+zathura
+zathura-pdf-mupdf

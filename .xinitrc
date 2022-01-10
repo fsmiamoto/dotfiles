@@ -26,8 +26,8 @@ redshift &
 # Unclutter for hiding cursor when idle
 unclutter &
 
-# DWM Status
-dwmblocks &
+# goblocks
+goblocks &
 
 # Increase repeat keystroke rate
 xset r rate 300 60 &

@@ -230,6 +230,8 @@ nnoremap <silent> <S-Tab> :bp<Bar>if &buftype ==# 'quickfix'<Bar>bp<Bar>endif<CR
 nnoremap <F3> :cp<CR>
 nnoremap <F4> :cn<CR>
 
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
 if (has("termguicolors") && has("nvim"))
     set termguicolors
 endif

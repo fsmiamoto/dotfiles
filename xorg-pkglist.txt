@@ -27,3 +27,8 @@ lxappearance
 sxiv
 zathura
 zathura-pdf-mupdf
+fcitx5
+fcitx5-anthy
+fcitx5-configtool
+fcitx5-gtk
+fcitx5-qt

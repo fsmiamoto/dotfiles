@@ -84,3 +84,9 @@ dwmblocks:
 	cd dwmblocks && make && sudo make install
 	@echo "Removing dwmblocks clone"
 	rm -rf dwmblocks
+
+virt:
+	@echo "Installing virtualization tools"
+	@ sudo pacman -Sy --needed - < virt.txt
+
+.PHONY: backup install xorg xorg-packages xorg-yay packages yay plug scripts benri st dwm dwmblocks virt

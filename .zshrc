@@ -143,6 +143,8 @@ alias ta="tmux attach-session -t"
 alias td="tmux detach"
 alias tkv="tmux kill-server"
 
+alias tf="terraform"
+
 alias d="docker"
 alias dc="docker-compose"
 alias dco="docker container"

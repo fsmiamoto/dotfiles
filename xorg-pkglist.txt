@@ -32,3 +32,4 @@ fcitx5-anthy
 fcitx5-configtool
 fcitx5-gtk
 fcitx5-qt
+slock

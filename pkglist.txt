@@ -53,3 +53,4 @@ pulseaudio-bluetooth
 bash-language-server
 pyright
 smbclient
+yaml-language-server

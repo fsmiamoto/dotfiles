@@ -39,7 +39,7 @@ Plug 'voldikss/vim-floaterm'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'mhinz/vim-sayonara'
-Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}
+Plug 'tami5/lspsaga.nvim'
 call plug#end()
 
 " Plug bindings

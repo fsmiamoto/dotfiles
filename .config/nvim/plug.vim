@@ -6,7 +6,6 @@ endif
 
 call plug#begin()
 Plug 'michaelb/vim-tips'
-Plug 'rodjek/vim-puppet'
 Plug 'windwp/nvim-autopairs'
 Plug 'chaoren/vim-wordmotion'
 Plug 'christoomey/vim-tmux-navigator'
@@ -16,6 +15,7 @@ Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
 Plug 'akinsho/bufferline.nvim'
 Plug 'tpope/vim-repeat'
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 Plug 'justinmk/vim-sneak'

@@ -1,7 +1,8 @@
 WORKING_DIR = $(PWD)
 
 # List all files and remove git related ones
-ALL_FILES := $(shell find . -path '*/.*' -type f,l -printf '%P\n' | grep -v '\.git')
+FILES := $(shell find . -type f | grep -v '\.git')
+LINKS := $(shell find . -type l  | grep -v '\.git')
 VERBOSE ?= 0
 
 all: backup install packages yay scripts benri plug
@@ -9,14 +10,14 @@ all: backup install packages yay scripts benri plug
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
 	@mkdir -p $(HOME)/.dotfiles.backup
-	@for file in $(ALL_FILES); do \
+	@for file in $(FILES) $(LINKS); do \
 	   [ ! -e "$(HOME)/$$file" ] && continue; \
 	   cp --dereference "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
 	done
 
 install:
 	@echo "Installing dotfiles ..."
-	@for file in $(ALL_FILES); do \
+	@for file in $(FILES) $(LINKS); do \
 		[ $(VERBOSE) -ne 0 ] && echo "Installing $$file"; \
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
 		dir=$$(dirname "$(HOME)/$$file");\

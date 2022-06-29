@@ -40,6 +40,8 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'mhinz/vim-sayonara'
 Plug 'tami5/lspsaga.nvim'
+Plug 'mfussenegger/nvim-jdtls'
+Plug 'mfussenegger/nvim-dap'
 call plug#end()
 
 " Plug bindings

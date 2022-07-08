@@ -259,7 +259,7 @@ augroup filetypes
     autocmd FileType markdown setlocal spell
     autocmd FileType gitcommit setlocal spell
     autocmd FileType php,c,typescript,javascript,haskell inoremap ;; =>
-    autocmd FileType php,c,typescript,javascript,haskell inoremap .. ->
+    autocmd FileType php,c,haskell inoremap .. ->
     autocmd BufNewFile,BufRead openapi*.* set filetype=yaml
     if exists("+omnifunc")
         autocmd Filetype *

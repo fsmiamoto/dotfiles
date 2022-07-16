@@ -14,7 +14,6 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
 Plug 'akinsho/bufferline.nvim'
 Plug 'tpope/vim-repeat'
-Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
@@ -27,7 +26,6 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'gfanto/fzf-lsp.nvim'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'ray-x/go.nvim'
 Plug 'tpope/vim-commentary'
@@ -42,6 +40,8 @@ Plug 'mhinz/vim-sayonara'
 Plug 'tami5/lspsaga.nvim'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'mfussenegger/nvim-dap'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'ibhagwan/fzf-lua'
 call plug#end()
 
 " Plug bindings

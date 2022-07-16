@@ -42,4 +42,3 @@ nnoremap <silent> <space>k :Lspsaga diagnostic_jump_prev<CR>
 nnoremap <silent> gs :Lspsaga lsp_finder<CR>
 nnoremap <silent><leader>ca :Lspsaga code_action<CR>
 vnoremap <silent><leader>ca :<C-U>Lspsaga range_code_action<CR>
-nnoremap <silent> <space>o :DocumentSymbols<CR>

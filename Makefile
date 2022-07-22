@@ -1,8 +1,8 @@
 WORKING_DIR = $(PWD)
 
 # List all files and remove git related ones
-FILES := $(shell find . -type f | grep -v '\.git')
-LINKS := $(shell find . -type l  | grep -v '\.git')
+FILES := $(shell find . -type f | grep -v '\.git' | sed 's/^.\///g' | grep '^\.')
+LINKS := $(shell find . -type l  | grep -v '\.git'| sed 's/^.\///g' | grep '^\.')
 VERBOSE ?= 0
 
 all: backup install packages yay scripts benri plug

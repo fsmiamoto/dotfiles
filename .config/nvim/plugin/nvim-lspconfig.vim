@@ -5,6 +5,8 @@ nnoremap <leader>ls :LspStart<CR>
 nnoremap <leader>lt :LspStop<CR>
 
 lua << EOF
+require('nvim-lsp-installer').setup {}
+
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -105,7 +107,7 @@ vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'gopls', 'bashls', 'clangd', 'hls', 'yamlls'}
+local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'gopls', 'bashls', 'clangd', 'hls', 'yamlls', 'marksman'}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,

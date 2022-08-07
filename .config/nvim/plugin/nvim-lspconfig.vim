@@ -116,4 +116,11 @@ for _, lsp in ipairs(servers) do
     }
   }
 end
+
+vim.diagnostic.config({
+    virtual_text = false,
+})
+
+require("lsp_lines").setup()
+
 EOF

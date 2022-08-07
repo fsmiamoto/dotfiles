@@ -42,6 +42,7 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'mfussenegger/nvim-dap'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ibhagwan/fzf-lua'
+Plug 'https://git.sr.ht/~whynothugo/lsp_lines.nvim'
 call plug#end()
 
 " Plug bindings

@@ -35,7 +35,7 @@ Plug 'tpope/vim-surround'
 Plug 'ptzz/lf.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
+Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'mhinz/vim-sayonara'
 Plug 'tami5/lspsaga.nvim'
 Plug 'mfussenegger/nvim-jdtls'

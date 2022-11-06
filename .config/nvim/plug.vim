@@ -45,6 +45,7 @@ Plug 'ibhagwan/fzf-lua'
 Plug 'https://git.sr.ht/~whynothugo/lsp_lines.nvim'
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'nvim-lualine/lualine.nvim'
+Plug 'j-hui/fidget.nvim'
 call plug#end()
 
 " Plug bindings

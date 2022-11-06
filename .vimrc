@@ -258,6 +258,7 @@ augroup filetypes
     autocmd FileType markdown setlocal textwidth=90
     autocmd FileType markdown setlocal spell
     autocmd FileType gitcommit setlocal spell
+    autocmd FileType tex setlocal spell
     autocmd FileType php,c,typescript,typescriptreact,javascript,javascriptreact,haskell inoremap ;; =>
     autocmd FileType php,c,haskell inoremap .. ->
     autocmd BufNewFile,BufRead openapi*.* set filetype=yaml

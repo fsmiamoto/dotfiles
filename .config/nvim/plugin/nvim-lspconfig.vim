@@ -5,7 +5,8 @@ nnoremap <leader>ls :LspStart<CR>
 nnoremap <leader>lt :LspStop<CR>
 
 lua << EOF
-require('nvim-lsp-installer').setup {}
+require("mason").setup()
+require("mason-lspconfig").setup()
 
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
@@ -107,15 +108,32 @@ vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'gopls', 'bashls', 'clangd', 'hls', 'yamlls', 'marksman'}
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
-end
+--local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'gopls', 'bashls', 'clangd', 'hls', 'yamlls', 'marksman'}
+--for _, lsp in ipairs(servers) do
+--  nvim_lsp[lsp].setup {
+--    on_attach = on_attach,
+--    flags = {
+--      debounce_text_changes = 150,
+--    }
+--  }
+--end
+
+require("mason-lspconfig").setup_handlers {
+    -- The first entry (without a key) will be the default handler
+    -- and will be called for each installed server that doesn't have
+    -- a dedicated handler.
+    function (server_name) -- default handler (optional)
+        nvim_lsp[server_name].setup {
+            on_attach = on_attach,
+            flags = {
+                debounce_text_changes = 150,
+            }
+        }
+    end,
+    ["rust_analyzer"] = function ()
+        require("rust-tools").setup {}
+    end
+}
 
 vim.diagnostic.config({
     virtual_text = false,

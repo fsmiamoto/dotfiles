@@ -188,6 +188,7 @@ ialias cat="bat"
 ialias sctl="systemctl"
 ialias psc='ps xawf -eo pid,user,cgroup,args'
 ialias pls="sudo"
+ialias gw="./gradlew"
 
 ialias dot="cd ~/.dotfiles"
 ialias scs="cd ~/.scripts"

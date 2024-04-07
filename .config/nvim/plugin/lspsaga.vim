@@ -1,6 +1,6 @@
 lua << EOF
 local saga = require 'lspsaga'
-saga.init_lsp_saga{
+saga.setup {
     finder_action_keys = {
       open = 'o', vsplit = 's',split = 'i',quit = 'q', scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
     },

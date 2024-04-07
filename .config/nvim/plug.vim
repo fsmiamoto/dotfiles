@@ -38,7 +38,7 @@ Plug 'voldikss/vim-floaterm'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'mhinz/vim-sayonara'
-Plug 'tami5/lspsaga.nvim'
+Plug 'nvimdev/lspsaga.nvim'
 Plug 'simrat39/rust-tools.nvim'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'mfussenegger/nvim-dap'

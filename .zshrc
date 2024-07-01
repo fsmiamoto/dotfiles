@@ -308,3 +308,6 @@ acceptandswallow() {
 [ -f ~/vars.sh ] && source ~/vars.sh
 
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
+
+# opam configuration
+[[ ! -r /home/shigueo/.opam/opam-init/init.zsh ]] || source /home/shigueo/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null

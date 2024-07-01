@@ -1,5 +1,5 @@
 """ Map leader to space ---------------------
-"let mapleader=" "
+let mapleader=" "
 
 """ Plugins  --------------------------------
 set sneak
@@ -29,19 +29,20 @@ set idearefactormode=keep
 """ Mappings --------------------------------
 noremap <C-c> "+y
 noremap <C-p> "+p
+nnoremap <C-s> :w<CR>
 
-"map <leader>f <Plug>(easymotion-s)
-"map <leader>e <Plug>(easymotion-f)
-"
-"map <leader>d <Action>(Debug)
-"map <leader>r <Action>(RenameElement)
-"map <leader>c <Action>(Stop)
-"map <leader>z <Action>(ToggleDistractionFreeMode)
-"
-"map <leader>s <Action>(SelectInProjectView)
-"map <leader>a <Action>(Annotate)
-"map <leader>h <Action>(Vcs.ShowTabbedFileHistory)
-"map <S-Space> <Action>(GotoNextError)
-"
-"map <leader>b <Action>(ToggleLineBreakpoint)
-"map <leader>o <Action>(FileStructurePopup)
+map <leader>f <Plug>(easymotion-s)
+map <leader>e <Plug>(easymotion-f)
+
+map <leader>d <Action>(Debug)
+map <leader>r <Action>(RenameElement)
+map <leader>c <Action>(Stop)
+map <leader>z <Action>(ToggleDistractionFreeMode)
+
+map <leader>s <Action>(SelectInProjectView)
+map <leader>a <Action>(Annotate)
+map <leader>h <Action>(Vcs.ShowTabbedFileHistory)
+map <S-Space> <Action>(GotoNextError)
+
+map <leader>b <Action>(ToggleLineBreakpoint)
+map <leader>o <Action>(FileStructurePopup)

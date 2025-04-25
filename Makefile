@@ -22,7 +22,7 @@ install:
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
 		dir=$$(dirname "$(HOME)/$$file");\
 		[ ! -d $$dir ] && mkdir -p $$dir;\
-		ln -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
+		ln --force -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
 
 scripts:

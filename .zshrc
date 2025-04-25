@@ -6,8 +6,8 @@
 # ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
 
-# Plugins using Antibody
-[ ! -f ~/.zsh/plugins.sh ] && antibody bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
+# Plugins using Antidote
+[ ! -f ~/.zsh/plugins.sh ] && source /usr/share/zsh-antidote/antidote.zsh && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
 source ~/.zsh/plugins.sh
 
 # Alias expansion
@@ -165,9 +165,9 @@ alias chx="chmod +x"
 
 alias rc="rclone"
 
-balias vimc="$EDITOR ~/.dotfiles/.vimrc"
-balias zshc="$EDITOR ~/.dotfiles/.zshrc"
-balias tmc="$EDITOR ~/.dotfiles/.tmux.conf"
+balias vimc="$EDITOR ~/.config/nvim/init.lua"
+balias zshc="$EDITOR ~/.zshrc"
+balias tmc="$EDITOR ~/.config/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
@@ -297,17 +297,8 @@ vmhost() {
 
 bindkey -s '^o' 'cd_with_fzf \n'
 
-# https://github.com/slavistan/dwm-dynamicswallow-patch
-bindkey '^X^m' accept-line-swallow
-zle -N accept-line-swallow acceptandswallow
-acceptandswallow() {
-  dwmswallow $WINDOWID
-  zle accept-line
-}
-
 [ -f ~/vars.sh ] && source ~/vars.sh
 
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
 
-# opam configuration
-[[ ! -r /home/shigueo/.opam/opam-init/init.zsh ]] || source /home/shigueo/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+eval "$(starship init zsh)"

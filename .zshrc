@@ -7,7 +7,7 @@
 
 
 # Plugins using Antidote
-[ ! -f ~/.zsh/plugins.sh ] && source /usr/share/zsh-antidote/antidote.zsh && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
+[ ! -f ~/.zsh/plugins.sh ] && source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
 source ~/.zsh/plugins.sh
 
 # Alias expansion
@@ -167,7 +167,7 @@ alias rc="rclone"
 
 balias vimc="$EDITOR ~/.config/nvim/init.lua"
 balias zshc="$EDITOR ~/.zshrc"
-balias tmc="$EDITOR ~/.config/.tmux.conf"
+balias tmc="$EDITOR ~/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
@@ -180,10 +180,10 @@ ialias fzf="fzf --color=16 --preview 'bat --style=numbers --color=always {}'"
 ialias diff="diff --color=auto"
 ialias c="clear"
 ialias z="_z 2>&1"
-ialias ls="exa"
-ialias ll="exa -l"
-ialias la="exa -la"
-ialias l="exa -l"
+ialias ls="ls"
+ialias ll="ls -l"
+ialias la="ls -la"
+ialias l="ls -l"
 ialias cat="bat"
 ialias sctl="systemctl"
 ialias psc='ps xawf -eo pid,user,cgroup,args'
@@ -198,7 +198,7 @@ ialias scs="cd ~/.scripts"
 # Auto ls when cd'ing
 chpwd(){
     emulate -L zsh
-    ls --group-directories-first
+    ls
 }
 
 # Creates a directory and cd's into it
@@ -301,4 +301,10 @@ bindkey -s '^o' 'cd_with_fzf \n'
 
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
 
+# opam configuration
+[[ ! -r /home/shigueo/.opam/opam-init/init.zsh ]] || source /home/shigueo/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+# Set up mise for runtime management
+eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(mise activate zsh)"
 eval "$(starship init zsh)"

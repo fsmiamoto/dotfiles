@@ -1,8 +1,9 @@
-""" Map leader to space ---------------------
-let mapleader=" "
+let mapleader=","
 
 """ Plugins  --------------------------------
 set sneak
+set number
+set relativenumber
 set surround
 set multiple-cursors
 set commentary
@@ -10,6 +11,13 @@ set argtextobj
 set easymotion
 set textobj-entire
 set ReplaceWithRegister
+set foldenable
+set foldcolumn=1
+set foldlevel=0
+set foldmethod=syntax
+set foldnestmax=1
+set foldminlines=10
+set foldmarker=\ {{{,\ }}}
 
 """ Plugin settings -------------------------
 let g:argtextobj_pairs="[:],(:),<:>"
@@ -31,8 +39,7 @@ noremap <C-c> "+y
 noremap <C-p> "+p
 nnoremap <C-s> :w<CR>
 
-map <leader>f <Plug>(easymotion-s)
-map <leader>e <Plug>(easymotion-f)
+map <leader>f <Action>(SearchEverywhere)
 
 map <leader>d <Action>(Debug)
 map <leader>r <Action>(RenameElement)
@@ -46,3 +53,59 @@ map <S-Space> <Action>(GotoNextError)
 
 map <leader>b <Action>(ToggleLineBreakpoint)
 map <leader>o <Action>(FileStructurePopup)
+
+map <Tab> <action>(NextTab)
+map <S-Tab> <action>(PreviousTab)
+
+map <space>j <action>(GotoNextError)
+map <space>k <action>(GotoPreviousError)
+
+map gt <action>(GotoTest)
+map gd <action>(GotoDeclaration)
+map gi <action>(GotoImplementation)
+
+map <leader>ca <action>(ShowIntentionActions)
+map <leader>sh <action>(SplitHorizontally)
+map <leader>sv <action>(SplitVertically)
+
+map <C-q> <action>(CloseContent)
+
+nnoremap H ^
+vnoremap H ^
+nnoremap L $
+vnoremap L $
+
+" Operator pending mappings
+" Quotes and single quotes
+onoremap tq t"
+onoremap tQ t'
+
+onoremap iq i"
+onoremap iQ i'
+
+onoremap aq a"
+onoremap aQ a'
+
+" Parenthesis
+onoremap ip i(
+onoremap ap a(
+
+" Paragraph as 'block'
+onoremap ib ip
+onoremap ab ip
+
+" Curly braces
+onoremap ic i{
+onoremap ac a{
+
+" Angle brackets
+onoremap ia i<
+onoremap aa a<
+
+" Square brackets
+onoremap is i[
+onoremap as a[
+
+nnoremap <space><space> za
+nnoremap <space>r zR
+nnoremap <space>m zM

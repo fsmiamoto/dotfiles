@@ -1,8 +1,18 @@
 WORKING_DIR = $(PWD)
 
+# Detect OS
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	PACKAGE_MANAGER = brew
+	COPY_OPTS = -L
+else
+	PACKAGE_MANAGER = sudo pacman -S
+	COPY_OPTS = --dereference
+endif
+
 # List all files and remove git related ones
-FILES := $(shell find . -type f | grep -v '\.git' | sed 's/^.\///g' | grep '^\.')
-LINKS := $(shell find . -type l  | grep -v '\.git'| sed 's/^.\///g' | grep '^\.')
+FILES := $(shell find . -type f | grep -v '\.git' | sed 's/^.\///g' | grep -E '^(Library|\.)')
+LINKS := $(shell find . -type l  | grep -v '\.git'| sed 's/^.\///g' | grep -E '^(Library|\.)')
 VERBOSE ?= 0
 
 all: backup install packages yay scripts benri plug
@@ -12,7 +22,7 @@ backup:
 	@mkdir -p $(HOME)/.dotfiles.backup
 	@for file in $(FILES) $(LINKS); do \
 	   [ ! -e "$(HOME)/$$file" ] && continue; \
-	   cp --dereference "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
+	   cp $(COPY_OPTS) "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
 	done
 
 install:
@@ -22,7 +32,7 @@ install:
 		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
 		dir=$$(dirname "$(HOME)/$$file");\
 		[ ! -d $$dir ] && mkdir -p $$dir;\
-		ln --force -s "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
+		ln -sf "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
 	done
 
 scripts:
@@ -38,22 +48,26 @@ xorg:
 	$(MAKE) st
 
 xorg-packages:
-	sudo pacman -S --needed - < xorg-pkglist.txt
+	$(PACKAGE_MANAGER) --needed - < xorg-pkglist.txt
 
 xorg-yay:
+ifeq ($(UNAME_S),Linux)
 	yay -S --needed - < xorg-yaylist.txt
+endif
 
 packages:
 	@echo "Installing packages..."
-	sudo pacman -S --needed - < pkglist.txt
+	$(PACKAGE_MANAGER) --needed - < pkglist.txt
 
 yay:
+ifeq ($(UNAME_S),Linux)
 	@echo "Installing Yay..."
 	./install_yay.sh
-	@echo "Installing Yay Pacages..."
+	@echo "Installing Yay Packages..."
 	yay -S --needed - < yaylist.txt
 	@echo "Removing yay clone"
 	rm -rf yay
+endif
 
 plug:
 	nvim --headless +PlugInstall +qa
@@ -83,11 +97,11 @@ dwmblocks:
 	@echo "Installing dwmblocks..."
 	git clone https://github.com/fsmiamoto/dwmblocks.git
 	cd dwmblocks && make && sudo make install
-	@echo "Removing dwmblocks clone"
+	@echo "Removing dwm clone"
 	rm -rf dwmblocks
 
 virt:
 	@echo "Installing virtualization tools"
-	@ sudo pacman -Sy --needed - < virt.txt
+	$(PACKAGE_MANAGER) --needed - < virt.txt
 
 .PHONY: backup install xorg xorg-packages xorg-yay packages yay plug scripts benri st dwm dwmblocks virt

@@ -14,7 +14,7 @@ return {
 		border = 0xfffff6db,
 	},
 	popup = {
-		bg = 0xff80cbe2,
+		bg = 0xff121415,
 		border = 0xff788e63,
 	},
 	bg2 = 0xff363944,

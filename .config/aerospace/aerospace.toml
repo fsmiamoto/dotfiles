@@ -100,12 +100,7 @@ automatically-unhide-macos-hidden-apps = false
     # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
     # You can uncomment the following lines to open up terminal with alt + enter shortcut
     # (like in i3)
-    # alt-enter = '''exec-and-forget osascript -e '
-    # tell application "Terminal"
-    #     do script
-    #     activate
-    # end tell'
-    # '''
+    alt-enter = '''exec-and-forget open -a Finder'''
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
     alt-slash = 'layout tiles horizontal vertical'
@@ -188,6 +183,10 @@ automatically-unhide-macos-hidden-apps = false
 
 [[on-window-detected]]
     if.app-id = 'com.microsoft.Outlook'
+    run = 'move-node-to-workspace Mail'
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.mail'
     run = 'move-node-to-workspace Mail'
 
 [[on-window-detected]]

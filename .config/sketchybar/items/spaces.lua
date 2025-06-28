@@ -9,6 +9,7 @@ local workspace_to_icon = {
 	["Term"] = "",
 	["Notes"] = "󰠮",
 	["IDE"] = "",
+	["Anki"] = "",
 }
 
 sbar.exec("aerospace list-workspaces --all", function(spaces)

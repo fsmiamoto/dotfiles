@@ -1,7 +1,7 @@
 local colors = require("colors")
 local settings = require("settings")
 
-local popup_width = 250
+local popup_width = 280
 
 local weather = sbar.add("item", "widgets.weather", {
 	position = "right",
@@ -108,7 +108,7 @@ function print_table(t)
 end
 
 weather:subscribe({ "routine", "forced" }, function()
-	sbar.exec("curl -s 'wttr.in/tokyo?format=j1'", function(result)
+	sbar.exec("curl -s 'wttr.in/shinagawa?format=j1'", function(result)
 		if not result or type(result) ~= "table" then
 			weather:set({
 				icon = { string = "❌" },

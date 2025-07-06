@@ -15,7 +15,9 @@ FILES := $(shell find . -type f | grep -v '\.git' | sed 's/^.\///g' | grep -E '^
 LINKS := $(shell find . -type l  | grep -v '\.git'| sed 's/^.\///g' | grep -E '^(Library|\.)')
 VERBOSE ?= 0
 
-all: backup install packages yay scripts benri plug
+config: backup scripts install
+
+macos: packages config
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
@@ -37,71 +39,44 @@ install:
 
 scripts:
 	@echo "Installing my scripts..."
-	git clone https://github.com/fsmiamoto/scripts.git ~/.scripts
-
-xorg:
-	@echo "Installing XOrg packages..."
-	$(MAKE) xorg-packages
-	$(MAKE) xorg-yay
-	$(MAKE) dwm
-	$(MAKE) dwmblocks
-	$(MAKE) st
-
-xorg-packages:
-	$(PACKAGE_MANAGER) --needed - < xorg-pkglist.txt
-
-xorg-yay:
-ifeq ($(UNAME_S),Linux)
-	yay -S --needed - < xorg-yaylist.txt
-endif
+	@if [ ! -d ~/.scripts ]; then \
+		git clone https://github.com/fsmiamoto/scripts.git ~/.scripts; \
+	else \
+		echo "Scripts directory already exists, skipping..."; \
+	fi
 
 packages:
 	@echo "Installing packages..."
+ifeq ($(UNAME_S),Darwin)
+	@if [ -f Brewfile ]; then \
+		brew bundle --file=Brewfile; \
+	else \
+		echo "Brewfile not found, skipping package installation"; \
+	fi
+else
 	$(PACKAGE_MANAGER) --needed - < pkglist.txt
-
-yay:
-ifeq ($(UNAME_S),Linux)
-	@echo "Installing Yay..."
-	./install_yay.sh
-	@echo "Installing Yay Packages..."
-	yay -S --needed - < yaylist.txt
-	@echo "Removing yay clone"
-	rm -rf yay
 endif
 
-plug:
-	nvim --headless +PlugInstall +qa
+dump:
+	@echo "Updating package list..."
+ifeq ($(UNAME_S),Darwin)
+	@brew bundle dump --file=Brewfile --force
+	@echo "Brewfile updated with current packages"
+else
+	@pacman -Qqe > pkglist.txt
+	@echo "pkglist.txt updated with current packages"
+endif
 
-benri:
-	@echo "Installing Benri..."
-	git clone https://github.com/fsmiamoto/benri.git
-	cd benri && sudo make install
-	@echo "Removing benri clone"
-	rm -rf benri
+homebrew:
+	@echo "Installing Homebrew..."
+ifeq ($(UNAME_S),Darwin)
+	@if command -v brew >/dev/null 2>&1; then \
+		echo "Homebrew already installed"; \
+	else \
+		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+	fi
+else
+	@echo "Homebrew installation is only supported on macOS"
+endif
 
-st:
-	@echo "Installing st..."
-	git clone https://github.com/fsmiamoto/st.git
-	cd st && make && sudo make install
-	@echo "Removing st clone"
-	rm -rf st
-
-dwm:
-	@echo "Installing dwm..."
-	git clone https://github.com/fsmiamoto/dwm.git
-	cd dwm && make && sudo make install
-	@echo "Removing dwm clone"
-	rm -rf dwm
-
-dwmblocks:
-	@echo "Installing dwmblocks..."
-	git clone https://github.com/fsmiamoto/dwmblocks.git
-	cd dwmblocks && make && sudo make install
-	@echo "Removing dwm clone"
-	rm -rf dwmblocks
-
-virt:
-	@echo "Installing virtualization tools"
-	$(PACKAGE_MANAGER) --needed - < virt.txt
-
-.PHONY: backup install xorg xorg-packages xorg-yay packages yay plug scripts benri st dwm dwmblocks virt
+.PHONY: backup install packages dump scripts config homebrew

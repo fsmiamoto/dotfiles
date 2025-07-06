@@ -17,7 +17,7 @@ VERBOSE ?= 0
 
 config: backup scripts install
 
-macos: packages config
+macos: packages config defaults
 
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
@@ -77,6 +77,27 @@ ifeq ($(UNAME_S),Darwin)
 	fi
 else
 	@echo "Homebrew installation is only supported on macOS"
+endif
+
+defaults:
+ifeq ($(UNAME_S),Darwin)
+	@echo "Updating MacOS defaults..."
+	@defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+	@defaults write com.apple.dock autohide -bool true
+	@defaults write NSGlobalDomain _HIHideMenuBar -bool true
+	@defaults write com.apple.screencapture type -string "png"
+
+	@defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+	@defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+	@defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+	@defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+	@defaults write com.apple.Finder AppleShowAllFiles -bool true
+
+	@defaults write net.ichi2.anki NSAppSleepDisabled -bool true
+	@defaults write org.qt-project.Qt.QtWebEngineCore NSAppSleepDisabled -bool true
+
+else
+	@echo "Not on MacOS, skipping"
 endif
 
 .PHONY: backup install packages dump scripts config homebrew

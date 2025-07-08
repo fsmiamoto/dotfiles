@@ -197,6 +197,12 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'md.obsidian'
     run = 'move-node-to-workspace Notes'
 
+[[on-window-detected]]
+if.app-id="com.mitchellh.ghostty"
+run= [
+  "layout floating",
+]
+
 [workspace-to-monitor-force-assignment]
 1 = 'main'
 2 = 'main'

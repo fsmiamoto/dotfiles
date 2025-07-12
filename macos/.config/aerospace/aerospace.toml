@@ -127,9 +127,8 @@ automatically-unhide-macos-hidden-apps = false
     alt-2 = 'workspace 2'
     alt-3 = 'workspace 3'
     alt-4 = 'workspace 4'
-    alt-i = "workspace IDE"
+    alt-a = 'workspace Anki' 
     alt-t = 'workspace Term'
-    alt-s = 'workspace Slack'
     alt-m = 'workspace Mail'
     alt-n = "workspace Notes"
 
@@ -141,9 +140,8 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-2 = 'move-node-to-workspace 2'
     alt-shift-3 = 'move-node-to-workspace 3'
     alt-shift-4 = 'move-node-to-workspace 4'
-    alt-shift-i = 'move-node-to-workspace IDE'
+    alt-shift-a = 'move-node-to-workspace Anki'
     alt-shift-t = 'move-node-to-workspace Term'
-    alt-shift-s = 'move-node-to-workspace Slack'
     alt-shift-m = 'move-node-to-workspace Mail'
     alt-shift-n = 'move-node-to-workspace Notes'
 
@@ -198,10 +196,12 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace Notes'
 
 [[on-window-detected]]
-if.app-id="com.mitchellh.ghostty"
-run= [
-  "layout floating",
-]
+    if.app-id="com.mitchellh.ghostty"
+    run= "layout floating"
+
+[[on-window-detected]]
+    if.app-id = 'net.ankiweb.dtop'
+    run = 'move-node-to-workspace Anki'
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'

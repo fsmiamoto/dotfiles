@@ -4,15 +4,16 @@ WORKING_DIR = $(PWD)
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	PACKAGE_MANAGER = brew
-	COPY_OPTS = -L
+	PLATFORM_PACKAGE = macos
+	PACKAGE_FILE = macos/Brewfile
 else
 	PACKAGE_MANAGER = sudo pacman -S
-	COPY_OPTS = --dereference
+	PLATFORM_PACKAGE = linux
+	PACKAGE_FILE = linux/pkglist.txt
 endif
 
-# List all files and remove git related ones
-FILES := $(shell find . -type f | grep -v '\.git' | sed 's/^.\///g' | grep -E '^(Library|\.)')
-LINKS := $(shell find . -type l  | grep -v '\.git'| sed 's/^.\///g' | grep -E '^(Library|\.)')
+# Stow packages
+COMMON_PACKAGES = common shell
 VERBOSE ?= 0
 
 config: backup scripts install
@@ -22,20 +23,67 @@ macos: packages config defaults
 backup:
 	@echo "Backing up current dotfiles to ~/.dotfiles.backup ..."
 	@mkdir -p $(HOME)/.dotfiles.backup
-	@for file in $(FILES) $(LINKS); do \
-	   [ ! -e "$(HOME)/$$file" ] && continue; \
-	   cp $(COPY_OPTS) "$(HOME)/$$file" $(HOME)/.dotfiles.backup/; \
+	@# First backup files using stow packages to find what would be installed
+	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
+		[ ! -d "$$pkg" ] && continue; \
+		find "$$pkg" -type f | while read file; do \
+			target="$(HOME)/$${file#*/}"; \
+			[ -e "$$target" ] && cp "$$target" "$(HOME)/.dotfiles.backup/" 2>/dev/null || true; \
+		done; \
 	done
+	@# Remove symlinks that might exist from previous stow installations
+	@if command -v stow >/dev/null 2>&1; then \
+		for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
+			[ ! -d "$$pkg" ] && continue; \
+			stow -D $$pkg -t $(HOME) 2>/dev/null || true; \
+		done; \
+	fi
 
 install:
-	@echo "Installing dotfiles ..."
-	@for file in $(FILES) $(LINKS); do \
-		[ $(VERBOSE) -ne 0 ] && echo "Installing $$file"; \
-		[ -f  "$(HOME)/$$file" ] && rm "$(HOME)/$$file"; \
-		dir=$$(dirname "$(HOME)/$$file");\
-		[ ! -d $$dir ] && mkdir -p $$dir;\
-		ln -sf "$(WORKING_DIR)/$$file" "$(HOME)/$$file"; \
+	@echo "Installing dotfiles with stow..."
+	@if ! command -v stow >/dev/null 2>&1; then \
+		echo "Error: GNU Stow is not installed. Please install it first."; \
+		echo "  macOS: brew install stow"; \
+		echo "  Linux: sudo pacman -S stow (or equivalent)"; \
+		exit 1; \
+	fi
+	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
+		[ ! -d "$$pkg" ] && continue; \
+		[ $(VERBOSE) -ne 0 ] && echo "Stowing $$pkg"; \
+		stow $$pkg -t $(HOME); \
 	done
+
+migrate:
+	@echo "Migrating to stow-based dotfiles management..."
+	@if ! command -v stow >/dev/null 2>&1; then \
+		echo "Error: GNU Stow is not installed. Please install it first."; \
+		echo "  macOS: brew install stow"; \
+		echo "  Linux: sudo pacman -S stow (or equivalent)"; \
+		exit 1; \
+	fi
+	@# Remove existing symlinks that point to old dotfiles structure
+	@echo "Cleaning up old symlinks..."
+	@find $(HOME) -maxdepth 3 -type l -exec sh -c 'readlink "$$1" | grep -q "\.dotfiles/\." && rm "$$1"' _ {} \; 2>/dev/null || true
+	@# Remove empty directories that might be left behind
+	@find $(HOME)/.config -type d -empty -delete 2>/dev/null || true
+	@# Now install with stow
+	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
+		[ ! -d "$$pkg" ] && continue; \
+		[ $(VERBOSE) -ne 0 ] && echo "Stowing $$pkg"; \
+		stow $$pkg -t $(HOME); \
+	done
+
+unstow:
+	@echo "Removing dotfiles with stow..."
+	@if command -v stow >/dev/null 2>&1; then \
+		for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
+			[ ! -d "$$pkg" ] && continue; \
+			[ $(VERBOSE) -ne 0 ] && echo "Unstowing $$pkg"; \
+			stow -D $$pkg -t $(HOME); \
+		done; \
+	else \
+		echo "Error: GNU Stow is not installed."; \
+	fi
 
 scripts:
 	@echo "Installing my scripts..."
@@ -48,23 +96,23 @@ scripts:
 packages:
 	@echo "Installing packages..."
 ifeq ($(UNAME_S),Darwin)
-	@if [ -f Brewfile ]; then \
-		brew bundle --file=Brewfile; \
+	@if [ -f $(PACKAGE_FILE) ]; then \
+		brew bundle --file=$(PACKAGE_FILE); \
 	else \
-		echo "Brewfile not found, skipping package installation"; \
+		echo "$(PACKAGE_FILE) not found, skipping package installation"; \
 	fi
 else
-	$(PACKAGE_MANAGER) --needed - < pkglist.txt
+	$(PACKAGE_MANAGER) --needed - < $(PACKAGE_FILE)
 endif
 
 dump:
 	@echo "Updating package list..."
 ifeq ($(UNAME_S),Darwin)
-	@brew bundle dump --file=Brewfile --force
-	@echo "Brewfile updated with current packages"
+	@brew bundle dump --file=$(PACKAGE_FILE) --force
+	@echo "$(PACKAGE_FILE) updated with current packages"
 else
-	@pacman -Qqe > pkglist.txt
-	@echo "pkglist.txt updated with current packages"
+	@pacman -Qqe > $(PACKAGE_FILE)
+	@echo "$(PACKAGE_FILE) updated with current packages"
 endif
 
 homebrew:
@@ -100,4 +148,4 @@ else
 	@echo "Not on MacOS, skipping"
 endif
 
-.PHONY: backup install packages dump scripts config homebrew
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults

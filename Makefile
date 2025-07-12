@@ -5,11 +5,11 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	PACKAGE_MANAGER = brew
 	PLATFORM_PACKAGE = macos
-	PACKAGE_FILE = macos/Brewfile
+	PACKAGE_FILE = packages/Brewfile
 else
 	PACKAGE_MANAGER = sudo pacman -S
 	PLATFORM_PACKAGE = linux
-	PACKAGE_FILE = linux/pkglist.txt
+	PACKAGE_FILE = packages/pkglist.txt
 endif
 
 # Stow packages

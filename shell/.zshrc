@@ -7,7 +7,13 @@
 
 
 # Plugins using Antidote
-[ ! -f ~/.zsh/plugins.sh ] && source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
+if [ "$(uname -s)" = "Darwin" ]; then
+    ANTIDOTE_PATH="$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+else
+    ANTIDOTE_PATH="$HOME/.antidote/antidote.zsh"
+fi
+
+[ ! -f ~/.zsh/plugins.sh ] && source "$ANTIDOTE_PATH" && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
 source ~/.zsh/plugins.sh
 
 # Alias expansion
@@ -17,16 +23,8 @@ source ~/.zsh/plugins.sh
 [ -f ~/.fzf/shell/completion.zsh ] && source ~/.fzf/shell/completion.zsh
 [ -f ~/.fzf/shell/key-bindings.zsh ] && source ~/.fzf/shell/key-bindings.zsh
 
-# asdf
-[ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
-
-# My prompt
-[ -f ~/.zsh/prompt.zsh ] && source ~/.zsh/prompt.zsh
-
 # Profile
 [ -f ~/.profile ] && source ~/.profile
-
-[ -f /usr/share/z/z.sh ] && source /usr/share/z/z.sh
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages -g "!{.git}"'
 [ -f ~/.zsh/fzf.theme.zsh ] && source ~/.zsh/fzf.theme.zsh
@@ -171,6 +169,7 @@ balias tmc="$EDITOR ~/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
+ialias lf='yazi'
 ialias df='df -h'
 ialias du='du -h'
 ialias ip='ip -c'
@@ -300,9 +299,6 @@ bindkey -s '^o' 'cd_with_fzf \n'
 [ -f ~/vars.sh ] && source ~/vars.sh
 
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
-
-# opam configuration
-[[ ! -r /home/shigueo/.opam/opam-init/init.zsh ]] || source /home/shigueo/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 
 # Set up mise for runtime management
 eval "$(/opt/homebrew/bin/brew shellenv)"

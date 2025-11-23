@@ -8,7 +8,7 @@
 
 # Plugins using Antidote
 if [ "$(uname -s)" = "Darwin" ]; then
-    ANTIDOTE_PATH="$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+    ANTIDOTE_PATH="$(/opt/homebrew/bin/brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
 else
     ANTIDOTE_PATH="$HOME/.antidote/antidote.zsh"
 fi
@@ -89,6 +89,8 @@ alias pacu="sudo pacman -Syu"
 alias pacr="sudo pacman -Rsn"
 
 alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
+
+alias cl="claude"
 
 alias g="git"
 alias gc="git commit"

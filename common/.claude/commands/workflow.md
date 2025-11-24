@@ -1,0 +1,134 @@
+---
+description: Run an elite software engineering workflow to deliver on `USER_PROMPT`
+argument-hint: [user prompt] [documentation urls]
+---
+# Scout Plan Build
+
+You are executing a structured development workflow that follows these EXACT steps in order. These steps CANNOT be skipped.
+
+## USER_PROMPT
+
+Extract the user's goal/task from the message following this slash command invocation. This is the USER_PROMPT that will be used throughout the workflow.
+
+If the user hasn't provided their goal yet, ask them to describe:
+- What they want to build or implement
+- Any relevant documentation links or files
+- Specific constraints or requirements
+- Areas of the codebase to focus on
+
+Once you have the USER_PROMPT, proceed with Step 1.
+
+---
+
+## STEP 1: Scout Agent - Identify Relevant Files
+
+Launch the **scout** agent to identify all relevant files and code sections for the USER_PROMPT.
+
+**Instructions:**
+1. Use the Task tool with `subagent_type="scout"`
+2. Pass the USER_PROMPT as the task description
+3. The scout will return a JSON array of relevant files with line numbers
+4. Save this output as SCOUT_RESULTS for use in the next step
+
+**Do NOT proceed to Step 2 until the scout agent has completed and returned results.**
+
+---
+
+## STEP 2: Planner Agent - Create Implementation Plan
+
+Launch the **planner** agent to create a detailed implementation plan.
+
+**Instructions:**
+1. Use the Task tool with `subagent_type="planner"`
+2. Construct the planning prompt with:
+   - The original USER_PROMPT
+   - The SCOUT_RESULTS (list of relevant files and line numbers)
+   - **IMPORTANT**: Any documentation links or files mentioned in the USER_PROMPT must be explicitly highlighted and included in your prompt to the planner agent
+3. The planner will create a comprehensive plan and save it to the `plans/` directory
+4. Save the plan file path as PLAN_PATH for the next steps
+
+**Do NOT proceed to Step 3 until the planner agent has completed and saved the plan.**
+
+---
+
+## STEP 3: Review Plan with Reagent MCP
+
+Use the reagent MCP server's `ask_for_review` tool to get user approval on the plan.
+
+**Instructions:**
+1. Call the MCP tool `mcp__reagent__ask_for_review` with the PLAN_PATH
+2. Wait for user response
+3. **If changes are requested**:
+   - Re-launch the planner agent with:
+     - Original USER_PROMPT
+     - SCOUT_RESULTS
+     - User's feedback/requested changes
+   - Get the updated PLAN_PATH
+   - Call `ask_for_review` again
+4. **Repeat this loop until the plan status is APPROVED**
+
+**CRITICAL**: Do NOT proceed to Step 4 until the plan has been explicitly APPROVED by the user through the review tool.
+
+---
+
+## STEP 4: Builder Agent - Implement the Plan
+
+Launch the **builder** agent to implement the approved plan.
+
+**Instructions:**
+1. Use the Task tool with `subagent_type="builder"`
+2. Provide the builder with:
+   - The PLAN_PATH (path to the approved plan file)
+   - Clear instructions to implement each phase of the plan
+   - Reminder to maintain code quality standards from the builder agent definition
+3. The builder will implement the plan systematically
+4. The builder will update the plan file with checkmarks as tasks are completed
+
+**Do NOT proceed to Step 5 until the builder agent has completed all implementation tasks.**
+
+---
+
+## STEP 5: Review Implementation with Reagent MCP
+
+Use the reagent MCP server's `ask_for_review` tool to validate the implementation.
+
+**Instructions:**
+1. Call the MCP tool `mcp__reagent__ask_for_review` to review the changes made by the builder
+2. Wait for user response
+3. **If changes are requested**:
+   - Re-launch the builder agent with:
+     - The PLAN_PATH
+     - User's feedback/requested changes
+     - Instructions to address the specific issues raised
+   - Call `ask_for_review` again
+4. **Repeat this loop until the implementation status is APPROVED**
+
+**CRITICAL**: Continue the review loop until the user explicitly approves that the implementation is complete and correct.
+
+---
+
+## Workflow Complete
+
+Once Step 5 is approved, inform the user that the workflow is complete:
+
+```
+✅ Workflow Complete!
+
+All phases have been completed:
+1. ✅ Scout identified relevant files
+2. ✅ Planner created implementation plan (approved)
+3. ✅ Builder implemented the plan (approved)
+
+Plan location: [PLAN_PATH]
+```
+
+---
+
+## Important Rules
+
+- **NO SKIPPING STEPS**: Each step must complete before moving to the next
+- **WAIT FOR AGENTS**: Do not proceed until each agent reports completion
+- **REVIEW LOOPS ARE MANDATORY**: Steps 3 and 5 must loop until approval
+- **PRESERVE CONTEXT**: Pass scout results to planner, pass plan to builder
+- **DOCUMENTATION AWARENESS**: When user provides doc links/files, explicitly ensure planner reviews them
+- **USE MCP TOOLS**: Always use `mcp__reagent__ask_for_review` for reviews (not manual prompts)

@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.scripts/notify.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "cat | ~/.claude/statusline.js"
+  },
+  "alwaysThinkingEnabled": true
+}

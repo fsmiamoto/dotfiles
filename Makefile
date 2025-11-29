@@ -50,7 +50,7 @@ install:
 	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
 		[ ! -d "$$pkg" ] && continue; \
 		[ $(VERBOSE) -ne 0 ] && echo "Stowing $$pkg"; \
-		stow $$pkg -t $(HOME); \
+		stow --adopt $$pkg -t $(HOME); \
 	done
 
 migrate:

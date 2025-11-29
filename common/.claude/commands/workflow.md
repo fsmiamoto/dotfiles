@@ -53,21 +53,31 @@ Launch the **planner** agent to create a detailed implementation plan.
 
 ## STEP 3: Review Plan with Reagent MCP
 
-Use the reagent MCP server's `ask_for_review` tool to get user approval on the plan.
+Use the reagent MCP server's review tools to get user approval on the plan.
 
 **Instructions:**
-1. Call the MCP tool `mcp__reagent__ask_for_review` with the PLAN_PATH
-2. Wait for user response
-3. **If changes are requested**:
-   - Re-launch the planner agent with:
-     - Original USER_PROMPT
-     - SCOUT_RESULTS
-     - User's feedback/requested changes
-   - Get the updated PLAN_PATH
-   - Call `ask_for_review` again
-4. **Repeat this loop until the plan status is APPROVED**
+1. Call `mcp__reagent__create_review` with the PLAN_PATH to create a review session
+   - You should create the review using the `source: local` since we don't commit the plan file to Git.
+2. Call `mcp__reagent__get_review` with the `sessionId` and `wait: true` to block until review completes
+   - This waits for the user to complete their review in the browser
+3. **Check the review status**:
+   - If `status === "approved"`: Proceed to Step 4
+   - If `status === "changes_requested"`:
+     - Read the `generalFeedback` and `comments` from the review result
+     - **MANDATORY**: Re-launch the planner agent with:
+       - Original USER_PROMPT
+       - SCOUT_RESULTS
+       - User's feedback from `generalFeedback`
+       - Specific issues from `comments` array
+     - Get the updated PLAN_PATH
+     - Call `create_review` + `get_review` again on the updated plan
+     - **REPEAT this loop** until status is "approved"
 
-**CRITICAL**: Do NOT proceed to Step 4 until the plan has been explicitly APPROVED by the user through the review tool.
+**CRITICAL**:
+- Do NOT proceed to Step 4 until the plan status is EXPLICITLY "approved"
+- Do NOT skip the re-planning step when changes are requested
+- ALWAYS include the user's feedback when re-launching the planner
+- The loop MUST continue until approval is achieved
 
 ---
 
@@ -90,20 +100,31 @@ Launch the **builder** agent to implement the approved plan.
 
 ## STEP 5: Review Implementation with Reagent MCP
 
-Use the reagent MCP server's `ask_for_review` tool to validate the implementation.
+Use the reagent MCP server's review tools to validate the implementation.
 
 **Instructions:**
-1. Call the MCP tool `mcp__reagent__ask_for_review` to review the changes made by the builder
-2. Wait for user response
-3. **If changes are requested**:
-   - Re-launch the builder agent with:
-     - The PLAN_PATH
-     - User's feedback/requested changes
-     - Instructions to address the specific issues raised
-   - Call `ask_for_review` again
-4. **Repeat this loop until the implementation status is APPROVED**
+1. Call `mcp__reagent__create_review` with `source: "uncommitted"` to review all uncommitted changes
+   - This returns immediately with a `sessionId` and `reviewUrl`
+2. Call `mcp__reagent__get_review` with the `sessionId` and `wait: true` to block until review completes
+   - This waits for the user to complete their review in the browser
+3. **Check the review status**:
+   - If `status === "approved"`: Workflow is complete! Proceed to completion message
+   - If `status === "changes_requested"`:
+     - Read the `generalFeedback` and `comments` from the review result
+     - **MANDATORY**: Re-launch the builder agent with:
+       - The PLAN_PATH (same plan)
+       - User's feedback from `generalFeedback`
+       - Specific issues from `comments` array (file paths and line numbers)
+       - Explicit instructions to address each issue raised
+     - Call `create_review` + `get_review` again on the updated changes
+     - **REPEAT this loop** until status is "approved"
 
-**CRITICAL**: Continue the review loop until the user explicitly approves that the implementation is complete and correct.
+**CRITICAL**:
+- Do NOT mark workflow as complete until implementation status is EXPLICITLY "approved"
+- Do NOT skip the builder re-run when changes are requested
+- ALWAYS include the user's specific feedback (both general and line-specific comments)
+- The loop MUST continue until approval is achieved
+- The builder should FIX the issues, not just acknowledge them
 
 ---
 
@@ -128,7 +149,11 @@ Plan location: [PLAN_PATH]
 
 - **NO SKIPPING STEPS**: Each step must complete before moving to the next
 - **WAIT FOR AGENTS**: Do not proceed until each agent reports completion
-- **REVIEW LOOPS ARE MANDATORY**: Steps 3 and 5 must loop until approval
+- **REVIEW LOOPS ARE MANDATORY**: Steps 3 and 5 MUST loop until status is "approved"
+  - Never proceed with "changes_requested" status
+  - Always re-run the planner/builder when changes are requested
+  - Include ALL user feedback in the re-run prompt
 - **PRESERVE CONTEXT**: Pass scout results to planner, pass plan to builder
 - **DOCUMENTATION AWARENESS**: When user provides doc links/files, explicitly ensure planner reviews them
-- **USE MCP TOOLS**: Always use `mcp__reagent__ask_for_review` for reviews (not manual prompts)
+- **USE MCP TOOLS**: Always use `mcp__reagent__create_review` + `mcp__reagent__get_review` for reviews (not manual prompts)
+- **FEEDBACK HANDLING**: Extract and pass both `generalFeedback` and `comments` array to subagents during re-runs

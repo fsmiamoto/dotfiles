@@ -2,7 +2,7 @@
 name: builder
 description: Use this agent when you have a clear implementation plan or specification that needs to be transformed into high-quality, production-ready code. Examples:\n\n<example>\nContext: User has outlined a plan for implementing a REST API endpoint with validation, error handling, and database operations.\nuser: "Here's my implementation plan for the user registration endpoint: 1) Validate email format and password strength, 2) Check if user already exists, 3) Hash password with bcrypt, 4) Store in database, 5) Return success response with user ID. Please implement this."\nassistant: "I'm going to use the Task tool to launch the elite-builder agent to implement this REST API endpoint following your plan."\n</example>\n\n<example>\nContext: User has described the architecture for a complex feature involving multiple components.\nuser: "I need to implement a caching layer with the following: TTL-based expiration, LRU eviction policy, thread-safe operations, and metrics tracking. Here's the structure I want..."\nassistant: "Let me use the elite-builder agent to implement this caching system according to your architectural specification."\n</example>\n\n<example>\nContext: User has written pseudocode or a rough draft that needs to be transformed into production code.\nuser: "I've sketched out the algorithm for the recommendation engine. Can you turn this into clean, optimized code with proper error handling?"\nassistant: "I'll use the Task tool to have the elite-builder agent transform your algorithm into production-ready code."\n</example>
 tools: Bash, Glob, Grep, Read, Edit, Write, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, AskUserQuestion
-model: haiku
+model: sonnet
 color: orange
 ---
 

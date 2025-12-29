@@ -2,7 +2,7 @@
 description: Run an elite software engineering workflow to deliver on `USER_PROMPT`
 argument-hint: [user prompt] [documentation urls]
 ---
-# Scout Plan Build
+# Research Plan Build
 
 You are executing a structured development workflow that follows these EXACT steps in order. These steps CANNOT be skipped.
 
@@ -20,17 +20,28 @@ Once you have the USER_PROMPT, proceed with Step 1.
 
 ---
 
-## STEP 1: Scout Agent - Identify Relevant Files
+## STEP 1: Clarifying questions
 
-Launch the **scout** agent to identify all relevant files and code sections for the USER_PROMPT.
+Based on the extract user goal/task, you can ask any initial clarifying questions.
 
 **Instructions:**
-1. Use the Task tool with `subagent_type="scout"`
-2. Pass the USER_PROMPT as the task description
-3. The scout will return a JSON array of relevant files with line numbers
-4. Save this output as SCOUT_RESULTS for use in the next step
+1. Use the available planning tools you have to ask clarifying questions
+2. Save the answers you get into CLARIFYING_QUESTIONS
+---
 
-**Do NOT proceed to Step 2 until the scout agent has completed and returned results.**
+---
+
+## STEP 1: Research Agent - Identify Relevant Files
+
+Launch the **research** agent to identify all relevant files and code sections for the USER_PROMPT.
+
+**Instructions:**
+1. Use the Task tool with `subagent_type="researh"`
+2. Pass the USER_PROMPT as the task description alongside any of the questions at CLARIFYING_QUESTIONS
+3. The research will return a JSON array of relevant files with line numbers
+4. Save this output as RESEARCH_RESULTS for use in the next step
+
+**Do NOT proceed to Step 2 until the research agent has completed and returned results.**
 
 ---
 
@@ -42,7 +53,7 @@ Launch the **planner** agent to create a detailed implementation plan.
 1. Use the Task tool with `subagent_type="planner"`
 2. Construct the planning prompt with:
    - The original USER_PROMPT
-   - The SCOUT_RESULTS (list of relevant files and line numbers)
+   - The RESEARCH_RESULTS (list of relevant files and line numbers)
    - **IMPORTANT**: Any documentation links or files mentioned in the USER_PROMPT must be explicitly highlighted and included in your prompt to the planner agent
 3. The planner will create a comprehensive plan and save it to the `plans/` directory
 4. Save the plan file path as PLAN_PATH for the next steps
@@ -58,6 +69,7 @@ Use the reagent MCP server's review tools to get user approval on the plan.
 **Instructions:**
 1. Call `mcp__reagent__create_review` with the PLAN_PATH to create a review session
    - You should create the review using the `source: local` since we don't commit the plan file to Git.
+   - Make sure to pass the file path to the PLAN_PATH.
 2. Call `mcp__reagent__get_review` with the `sessionId` and `wait: true` to block until review completes
    - This waits for the user to complete their review in the browser
 3. **Check the review status**:

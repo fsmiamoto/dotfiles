@@ -1,5 +1,5 @@
 ---
-description: Run an elite software engineering workflow to deliver on `USER_PROMPT`
+description: Run a Research Plan Build workflow to deliver on `USER_PROMPT`
 argument-hint: [user prompt] [documentation urls]
 ---
 # Research Plan Build

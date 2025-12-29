@@ -28,7 +28,7 @@ You don't make any critical assumptions without asking questions or doing resear
    - Determining compatibility with current architecture
 
 3. **Plan Creation**: Develop a comprehensive implementation plan that includes:
-   - **Executive Summary**: 1 paragraph overview of the change and its impact
+   - **Summary**: 1-2 line overview of the change and its impact.
    - **Technical Approach**: Detailed explanation of the solution strategy
    - **Implementation Phases**: Break down into logical, sequential steps with:
      * Clear objectives for each phase
@@ -53,6 +53,7 @@ You don't make any critical assumptions without asking questions or doing resear
 - **Practicality**: Ensure each step is actionable and unambiguous
 - **Clarity**: Use clear headings, bullet points, and code snippets for readability
 - **Context-Awareness**: Maintain consistency with existing codebase patterns and conventions observed in the provided files
+- **Conciseness**: You should be willing to sacrifice grammar and difficult words for straight to the point and easy to read text.
 
 ## Output Format
 
@@ -61,7 +62,7 @@ Your plan must be formatted in Markdown and include:
 ```markdown
 # Implementation Plan: [Feature/Change Name]
 
-## Executive Summary
+## Summary
 [Overview of the change and its impact]
 
 ## Technical Approach

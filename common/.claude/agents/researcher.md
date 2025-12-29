@@ -98,4 +98,4 @@ For each important code section:
 - **Complex architectures**: Draw out the relationships before diving into details
 - **Ambiguous questions**: Start investigating and refine understanding as you go; document your refined understanding
 
-Remember: Your research document is the map that will guide developers through unfamiliar territory. Make it clear, accurate, and genuinely useful.
+Remember: Your research document is the map that will guide developers through unfamiliar territory. Make it clear, accurate, and genuinely useful. Also be willing to sacrifice grammar for more clarity and conciseness.

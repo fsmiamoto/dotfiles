@@ -148,4 +148,11 @@ else
 	@echo "Not on MacOS, skipping"
 endif
 
-.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults
+theme-colors:
+ifeq ($(UNAME_S),Darwin)
+	@python3 ./macos/.config/sketchybar/scripts/update_colors.py
+else
+	@echo "sketchybar is only available on macOS"
+endif
+
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors

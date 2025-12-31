@@ -1,0 +1,25 @@
+# Wallust theme - auto-generated from wallpaper colors
+# This file is managed by update_colors.py
+
+palette = 0=#3C2829
+palette = 1=#BE616B
+palette = 2=#B98674
+palette = 3=#00A6AD
+palette = 4=#AD9B7C
+palette = 5=#53B396
+palette = 6=#9AAA86
+palette = 7=#DEE9D0
+palette = 8=#9BA392
+palette = 9=#FD818F
+palette = 10=#F7B29B
+palette = 11=#00DDE6
+palette = 12=#E7CEA6
+palette = 13=#6FEFC8
+palette = 14=#CDE3B2
+palette = 15=#DEE9D0
+
+background = #170000
+foreground = #EEF5E4
+cursor-color = #EEF5E4
+selection-background = #392626
+selection-foreground = #EEF5E4

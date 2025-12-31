@@ -165,6 +165,7 @@ alias chx="chmod +x"
 
 alias rc="rclone"
 alias oc="opencode"
+alias ccusage="npx ccusage@latest"
 
 balias vimc="$EDITOR ~/.config/nvim/init.lua"
 balias zshc="$EDITOR ~/.zshrc"

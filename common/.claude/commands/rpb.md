@@ -45,6 +45,19 @@ Launch the **research** agent to identify all relevant files and code sections f
 
 ---
 
+---
+
+## STEP 3: Clarifying questions based on Research
+
+Based on your research results, you might have further questions that need to be answered.
+
+You should feel free to not ask any if not needed.
+
+**Instructions:**
+1. Use the available planning tools you have to ask clarifying questions
+2. Save the answers you get into RESEARCH_CLARIFYING_QUESTIONS
+---
+
 ## STEP 2: Planner Agent - Create Implementation Plan
 
 Launch the **planner** agent to create a detailed implementation plan.
@@ -54,35 +67,35 @@ Launch the **planner** agent to create a detailed implementation plan.
 2. Construct the planning prompt with:
    - The original USER_PROMPT
    - The RESEARCH_RESULTS (list of relevant files and line numbers)
+   - The RESEARCH_CLARIFYING_QUESTIONS
    - **IMPORTANT**: Any documentation links or files mentioned in the USER_PROMPT must be explicitly highlighted and included in your prompt to the planner agent
 3. The planner will create a comprehensive plan and save it to the `plans/` directory
 4. Save the plan file path as PLAN_PATH for the next steps
 
 **Do NOT proceed to Step 3 until the planner agent has completed and saved the plan.**
 
----
+## STEP 3: Review Plan
 
-## STEP 3: Review Plan with Reagent MCP
-
-Use the reagent MCP server's review tools to get user approval on the plan.
+Use the your available skills to get user approval on the plan.
 
 **Instructions:**
-1. Call `mcp__reagent__create_review` with the PLAN_PATH to create a review session
-   - You should create the review using the `source: local` since we don't commit the plan file to Git.
-   - Make sure to pass the file path to the PLAN_PATH.
-2. Call `mcp__reagent__get_review` with the `sessionId` and `wait: true` to block until review completes
-   - This waits for the user to complete their review in the browser
+1. Use your skills to create a ReAgent review session for the plan:
+   - Pass args instructing it to review the file at PLAN_PATH
+   - Use `--source local` since we don't commit the plan file to Git
+   - Include a descriptive title and description for the review
+2. After the review session get's created, you should give the user the URL to review and immediatelly use your
+skill to get the review results and block until you have the results.
 3. **Check the review status**:
    - If `status === "approved"`: Proceed to Step 4
    - If `status === "changes_requested"`:
      - Read the `generalFeedback` and `comments` from the review result
      - **MANDATORY**: Re-launch the planner agent with:
        - Original USER_PROMPT
-       - SCOUT_RESULTS
+       - RESEARCH_RESULTS
        - User's feedback from `generalFeedback`
        - Specific issues from `comments` array
      - Get the updated PLAN_PATH
-     - Call `create_review` + `get_review` again on the updated plan
+     - Invoke the `reagent` skill again on the updated plan
      - **REPEAT this loop** until status is "approved"
 
 **CRITICAL**:
@@ -110,15 +123,17 @@ Launch the **builder** agent to implement the approved plan.
 
 ---
 
-## STEP 5: Review Implementation with Reagent MCP
+## STEP 5: Review Implementation
 
-Use the reagent MCP server's review tools to validate the implementation.
+Use your skills to review the implementation
 
 **Instructions:**
-1. Call `mcp__reagent__create_review` with `source: "uncommitted"` to review all uncommitted changes
-   - This returns immediately with a `sessionId` and `reviewUrl`
-2. Call `mcp__reagent__get_review` with the `sessionId` and `wait: true` to block until review completes
-   - This waits for the user to complete their review in the browser
+1. Use your available skill to create a review session for the implementation:
+   - Pass args instructing it to review uncommitted changes
+   - Use `--source uncommitted` to review all uncommitted git changes
+   - Include a descriptive title and description for the review
+2. After the review session get's created, you should give the user the URL to review and immediatelly use your
+skill to get the review results and block until you have the results.
 3. **Check the review status**:
    - If `status === "approved"`: Workflow is complete! Proceed to completion message
    - If `status === "changes_requested"`:
@@ -128,7 +143,7 @@ Use the reagent MCP server's review tools to validate the implementation.
        - User's feedback from `generalFeedback`
        - Specific issues from `comments` array (file paths and line numbers)
        - Explicit instructions to address each issue raised
-     - Call `create_review` + `get_review` again on the updated changes
+     - Invoke the `reagent` skill again on the updated changes
      - **REPEAT this loop** until status is "approved"
 
 **CRITICAL**:
@@ -167,5 +182,5 @@ Plan location: [PLAN_PATH]
   - Include ALL user feedback in the re-run prompt
 - **PRESERVE CONTEXT**: Pass scout results to planner, pass plan to builder
 - **DOCUMENTATION AWARENESS**: When user provides doc links/files, explicitly ensure planner reviews them
-- **USE MCP TOOLS**: Always use `mcp__reagent__create_review` + `mcp__reagent__get_review` for reviews (not manual prompts)
+- **USE REAGENT SKILL**: Always use the Skill tool to invoke the `reagent` skill for reviews (not manual prompts or MCP tools)
 - **FEEDBACK HANDLING**: Extract and pass both `generalFeedback` and `comments` array to subagents during re-runs

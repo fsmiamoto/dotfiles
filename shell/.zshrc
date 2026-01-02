@@ -91,6 +91,7 @@ alias pacr="sudo pacman -Rsn"
 alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
 
 alias cl="claude"
+alias cly="claude --dangerously-skip-permissions"
 
 alias g="git"
 alias gc="git commit"

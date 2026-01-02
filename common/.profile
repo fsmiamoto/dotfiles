@@ -2,7 +2,6 @@
 export TERMINAL=xterm
 export TERM=xterm-256color
 export EDITOR=nvim
-export BROWSER=brave
 export FILE=lf
 export GOBIN="$HOME/go/bin"
 export GOPATH="$HOME/go"

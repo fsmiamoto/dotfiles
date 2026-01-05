@@ -25,7 +25,7 @@ Once you have the USER_PROMPT, proceed with Step 1.
 Based on the extract user goal/task, you can ask any initial clarifying questions.
 
 **Instructions:**
-1. Use the available planning tools you have to ask clarifying questions
+1. Use the AskUserQuestion tool to ask your clarifying questions
 2. Save the answers you get into CLARIFYING_QUESTIONS
 ---
 
@@ -68,6 +68,7 @@ Launch the **planner** agent to create a detailed implementation plan.
    - The original USER_PROMPT
    - The RESEARCH_RESULTS (list of relevant files and line numbers)
    - The RESEARCH_CLARIFYING_QUESTIONS
+   - The initial CLARIFYING_QUESTIONS
    - **IMPORTANT**: Any documentation links or files mentioned in the USER_PROMPT must be explicitly highlighted and included in your prompt to the planner agent
 3. The planner will create a comprehensive plan and save it to the `plans/` directory
 4. Save the plan file path as PLAN_PATH for the next steps

@@ -236,15 +236,6 @@ clone(){
     echo "Missing repository URL"
 }
 
-# Credit to github.com/connermcd
-pi() {
-    sudo pacman -S $(pacman -Ssq | fzf -m --preview="pacman -Si {}")
-}
-
-pkr() {
-    sudo pacman -Rsn $(pacman -Qe | awk '{print $1}' | fzf -m --preview="yay -Si {}")
-}
-
 open_with_fzf() {
     fd -t f -H -I | fzf -m --preview="xdg-mime query default {}" | xargs -ro -d "\n" xdg-open 2>&-
 }

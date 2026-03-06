@@ -14,6 +14,7 @@ $docker_context\
 $kubernetes\
 $cmd_duration\
 $fill\
+$os\
 $username\
 $hostname\
 $time\
@@ -96,6 +97,15 @@ format = " [($duration)]($style)"
 style = "#414868"
 min_time = 3_000
 
+[os]
+disabled = false
+format = "[$symbol]($style) "
+style = "#c0caf5"
+
+[os.symbols]
+Macos = ""
+Linux = ""
+
 [username]
 format = "[$user]($style)"
 style_user = "#c0caf5"
@@ -113,5 +123,5 @@ symbol = " "
 [time]
 disabled = false
 format = "[$time]($style)"
-style = "#414868"
+style = "#a9b1d6"
 time_format = "%H:%M"

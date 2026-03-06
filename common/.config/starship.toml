@@ -1,0 +1,104 @@
+# Minimal Tokyo — clean two-line prompt
+format = """
+$directory\
+${custom.separator}\
+$git_branch\
+$git_status\
+${custom.separator}\
+$golang\
+$python\
+$nodejs\
+$rust\
+$terraform\
+$docker_context\
+$kubernetes\
+$cmd_duration\
+$fill\
+$time\
+$line_break\
+$character"""
+
+[character]
+success_symbol = "[\\$](bold #9ece6a)"
+error_symbol = "[!](bold #f7768e)"
+vicmd_symbol = "[ν](bold #e0af68)"
+
+[directory]
+format = "[$path]($style)"
+style = "#7dcfff"
+truncation_length = 3
+truncate_to_repo = true
+
+[custom.separator]
+command = ""
+when = true
+format = " [•](fg:#414868) "
+
+[git_branch]
+format = "[$symbol$branch]($style)"
+symbol = ""
+style = "bold #bb9af7"
+
+[git_status]
+format = " [$all_status$ahead_behind]($style)"
+style = "#f7768e"
+conflicted = "="
+ahead = "↑${count}"
+behind = "↓${count}"
+diverged = "↕"
+untracked = "?"
+stashed = "*"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "x"
+
+[golang]
+format = "[go $version]($style) "
+symbol = ""
+style = "#9ece6a"
+
+[python]
+format = "[py $version]($style) "
+symbol = ""
+style = "#e0af68"
+
+[nodejs]
+format = "[node $version]($style) "
+symbol = ""
+style = "#9ece6a"
+
+[rust]
+format = "[rs $version]($style) "
+symbol = ""
+style = "#f7768e"
+
+[terraform]
+format = "[tf $version]($style) "
+symbol = ""
+style = "#7aa2f7"
+
+[docker_context]
+format = "[docker:$context]($style) "
+symbol = ""
+style = "#7dcfff"
+
+[kubernetes]
+disabled = false
+format = "[k8s:$context]($style) "
+symbol = ""
+style = "#7dcfff"
+
+[cmd_duration]
+format = " [($duration)]($style)"
+style = "#414868"
+min_time = 3_000
+
+[fill]
+symbol = " "
+
+[time]
+disabled = false
+format = "[$time]($style)"
+style = "#414868"
+time_format = "%H:%M"

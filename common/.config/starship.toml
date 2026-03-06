@@ -14,6 +14,8 @@ $docker_context\
 $kubernetes\
 $cmd_duration\
 $fill\
+$username\
+$hostname\
 $time\
 $line_break\
 $character"""
@@ -93,6 +95,17 @@ style = "#7dcfff"
 format = " [($duration)]($style)"
 style = "#414868"
 min_time = 3_000
+
+[username]
+format = "[$user]($style)"
+style_user = "#c0caf5"
+style_root = "bold #f7768e"
+show_always = false
+
+[hostname]
+format = "[@$hostname]($style) "
+style = "#c0caf5"
+ssh_only = true
 
 [fill]
 symbol = " "

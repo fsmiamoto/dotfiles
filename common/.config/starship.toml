@@ -1,5 +1,7 @@
 # Minimal Tokyo — clean two-line prompt
 format = """
+$username\
+$hostname\
 $directory\
 ${custom.separator}\
 $git_branch\
@@ -15,8 +17,6 @@ $kubernetes\
 $cmd_duration\
 $fill\
 $os\
-$username\
-$hostname\
 $time\
 $line_break\
 $character"""
@@ -108,13 +108,13 @@ Linux = ""
 
 [username]
 format = "[$user]($style)"
-style_user = "#c0caf5"
+style_user = "bold #e0af68"
 style_root = "bold #f7768e"
 show_always = false
 
 [hostname]
 format = "[@$hostname]($style) "
-style = "#c0caf5"
+style = "bold #e0af68"
 ssh_only = true
 
 [fill]

@@ -98,7 +98,7 @@ style = "#414868"
 min_time = 3_000
 
 [os]
-disabled = false
+disabled = true
 format = "[$symbol]($style) "
 style = "#c0caf5"
 

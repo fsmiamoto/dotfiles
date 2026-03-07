@@ -1,0 +1,83 @@
+{
+  "$schema": "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
+  "name": "tokyonight",
+  "vars": {
+    "blue": "#7aa2f7",
+    "cyan": "#7dcfff",
+    "green": "#9ece6a",
+    "magenta": "#bb9af7",
+    "orange": "#ff9e64",
+    "red": "#f7768e",
+    "yellow": "#e0af68",
+    "teal": "#73daca",
+    "purple": "#9d7cd8",
+    "comment": "#565f89",
+    "dark": "#3b4261",
+    "fg": "#c0caf5",
+    "fg_dark": "#a9b1d6"
+  },
+  "colors": {
+    "accent": "blue",
+    "border": "#3d59a1",
+    "borderAccent": "cyan",
+    "borderMuted": "dark",
+    "success": "green",
+    "error": "red",
+    "warning": "yellow",
+    "muted": "comment",
+    "dim": "#414868",
+    "text": "",
+    "thinkingText": "comment",
+
+    "selectedBg": "#292e42",
+    "userMessageBg": "#1e2030",
+    "userMessageText": "",
+    "customMessageBg": "#1e2030",
+    "customMessageText": "",
+    "customMessageLabel": "blue",
+    "toolPendingBg": "#16161e",
+    "toolSuccessBg": "#1a2b1a",
+    "toolErrorBg": "#2b1a1a",
+    "toolTitle": "blue",
+    "toolOutput": "",
+
+    "mdHeading": "orange",
+    "mdLink": "blue",
+    "mdLinkUrl": "comment",
+    "mdCode": "teal",
+    "mdCodeBlock": "",
+    "mdCodeBlockBorder": "dark",
+    "mdQuote": "comment",
+    "mdQuoteBorder": "dark",
+    "mdHr": "dark",
+    "mdListBullet": "cyan",
+
+    "toolDiffAdded": "green",
+    "toolDiffRemoved": "red",
+    "toolDiffContext": "comment",
+
+    "syntaxComment": "comment",
+    "syntaxKeyword": "magenta",
+    "syntaxFunction": "blue",
+    "syntaxVariable": "orange",
+    "syntaxString": "green",
+    "syntaxNumber": "orange",
+    "syntaxType": "cyan",
+    "syntaxOperator": "purple",
+    "syntaxPunctuation": "comment",
+
+    "thinkingOff": "comment",
+    "thinkingMinimal": "#3d59a1",
+    "thinkingLow": "blue",
+    "thinkingMedium": "cyan",
+    "thinkingHigh": "magenta",
+    "thinkingXhigh": "red",
+
+    "bashMode": "orange"
+  },
+  "export": {
+    "pageBg": "#1a1b26",
+    "cardBg": "#1e2030",
+    "infoBg": "#292e42"
+  }
+}

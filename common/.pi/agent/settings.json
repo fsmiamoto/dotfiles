@@ -1,0 +1,11 @@
+{
+  "lastChangelogVersion": "0.56.3",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-6",
+  "compaction": {
+    "enabled": false
+  },
+  "defaultThinkingLevel": "xhigh",
+  "theme": "tokyonight",
+  "quietStartup": true
+}

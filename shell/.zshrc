@@ -297,6 +297,8 @@ bindkey -s '^o' 'cd_with_fzf \n'
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
 
 # Set up mise for runtime management
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ -x /opt/homebrew/bin/brew ]]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 eval "$(mise activate zsh)"
 eval "$(starship init zsh)"

@@ -35,7 +35,7 @@ truncate_to_repo = true
 [custom.separator]
 command = ""
 when = true
-format = " [•](fg:#414868) "
+format = " "
 
 [git_branch]
 format = "[$symbol$branch]($style)"

@@ -122,8 +122,9 @@ export default function(pi: ExtensionAPI) {
 					const left =
 						" " +
 						dirSection +
-						theme.fg("dim", ` ${SEP} `) +
-						branchSection +
+						(branch
+							? theme.fg("dim", ` ${SEP} `) + branchSection
+							: "") +
 						theme.fg("dim", ` ${SEP} `) +
 						gauge;
 

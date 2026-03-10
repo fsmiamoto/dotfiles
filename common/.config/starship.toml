@@ -28,7 +28,7 @@ vicmd_symbol = "[ν](bold #e0af68)"
 
 [directory]
 format = "[$path]($style)"
-style = "#7dcfff"
+style = "bold #7dcfff"
 truncation_length = 3
 truncate_to_repo = true
 

@@ -13,8 +13,8 @@ else
     ANTIDOTE_PATH="$HOME/.antidote/antidote.zsh"
 fi
 
-[ ! -f ~/.zsh/plugins.sh ] && source "$ANTIDOTE_PATH" && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
-source ~/.zsh/plugins.sh
+[ ! -f ~/.zsh/plugins.sh ] && [ -f "$ANTIDOTE_PATH" ] && source "$ANTIDOTE_PATH" && antidote bundle < ~/.zsh/plugins.txt > ~/.zsh/plugins.sh
+[ -f ~/.zsh/plugins.sh ] && source ~/.zsh/plugins.sh
 
 # Alias expansion
 [ -f ~/.zsh/alias_expansion.zsh ] && source ~/.zsh/alias_expansion.zsh
@@ -81,12 +81,6 @@ alias s="sudo"
 alias sx='startx'
 alias clip="xclip -selection clipboard"
 alias sv="sudo $EDITOR"
-
-alias pac="sudo pacman"
-alias paci="sudo pacman -S"
-alias pacs="pacman -Ss"
-alias pacu="sudo pacman -Syu"
-alias pacr="sudo pacman -Rsn"
 
 alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
 
@@ -295,6 +289,7 @@ bindkey -s '^o' 'cd_with_fzf \n'
 [ -f ~/vars.sh ] && source ~/vars.sh
 
 [ -f ~/.zsh/priv.zsh ] && source ~/.zsh/priv.zsh
+[ -f /etc/arch-release ] && source ~/.zsh/arch.zsh
 
 # Set up mise for runtime management
 if [[ -x /opt/homebrew/bin/brew ]]; then

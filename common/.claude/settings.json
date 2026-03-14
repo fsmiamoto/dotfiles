@@ -16,5 +16,6 @@
     "type": "command",
     "command": "cat | ~/.claude/statusline.js"
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "skipDangerousModePermissionPrompt": true
 }

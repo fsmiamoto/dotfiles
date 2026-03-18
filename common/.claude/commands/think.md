@@ -4,7 +4,7 @@ argument-hint: [rough idea or feature description]
 ---
 # Implementation Plan Builder
 
-You are facilitating a collaborative planning session. Your goal is to deeply understand the user's idea and produce a well-structured implementation plan saved as a markdown file.
+You are facilitating a collaborative planning session. Your goal is to deeply understand and think about the user's idea and produce a well-structured implementation plan saved as a markdown file.
 
 ## USER_IDEA
 
@@ -33,29 +33,57 @@ Before asking the user anything, launch the **researcher** agent to explore the 
 
 ---
 
-## STEP 2: Ask Informed Questions
+## STEP 2: Complexity Assessment & Informed Questions
 
-Now that you have codebase context, come to the user with **well-informed questions** that demonstrate you've done your homework. Use AskUserQuestion to clarify both motivation and technical approach in a single round.
+After researching, evaluate the complexity of the change and present your findings to the user.
 
-**Motivation questions** (grounded in what you found):
+### 2a: Assess Complexity
+
+Based on INITIAL_RESEARCH, honestly evaluate how complex this change is. Consider:
+- How many files need to change?
+- Are there architectural decisions to make, or is the path obvious?
+- Are there risks, edge cases, or non-obvious interactions?
+- Does this follow an existing pattern that's already well-established in the codebase?
+
+Classify as one of:
+- **Simple**: Few files, follows an existing pattern, no real design decisions needed. Example: adding a new field that mirrors existing ones, fixing a straightforward bug.
+- **Moderate**: Several files, some decisions to make, but the overall approach is clear.
+- **Complex**: Many files, significant design decisions, cross-cutting concerns, or risks.
+
+### 2b: Present Findings and Recommendation
+
+Share your research findings and complexity assessment with the user. Use AskUserQuestion to:
+
+1. **Summarize what you found** — briefly share the most relevant findings so the user knows you've done the groundwork.
+2. **State your complexity assessment** and recommend one of:
+   - **"Just do it"** (Simple): You have enough context to implement directly. Offer to skip the plan and go straight to building. If the user agrees, proceed directly to implementation using the builder agent — do NOT write a plan.
+   - **"Light plan"** (Moderate): A quick plan with a few tasks, then build. Proceed to Step 3 if the user agrees.
+   - **"Full plan"** (Complex): The full planning workflow with targeted research. Proceed to Step 3 if the user agrees.
+3. **Ask your questions** — regardless of complexity, ask any questions you genuinely need answered. But calibrate the depth:
+   - For simple changes: maybe just 1-2 confirming questions, or none at all
+   - For complex changes: thorough questions covering motivation, scope, and technical approach
+
+**Question categories** (use as needed, not all required):
+
+*Motivation* (grounded in what you found):
 - What problem does this solve? Who is affected?
 - What does success look like?
 - Are there any deadlines, dependencies, or constraints?
 
-**Technical questions** (grounded in INITIAL_RESEARCH):
+*Technical* (grounded in INITIAL_RESEARCH):
 - Reference specific files, patterns, or existing implementations you found and ask about preferred approaches
 - Clarify scope boundaries — what is explicitly in and out of scope
 - Ask about edge cases, error handling expectations, or performance concerns
 - Highlight architectural decisions surfaced by the research and ask the user to weigh in
 
 **Instructions:**
-- **Lead with what you found**: Start by briefly sharing the most relevant findings from your research so the user knows you've done the groundwork. Then ask your questions.
 - Group related questions together rather than asking one at a time
-- Reference specific files or patterns from INITIAL_RESEARCH to ground the conversation — don't ask generic questions you could have asked without reading the code
-- If you spot potential conflicts or risks in the codebase, surface them as questions
+- Reference specific files or patterns from INITIAL_RESEARCH — don't ask generic questions you could have asked without reading the code
+- If you spot potential conflicts or risks in the codebase, surface them
 - If the user is unsure about something, offer concrete options with trade-offs
 - Ask as many rounds as needed until you have a clear picture, but aim to get most of it in the first round
 - Save the user's answers as USER_ANSWERS
+- **If the user agrees to "Just do it"**: Skip Steps 3 and 4 entirely. Launch the builder agent with USER_IDEA, INITIAL_RESEARCH, and USER_ANSWERS. You are done.
 
 ---
 

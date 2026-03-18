@@ -85,7 +85,7 @@ alias sv="sudo $EDITOR"
 alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
 
 alias cl="claude"
-alias cly="claude --dangerously-skip-permissions"
+alias cly="claude --dangerously-skip-permissions --effort max"
 
 alias g="git"
 alias gc="git commit"

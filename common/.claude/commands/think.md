@@ -33,3 +33,4 @@ Use a Why / What / How structure. Order tasks by dependency, each completable in
 - **Ground everything in code.** Reference specific files, patterns, and implementations. Generic questions are a sign you didn't research enough.
 - **Present trade-offs, let the user decide.** Don't assume preferences.
 - **Iterate the plan.** Actively ask for feedback after writing — don't just dump it.
+- **Wait for the green light.** Never start implementing until the user explicitly approves.

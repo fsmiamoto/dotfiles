@@ -1,143 +1,37 @@
 ---
-description: Research a rough idea, assess complexity, then either implement directly or write a plan
+description: Create a detailed implementation plan from a rough idea through collaborative refinement
 ---
-# Think / Implementation Plan Builder
+# Implementation Plan Builder
 
-You are facilitating a collaborative planning session.
-
-## USER_IDEA
-
-Treat the text after this slash command as the user's rough idea:
+Facilitate a collaborative planning session. Deeply understand the user's idea, then produce a well-structured plan saved as a markdown file.
 
 $ARGUMENTS
 
-If no idea was provided, ask the user to describe it before proceeding.
+If no idea was provided, ask for one before proceeding.
 
----
+## Workflow
 
-## STEP 1: Initial Research
+1. **Research first** — Before asking the user anything, explore the codebase for relevant context: existing patterns, affected files, reusable code, architectural constraints, and risks.
 
-Before asking clarifying questions, inspect the codebase with the available tools.
+2. **Assess complexity** — Based on your research, classify the change and recommend an approach:
+   - **Simple** (few files, follows existing patterns): Offer to skip the plan and build directly.
+   - **Moderate** (some decisions to make): Light plan with a few tasks, then build.
+   - **Complex** (many files, design decisions, cross-cutting concerns): Full planning workflow with targeted follow-up research.
 
-**Instructions:**
-1. Use `bash` for discovery work like `rg`, `find`, and `ls`
-2. Use `read` to inspect the relevant files before proposing changes
-3. Identify:
-   - Relevant existing code, patterns, and conventions
-   - Files and modules that will likely be affected
-   - Existing implementations that can be reused or extended
-   - Architectural constraints that shape the implementation
-   - Potential conflicts, risks, or edge cases
-4. Save the result mentally as `INITIAL_RESEARCH`
+3. **Collaborate** — Share your findings and ask questions. If the user agrees to "just do it," implement directly and stop — no plan needed. Otherwise, run a second research pass based on the user's answers, then write the plan.
 
-**Do not ask the user questions you could answer from the codebase.**
+4. **Write the plan** — Save to `plans/YYYY-MM-DD-<slug>.md`. Show it to the user and iterate until they're satisfied.
 
----
+## Plan structure
 
-## STEP 2: Complexity Assessment & Informed Questions
+Use a Why / What / How structure. Order tasks by dependency, each completable in a focused session, with implementation and a holistic testing checklists. Reference specific files and modules from your research.
 
-After researching, evaluate the complexity of the change.
+## Gotchas
 
-### 2a: Assess Complexity
-
-Classify the work as one of:
-
-- **Simple**: Few files, follows an existing pattern, little ambiguity
-- **Moderate**: Several files or a few design decisions, but the path is mostly clear
-- **Complex**: Cross-cutting changes, significant design decisions, or notable risks
-
-### 2b: Present Findings and Recommendation
-
-Reply with:
-
-1. A brief summary of the most relevant findings from `INITIAL_RESEARCH`
-2. Your complexity assessment
-3. A recommendation of one of:
-   - **Just do it**: Skip the plan and implement directly
-   - **Light plan**: Write a short actionable plan, then build
-   - **Full plan**: Do deeper investigation, then write a more detailed plan
-4. Any genuinely necessary questions, grouped together
-
-**Guidelines:**
-- Ground questions in specific files, patterns, and risks you found
-- Offer concrete options when there are trade-offs
-- Surface conflicts or uncertainty honestly
-- If the change is simple and well understood, explicitly offer to skip planning and build it now
-
-If the user agrees to **Just do it**, implement the change directly and do **not** write a plan file.
-
----
-
-## STEP 3: Targeted Research
-
-After the user answers, do a second focused research pass if anything is still unclear.
-
-Focus on:
-- Areas the user pointed you toward
-- Implementation details for the chosen approach
-- Risks or edge cases the user raised
-- Files or modules not covered in the initial pass
-
-If this second pass uncovers important new uncertainty, check in with the user briefly before proceeding.
-
----
-
-## STEP 4: Write the Plan
-
-If the user wants a plan instead of immediate implementation, create a markdown plan file in the current project at:
-
-`plans/YYYY-MM-DD-<short-slug>.md`
-
-Use today's date and a descriptive slug.
-
-### Plan Structure
-
-```markdown
-# <Plan Title>
-
-**Date:** YYYY-MM-DD
-**Status:** Draft
-
-## Why
-
-<Explain the problem, who is affected, why it matters, and the current pain points.>
-
-## What
-
-<Describe the proposed solution, major design decisions, scope boundaries, and anything explicitly out of scope.>
-
-## How
-
-### Task 1: <Task Title>
-
-<Explain what this task accomplishes and why it comes first.>
-
-**Implementation:**
-- [ ] <Actionable item>
-- [ ] <Actionable item>
-
-**Testing & QA:**
-- [ ] <Validation item>
-- [ ] <Validation item>
-```
-
-**Task-writing guidelines:**
-- Order tasks by dependency
-- Keep tasks reasonably sized
-- Make checklist items specific and actionable
-- Include testing, integration, and manual validation as appropriate
-- Reference concrete files and modules when helpful
-
-After writing the plan, show it to the user, ask for changes, and update it until they are satisfied.
-
----
-
-## Important Rules
-
-- **Research before you ask**
-- **Be collaborative**
-- **Ground your advice in the actual code**
-- **Let the user decide when there are trade-offs**
-- **Be honest about complexity**
-- **Do not create a plan when direct implementation is the better path**
-- **If you create or update files, tell the user the exact path**
+- **Never ask a question you could answer by reading the code.** This is the #1 failure mode. Do your homework first.
+- **Don't over-plan simple changes.** If it follows an existing pattern, just offer to build it.
+- **Don't under-plan complex changes.** Take as many rounds of questions as needed.
+- **Ground everything in code.** Reference specific files, patterns, and implementations. Generic questions are a sign you didn't research enough.
+- **Present trade-offs, let the user decide.** Don't assume preferences.
+- **Iterate the plan.** Actively ask for feedback after writing — don't just dump it.
+- **Wait for the green light.** Never start implementing until the user explicitly approves.

@@ -1,10 +1,12 @@
 ---
-description: Create a detailed implementation plan from a rough idea through collaborative refinement
+name: think
+description: Create a detailed implementation plan from a rough idea through collaborative refinement. Use when user wants to plan, design, or architect a feature, refactor, or fix before building it.
 argument-hint: [rough idea or feature description]
 ---
+
 # Implementation Plan Builder
 
-Facilitate a collaborative planning session. Deeply understand the user's idea, then produce a well-structured plan saved as a markdown file.
+Facilitate a collaborative planning session. Deeply understand the user's idea, produce a structured plan directory with progressive disclosure.
 
 If no idea was provided after the slash command, ask for one before proceeding.
 
@@ -14,16 +16,12 @@ If no idea was provided after the slash command, ask for one before proceeding.
 
 2. **Assess complexity** — Based on your research, classify the change and recommend an approach:
    - **Simple** (few files, follows existing patterns): Offer to skip the plan and build directly.
-   - **Moderate** (some decisions to make): Light plan with a few tasks, then build.
-   - **Complex** (many files, design decisions, cross-cutting concerns): Full planning workflow with targeted follow-up research.
+   - **Moderate** (some decisions to make): Plan directory with PLAN.md + tasks/.
+   - **Complex** (many files, design decisions, cross-cutting concerns): Full plan directory with context/ and snippets/. See [references/plan-structure.md](references/plan-structure.md) for the complete layout.
 
 3. **Collaborate** — Share your findings and ask questions. If the user agrees to "just do it," launch the builder agent and stop — no plan needed. Otherwise, run a second research pass based on the user's answers, then write the plan.
 
-4. **Write the plan** — Save to `plans/YYYY-MM-DD-<slug>.md`. Show it to the user and iterate until they're satisfied.
-
-## Plan structure
-
-Use a Why / What / How structure. Order tasks by dependency, each completable in a focused session, with implementation and a hollistic testing checklists. Reference specific files and modules from your research.
+4. **Write the plan** — Create a directory at `plans/YYYY-MM-DD-<slug>/`. Use the templates in [assets/](assets/) and structure defined in [references/plan-structure.md](references/plan-structure.md). Show PLAN.md to the user and iterate until satisfied.
 
 ## Gotchas
 

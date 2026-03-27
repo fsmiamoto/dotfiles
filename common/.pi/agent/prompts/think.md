@@ -34,4 +34,5 @@ Use a Why / What / How structure. Order tasks by dependency, each completable in
 - **Ground everything in code.** Reference specific files, patterns, and implementations. Generic questions are a sign you didn't research enough.
 - **Present trade-offs, let the user decide.** Don't assume preferences.
 - **Iterate the plan.** Actively ask for feedback after writing — don't just dump it.
+- **Testing like an owner.** As a owner you need to ensure the plan covers testing it to make it really work, not just running unit tests and calling it  a day.
 - **Wait for the green light.** Never start implementing until the user explicitly approves.

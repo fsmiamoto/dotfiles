@@ -13,6 +13,8 @@ import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 export default function(pi: ExtensionAPI) {
 	let turnCount = 0;
 	let isStreaming = false;
+	let bgCount = 0;
+	let requestFooterRender: (() => void) | null = null;
 
 	// ── Helpers ────────────────────────────────────────────────────────
 
@@ -72,16 +74,30 @@ export default function(pi: ExtensionAPI) {
 	/** Separator characters */
 	const SEP = "│";
 
+	// ── Background process count (inter-extension via event bus) ───────
+
+	pi.events.on("bg:status", (data: unknown) => {
+		const { running } = data as { running: number };
+		if (running !== bgCount) {
+			bgCount = running;
+			requestFooterRender?.();
+		}
+	});
+
 	// ── Footer ─────────────────────────────────────────────────────────
 
 	pi.on("session_start", async (_event, ctx) => {
 		turnCount = 0;
 
 		ctx.ui.setFooter((tui, theme, footerData) => {
+			requestFooterRender = () => tui.requestRender();
 			const unsub = footerData.onBranchChange(() => tui.requestRender());
 
 			return {
-				dispose: unsub,
+				dispose: () => {
+					unsub();
+					requestFooterRender = null;
+				},
 				invalidate() { },
 				render(width: number): string[] {
 					// ── Gather data ────────────────────────────────
@@ -119,6 +135,13 @@ export default function(pi: ExtensionAPI) {
 					const usage = ctx.getContextUsage();
 					const gauge = contextGauge(usage, theme);
 
+					// Background processes indicator (only when ≥1 running)
+					const bgSection = bgCount > 0
+						? theme.fg("dim", ` ${SEP} `) +
+						  theme.fg("success", "⟳") +
+						  theme.fg("muted", ` ${bgCount}`)
+						: "";
+
 					const left =
 						" " +
 						dirSection +
@@ -126,7 +149,8 @@ export default function(pi: ExtensionAPI) {
 							? theme.fg("dim", ` ${SEP} `) + branchSection
 							: "") +
 						theme.fg("dim", ` ${SEP} `) +
-						gauge;
+						gauge +
+						bgSection;
 
 					// Right: turn + tokens + cost | model | thinking
 					const turnLabel = isStreaming

@@ -84,6 +84,9 @@ alias sv="sudo $EDITOR"
 
 alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
 
+# reset mouse
+alias mr="printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'"
+
 alias cl="claude"
 alias cly="claude --dangerously-skip-permissions --effort max"
 

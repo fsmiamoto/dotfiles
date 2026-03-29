@@ -16,7 +16,12 @@ endif
 COMMON_PACKAGES = common shell
 VERBOSE ?= 0
 
-config: backup scripts install
+# Shared agent skills: canonical location is .claude/skills/
+# Pi gets symlinks to avoid duplication
+CLAUDE_SKILLS_DIR = common/.claude/skills
+PI_SKILLS_DIR = common/.pi/agent/skills
+
+config: backup scripts install sync-skills
 
 macos: packages config defaults
 
@@ -155,4 +160,16 @@ else
 	@echo "sketchybar is only available on macOS"
 endif
 
-.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors
+sync-skills:
+	@echo "Syncing shared skills (claude → pi)..."
+	@mkdir -p $(PI_SKILLS_DIR)
+	@for skill in $(CLAUDE_SKILLS_DIR)/*/; do \
+		name=$$(basename "$$skill"); \
+		target=$(PI_SKILLS_DIR)/$$name; \
+		if [ ! -e "$$target" ] && [ ! -L "$$target" ]; then \
+			ln -s ../../../.claude/skills/$$name "$$target"; \
+			echo "  linked $$name"; \
+		fi; \
+	done
+
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills

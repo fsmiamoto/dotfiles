@@ -1,6 +1,6 @@
 ---
 name: reagent
-description: Guide for using ReAgent to create code reviews and get results via CLI. Use when the user asks to review code changes, create a code review, get review feedback, or iterate on code based on review comments. Keywords: review, code review, reagent, diff, feedback.
+description: Guide for using ReAgent to create code reviews and get results via CLI. Use when the user asks to review code changes, create a code review, get review feedback, or iterate on code based on review comments. Keywords - review, code review, reagent, diff, feedback.
 ---
 
 # ReAgent Code Reviews

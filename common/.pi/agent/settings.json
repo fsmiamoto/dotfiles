@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.62.0",
+  "lastChangelogVersion": "0.63.2",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
   "compaction": {
@@ -10,8 +10,8 @@
   "quietStartup": true,
   "packages": [
     "npm:pi-web-access",
-    "npm:pi-markdown-preview",
     "npm:@tintinweb/pi-subagents",
+    "npm:pi-tool-display",
     "npm:pi-context"
   ]
 }

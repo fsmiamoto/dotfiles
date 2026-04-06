@@ -1,6 +1,10 @@
-# UTF-8 (Unicode) compose sequence
-include "%L"
-<Multi_key> <c>   : "ç"   ccedilla
-<Multi_key> <C>   : "Ç"   Ccedilla
-<dead_acute> <c>  : "ç"   ccedilla
-<dead_acute> <C>  : "Ç"   Ccedilla
+# Run omarchy-restart-xcompose to apply changes
+
+# Include fast emoji access
+include "%H/.local/share/omarchy/default/xcompose"
+
+# Cedilla override (us-intl dead acute defaults to ć, we want ç)
+<dead_acute> <c> : "ç"
+<dead_acute> <C> : "Ç"
+<dead_acute> <s> : "'s"
+<dead_acute> <S> : "'S"

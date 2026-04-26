@@ -1,5 +1,5 @@
 ---
-name: think
+name: build-plan
 description: Create a detailed implementation plan from a rough idea through collaborative refinement. Use when user wants to plan, design, or architect a feature, refactor, or fix before building it.
 argument-hint: [rough idea or feature description]
 ---

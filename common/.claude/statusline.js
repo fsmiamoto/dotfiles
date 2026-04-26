@@ -5,9 +5,42 @@ const path = require('path');
 const os = require('os');
 const { execSync } = require('child_process');
 
-const CONTEXT_LIMIT = 200000;
+const DEFAULT_CONTEXT_LIMIT = 200_000;
 const GREEN_THRESHOLD = 70;
 const YELLOW_THRESHOLD = 90;
+
+// Model-specific context limits. The `[1m]` suffix indicates a 1M-context variant.
+const MODEL_CONTEXT_LIMITS = {
+  'claude-opus-4-7[1m]': 1_000_000,
+  'claude-sonnet-4-5[1m]': 1_000_000,
+  'claude-sonnet-4-6[1m]': 1_000_000,
+  'claude-opus-4-7': 200_000,
+  'claude-opus-4-6': 200_000,
+  'claude-opus-4-5': 200_000,
+  'claude-sonnet-4-6': 200_000,
+  'claude-sonnet-4-5': 200_000,
+  'claude-haiku-4-5': 200_000
+};
+
+function getContextLimit(modelId) {
+  if (!modelId) return DEFAULT_CONTEXT_LIMIT;
+  if (MODEL_CONTEXT_LIMITS[modelId]) return MODEL_CONTEXT_LIMITS[modelId];
+  if (modelId.includes('[1m]')) return 1_000_000;
+  const stripped = modelId.replace(/-20[0-9]{6}$/, '');
+  if (MODEL_CONTEXT_LIMITS[stripped]) return MODEL_CONTEXT_LIMITS[stripped];
+  return DEFAULT_CONTEXT_LIMIT;
+}
+
+function formatTokenCount(n) {
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000;
+    return m % 1 === 0 ? `${m}M` : `${m.toFixed(1)}M`;
+  }
+  if (n >= 1000) {
+    return `${Math.round(n / 1000)}k`;
+  }
+  return String(n);
+}
 
 // Tokyo Night theme colors (using 256-color ANSI codes)
 const COLORS = {
@@ -153,14 +186,16 @@ function getModelSegment(modelName) {
   return makeSegment(paint(`${ICONS.model} ${modelName}`, THEME.text, THEME.model));
 }
 
-function getUsageSegment(tokenUsage) {
+function getUsageSegment(tokenUsage, contextLimit) {
   if (tokenUsage === null) {
     return '';
   }
 
-  const percentage = ((tokenUsage / CONTEXT_LIMIT) * 100).toFixed(1);
+  const percentage = ((tokenUsage / contextLimit) * 100).toFixed(1);
   const color = getColorForPercentage(parseFloat(percentage));
-  return makeSegment(paint(`${ICONS.usage} ${percentage}%`, THEME.text, color));
+  const used = formatTokenCount(tokenUsage);
+  const total = formatTokenCount(contextLimit);
+  return makeSegment(paint(`${ICONS.usage} ${used}/${total} ${percentage}%`, THEME.text, color));
 }
 
 function main() {
@@ -176,7 +211,9 @@ function main() {
         const hostname = os.hostname().split('.')[0];
         const workspaceDir = input.workspace?.current_dir || process.cwd();
         const currentDir = path.basename(workspaceDir);
-        const modelName = formatModelName(input.model?.id || 'unknown');
+        const modelId = input.model?.id || 'unknown';
+        const modelName = formatModelName(modelId);
+        const contextLimit = getContextLimit(modelId);
         const gitBranch = getGitBranch(workspaceDir);
         const transcriptPath = input.transcript_path;
         const tokenUsage = transcriptPath ? parseTranscriptForTokens(transcriptPath) : null;
@@ -185,7 +222,7 @@ function main() {
           getUserHostSegment({ username, hostname, currentDir }),
           getBranchSegment(gitBranch),
           getModelSegment(modelName),
-          getUsageSegment(tokenUsage)
+          getUsageSegment(tokenUsage, contextLimit)
         ]);
 
         process.stdout.write(statusLine);

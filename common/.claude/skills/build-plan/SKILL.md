@@ -29,6 +29,7 @@ If no idea was provided after the slash command, ask for one before proceeding.
 - **Don't over-plan simple changes.** If it follows an existing pattern, just offer to build it.
 - **Don't under-plan complex changes.** Take as many rounds of questions as needed.
 - **Ground everything in code.** Reference specific files, patterns, and implementations. Generic questions are a sign you didn't research enough.
+- **Don't pre-write the implementation.** Write tasks the way you'd brief a competent teammate — you wouldn't hand them the full code, you'd describe the goal and call out the non-obvious parts. Tasks pin *what*, *where*, and the public surface (signatures, file paths). Skip function bodies, loss formulas, training loops, default tables. Inline code only when it surfaces a research finding prose can't carry: a constraint, a non-obvious value, a math formula, a pattern to mimic.
 - **Present trade-offs, let the user decide.** Don't assume preferences.
 - **Iterate the plan.** Actively ask for feedback after writing — don't just dump it.
 - **Testing like an owner.** As a owner you need to ensure the plan covers testing it to make it really work, not just running unit tests and calling it a day so include a task and think how to do a proper UAT.

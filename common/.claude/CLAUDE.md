@@ -60,13 +60,11 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
----
-
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
-## Agent’s toolbox (complementary to MCP server and skills tools)
-- When the user wants you to read websites, fetch their content using
-  `$ exec "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --dump-dom $URL | uvx markitdown`
-  The call will return the website’s content converted to markdown.
-  If markdown is not practicable, leave out the piping.
-  As a generic fallback use you default Web Fetch tools.
+---
+
+## Verification Standards
+- Before claiming a UI/visual fix works, verify with screenshots or actual browser testing — don't rely on code reading alone
+- For backend endpoint changes, test actual request flows (SSE, auth success paths), not just rejection cases
+- After sub-agents report file edits, verify changes actually persisted to disk before proceeding

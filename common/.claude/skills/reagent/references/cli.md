@@ -68,14 +68,6 @@ The session ID is the UUID at the end of the URL.
       "createdAt": "2025-01-01T00:00:00.000Z"
     }
   ],
-  "files": [
-    {
-      "path": "src/app.ts",
-      "content": "... current file content ...",
-      "oldContent": "... previous file content ...",
-      "language": "typescript"
-    }
-  ],
   "createdAt": "2025-01-01T00:00:00.000Z",
   "completedAt": "2025-01-01T00:05:00.000Z"
 }

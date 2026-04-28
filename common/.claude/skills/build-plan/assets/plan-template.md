@@ -1,32 +1,41 @@
 # [Plan Title]
 
-## Goal
+## Problem
 
-[1-2 sentences: what we're building/changing and why]
+[What problem we're solving and why]
+
+## Solution
+
+[How we're solving it]
 
 ## Key Decisions
 
 - **[Decision]**: [Rationale — why this approach over alternatives]
 
-## Tasks
+## Out of Scope
 
-<!-- Dependency-ordered. Each task links to its detailed spec. -->
+- [Thing we're explicitly not doing]
 
-- [ ] [Task name](tasks/01-name.md) — one-line summary
-  - Files: `path/to/file.ts`
-- [ ] [Task name](tasks/02-name.md) — one-line summary
-  - Depends on: Task 1
-  - Files: `path/to/other.ts`
+## Milestones
 
-## Context
+<!-- Each milestone is a demoable vertical slice. Tasks within are dependency-ordered. -->
 
-<!-- Only for moderate/complex plans. Link research files. Remove this section for simple plans. -->
+### Milestone 1: [Name]
 
-- [Architecture](context/architecture.md) — how the relevant system works today
-- [Patterns](context/patterns.md) — existing patterns to follow
+[One-line description of what's demoable when this is done]
 
-## Testing
+- [ ] [Task name](tasks/01-name.md) — one-line summary (AFK)
+- [ ] [Task name](tasks/02-name.md) — one-line summary (HITL)
+  - Blocked by: Task 01
 
-- [ ] [Unit Tests]
-- [ ] [High-level verification step/Smoke testing]
-- [ ] [Integration/E2E check]
+**Human checkpoints:**
+- [ ] [Thing the human should verify after this milestone is complete]
+
+### Milestone 2: [Name]
+
+[One-line description]
+
+- [ ] [Task name](tasks/03-name.md) — one-line summary (AFK)
+
+**Human checkpoints:**
+- [ ] [Thing to verify]

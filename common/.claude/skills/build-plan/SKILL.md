@@ -1,36 +1,38 @@
 ---
 name: build-plan
-description: Create a detailed implementation plan from a rough idea through collaborative refinement. Use when user wants to plan, design, or architect a feature, refactor, or fix before building it.
+description: Create a structured implementation plan from conversation context. Produces a plan with tracer-bullet vertical slices.
 argument-hint: [rough idea or feature description]
 ---
 
 # Implementation Plan Builder
 
-Facilitate a collaborative planning session. Deeply understand the user's idea, produce a structured plan directory with progressive disclosure.
+Turn the current conversation context into a structured plan directory with vertical-slice tasks.
 
-If no idea was provided after the slash command, ask for one before proceeding.
+If no idea was provided and there's no relevant conversation context, ask for one before proceeding.
 
 ## Workflow
 
-1. **Research first** — Before asking the user anything, use a researcher agent to explore the codebase for relevant context: existing patterns, affected files, reusable code, architectural constraints, and risks.
+1. **Research (conditional)** — If the codebase hasn't been explored in this conversation, run a researcher agent to find relevant context: existing patterns, affected files, reusable code, architectural constraints. Skip if already done (e.g., from a prior /discuss session).
 
-2. **Assess complexity** — Based on your research, classify the change and recommend an approach:
-   - **Simple** (few files, follows existing patterns): Offer to skip the plan and build directly.
-   - **Moderate** (some decisions to make): Plan directory with PLAN.md + tasks/.
-   - **Complex** (many files, design decisions, cross-cutting concerns): Full plan directory with context/ and snippets/. See [references/plan-structure.md](references/plan-structure.md) for the complete layout.
+2. **Synthesize** — From the conversation context, draft a proposed plan structure and present it:
+   - Problem/solution summary
+   - Key decisions (with trade-offs)
+   - Out of scope
+   - Milestones with one-line demoable description each
+   - Tasks per milestone: title, HITL/AFK designation, blocked-by relationships
+   - Human checkpoints per milestone
 
-3. **Collaborate** — Share your findings and ask questions. If the user agrees to "just do it," launch the builder agent and stop — no plan needed. Otherwise, run a second research pass based on the user's answers, then write the plan.
+3. **Iterate** — User reviews the breakdown: split, merge, reorder, change HITL/AFK, adjust scope. Single review checkpoint — not open-ended questioning.
 
-4. **Write the plan** — Create a directory at `plans/YYYY-MM-DD-<slug>/`. Use the templates in [assets/](assets/) and structure defined in [references/plan-structure.md](references/plan-structure.md). Show PLAN.md to the user and iterate until satisfied.
+4. **Write the plan** — Once approved, create directory at `plans/YYYY-MM-DD-<slug>/` using the templates in [assets/](assets/). Show PLAN.md to the user and iterate until satisfied.
 
 ## Gotchas
 
-- **Never ask a question you could answer by reading the code.** This is the #1 failure mode. Do your homework first.
-- **Don't over-plan simple changes.** If it follows an existing pattern, just offer to build it.
-- **Don't under-plan complex changes.** Take as many rounds of questions as needed.
-- **Ground everything in code.** Reference specific files, patterns, and implementations. Generic questions are a sign you didn't research enough.
-- **Don't pre-write the implementation.** Write tasks the way you'd brief a competent teammate — you wouldn't hand them the full code, you'd describe the goal and call out the non-obvious parts. Tasks pin *what*, *where*, and the public surface (signatures, file paths). Skip function bodies, loss formulas, training loops, default tables. Inline code only when it surfaces a research finding prose can't carry: a constraint, a non-obvious value, a math formula, a pattern to mimic.
-- **Present trade-offs, let the user decide.** Don't assume preferences.
-- **Iterate the plan.** Actively ask for feedback after writing — don't just dump it.
-- **Testing like an owner.** As a owner you need to ensure the plan covers testing it to make it really work, not just running unit tests and calling it a day so include a task and think how to do a proper UAT.
+- **Never ask a question you could answer by reading the code.** Do your homework first.
+- **Don't re-interview the user.** The conversation context has the answers. Synthesize, don't interrogate.
+- **Ground everything in code.** Reference specific files, patterns, and implementations.
+- **Don't pre-write the implementation.** Brief a competent teammate — what/where/surface, not function bodies.
+- **Think in vertical slices.** The litmus test: "can someone run this and see it working?"
+- **Present trade-offs, let the user decide.**
+- **Iterate the plan.** Actively ask for feedback after writing.
 - **Wait for the green light.** Never start implementing until the user explicitly approves.

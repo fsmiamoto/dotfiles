@@ -45,7 +45,9 @@ Once confirmed:
 ```sh
 #!/bin/sh
 cd "WORKING_DIR"
-exec ralfinho [confirmed flags]
+ralfinho [confirmed flags]
+echo "--- ralfinho exited with code $? ---"
+exec $SHELL
 ```
 
 Replace `WORKING_DIR` with the current working directory, `TIMESTAMP` with the Unix timestamp, and `[confirmed flags]` with the confirmed command flags.

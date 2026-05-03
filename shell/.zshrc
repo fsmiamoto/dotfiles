@@ -88,7 +88,7 @@ alias gomi='go mod init github.com/fsmiamoto/$(basename $PWD)'
 alias mr="printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'"
 
 alias cl="claude"
-alias cly="claude --dangerously-skip-permissions --effort max"
+alias cly="claude --dangerously-skip-permissions --effort xhigh --model claude-opus-4-6"
 
 alias g="git"
 alias gc="git commit"
@@ -171,7 +171,6 @@ balias tmc="$EDITOR ~/.tmux.conf"
 
 balias src="source $HOME/.zshrc"
 
-ialias lf='yazi'
 ialias df='df -h'
 ialias du='du -h'
 ialias ip='ip -c'

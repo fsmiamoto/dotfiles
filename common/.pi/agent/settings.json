@@ -1,16 +1,18 @@
 {
-  "lastChangelogVersion": "0.72.0",
+  "lastChangelogVersion": "0.74.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "compaction": {
     "enabled": false
   },
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "high",
   "theme": "tokyonight",
   "quietStartup": true,
   "packages": [
     "npm:pi-web-access",
     "npm:pi-tool-display",
-    "npm:pi-context"
-  ]
+    "npm:pi-context",
+    "npm:@juicesharp/rpiv-ask-user-question"
+  ],
+  "hideThinkingBlock": false
 }

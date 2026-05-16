@@ -24,12 +24,15 @@ import { discoverAgents, type AgentConfig } from "./agents.ts";
 interface TrackedAgent {
 	name: string;
 	tmuxWindow: string;
+	paneId: string;
+	group: string;
 	pid: number;
 	agentProfile?: string;
 	model?: string;
 	startedAt: number;
 	cwd: string;
 	promptFile?: string;
+	taskFile?: string;
 	status: "running" | "exited";
 	adopted?: boolean;
 }
@@ -114,31 +117,69 @@ function isInTmux(): boolean {
 
 function tmuxWindowExists(windowName: string): boolean {
 	try {
-		execSync(`tmux list-windows -F '#{window_name}' | grep -qxF '${shellEscape(windowName)}'`, {
-			stdio: "ignore",
-		});
+		const windows = execSync("tmux list-windows -F '#{window_name}'", { encoding: "utf-8" })
+			.split("\n")
+			.filter(Boolean);
+		return windows.includes(windowName);
+	} catch {
+		return false;
+	}
+}
+
+function tmuxPaneExists(paneId: string | undefined): boolean {
+	if (!paneId) return false;
+	try {
+		execSync(`tmux display-message -t ${shellQuote(paneId)} -p '#{pane_id}'`, { stdio: "ignore" });
 		return true;
 	} catch {
 		return false;
 	}
 }
 
-function tmuxNewWindow(name: string): void {
-	execSync(`tmux new-window -d -n '${shellEscape(name)}'`);
+function tmuxCurrentWindowName(): string {
+	return execSync("tmux display-message -p '#{window_name}'", { encoding: "utf-8" }).trim();
 }
 
-function tmuxSendKeys(windowName: string, keys: string): void {
-	execSync(`tmux send-keys -t ':${shellEscape(windowName)}' ${shellQuote(keys)} Enter`);
+function tmuxNewWindow(windowName: string, command: string, cwd: string): string {
+	return execSync(`tmux new-window -d -P -F '#{pane_id}' -c ${shellQuote(cwd)} -n ${shellQuote(windowName)} ${shellQuote(command)}`, {
+		encoding: "utf-8",
+	}).trim();
 }
 
-function tmuxSendRawKeys(windowName: string, keys: string): void {
-	execSync(`tmux send-keys -t ':${shellEscape(windowName)}' ${keys}`);
+function tmuxSplitWindow(windowName: string, command: string, cwd: string): string {
+	return execSync(`tmux split-window -d -P -F '#{pane_id}' -c ${shellQuote(cwd)} -t ':${shellEscape(windowName)}' ${shellQuote(command)}`, {
+		encoding: "utf-8",
+	}).trim();
 }
 
-function tmuxCapture(windowName: string, lines: number = 100): string {
-	return execSync(`tmux capture-pane -t ':${shellEscape(windowName)}' -p -S -${lines}`, {
+function tmuxSelectLayout(windowName: string): void {
+	try { execSync(`tmux select-layout -t ':${shellEscape(windowName)}' tiled`, { stdio: "ignore" }); } catch {}
+}
+
+function tmuxSetPaneTitle(paneId: string, title: string): void {
+	try { execSync(`tmux select-pane -t ${shellQuote(paneId)} -T ${shellQuote(title)}`, { stdio: "ignore" }); } catch {}
+}
+
+function tmuxSendKeys(paneId: string, keys: string): void {
+	execSync(`tmux send-keys -t ${shellQuote(paneId)} ${shellQuote(keys)} Enter`);
+}
+
+function tmuxSendRawKeys(paneId: string, keys: string): void {
+	execSync(`tmux send-keys -t ${shellQuote(paneId)} ${keys}`);
+}
+
+function tmuxCapture(paneId: string, lines: number = 100): string {
+	return execSync(`tmux capture-pane -t ${shellQuote(paneId)} -p -S -${lines}`, {
 		encoding: "utf-8",
 	});
+}
+
+function tmuxKillPane(paneId: string): void {
+	try {
+		execSync(`tmux kill-pane -t ${shellQuote(paneId)}`, { stdio: "ignore" });
+	} catch {
+		// Already gone
+	}
 }
 
 function tmuxKillWindow(windowName: string): void {
@@ -165,10 +206,11 @@ function refreshStatuses(): void {
 	let changed = false;
 	for (const agent of agents.values()) {
 		if (agent.status === "running") {
-			if (!isAlive(agent.pid) || !tmuxWindowExists(agent.tmuxWindow)) {
-				cleanupPromptFile(agent.promptFile);
+			if (!isAlive(agent.pid) || !tmuxPaneExists(agent.paneId)) {
+				cleanupAgentTempFiles(agent);
 				agent.status = "exited";
 				changed = true;
+				if (tmuxWindowExists(agent.tmuxWindow)) tmuxSelectLayout(agent.tmuxWindow);
 			}
 		}
 	}
@@ -176,6 +218,7 @@ function refreshStatuses(): void {
 	const staleThreshold = 30 * 60 * 1000;
 	for (const [name, agent] of agents) {
 		if (agent.status === "exited" && (Date.now() - agent.startedAt) > staleThreshold) {
+			cleanupAgentTempFiles(agent);
 			agents.delete(name);
 			changed = true;
 		}
@@ -195,8 +238,10 @@ function initAgents(): void {
 	// Load own registry (handles PID reuse / warm restart edge case)
 	const ownEntries = loadRegistryFile(sessionRegistryPath);
 	for (const entry of ownEntries) {
-		if (isAlive(entry.pid) && tmuxWindowExists(entry.tmuxWindow)) {
+		if (isAlive(entry.pid) && tmuxPaneExists(entry.paneId)) {
 			agents.set(entry.name, { ...entry, status: "running" });
+		} else {
+			cleanupAgentTempFiles(entry);
 		}
 	}
 
@@ -234,10 +279,12 @@ function adoptOrphans(): TrackedAgent[] {
 
 			const entries = loadRegistryFile(registryPath);
 			for (const entry of entries) {
-				if (!agents.has(entry.name) && isAlive(entry.pid) && tmuxWindowExists(entry.tmuxWindow)) {
+				if (!agents.has(entry.name) && isAlive(entry.pid) && tmuxPaneExists(entry.paneId)) {
 					const tracked: TrackedAgent = { ...entry, status: "running", adopted: true };
 					agents.set(entry.name, tracked);
 					adopted.push(tracked);
+				} else {
+					cleanupAgentTempFiles(entry);
 				}
 			}
 			// Clean up orphaned registry file
@@ -329,6 +376,7 @@ interface AgentResultMessage {
 	name: string;
 	summary: string;
 	result: string;
+	autoReported?: boolean;
 }
 
 function handleAgentMessage(msg: AgentResultMessage): void {
@@ -337,17 +385,19 @@ function handleAgentMessage(msg: AgentResultMessage): void {
 	if (msg.type === "result") {
 		const agent = agents.get(msg.name);
 		const profileLabel = agent?.agentProfile ? ` (${agent.agentProfile})` : "";
+		const reportLabel = msg.autoReported ? " auto-report" : "";
 
 		_pi.sendMessage(
 			{
 				customType: "agent-result",
-				content: `[Agent ${msg.name}${profileLabel}] ${msg.summary}\n\n${msg.result}`,
+				content: `[Agent ${msg.name}${profileLabel}${reportLabel}] ${msg.summary}\n\n${msg.result}`,
 				display: true,
 				details: {
 					agentName: msg.name,
 					agentProfile: agent?.agentProfile,
 					summary: msg.summary,
 					result: msg.result,
+					autoReported: msg.autoReported,
 				},
 			},
 			{
@@ -356,13 +406,14 @@ function handleAgentMessage(msg: AgentResultMessage): void {
 			},
 		);
 
-		// Auto-close: kill agent window after it reports (short delay for UX)
+		// Auto-close: kill agent pane after it reports (short delay for UX)
 		if (agent) {
 			setTimeout(() => {
-				if (tmuxWindowExists(agent.tmuxWindow)) {
-					tmuxKillWindow(agent.tmuxWindow);
+				if (tmuxPaneExists(agent.paneId)) {
+					tmuxKillPane(agent.paneId);
+					tmuxSelectLayout(agent.tmuxWindow);
 				}
-				cleanupPromptFile(agent.promptFile);
+				cleanupAgentTempFiles(agent);
 				agent.status = "exited";
 				agents.delete(msg.name);
 				saveRegistry();
@@ -383,19 +434,26 @@ function getAllAgents(): TrackedAgent[] {
 
 // ── Cleanup helper ──────────────────────────────────────────────
 
-function cleanupPromptFile(promptFile?: string): void {
-	if (!promptFile) return;
+function cleanupTempFile(tempFile?: string): void {
+	if (!tempFile) return;
 	try {
-		unlinkSync(promptFile);
+		unlinkSync(tempFile);
 	} catch {
 		/* already gone */
 	}
 	// Try to remove parent tmpdir too
 	try {
-		rmdirSync(path.dirname(promptFile));
+		rmdirSync(path.dirname(tempFile));
 	} catch {
 		/* not empty or gone */
 	}
+}
+
+function cleanupAgentTempFiles(agent: Pick<TrackedAgent, "promptFile" | "taskFile">): void {
+	cleanupTempFile(agent.promptFile);
+	cleanupTempFile(agent.taskFile);
+	agent.promptFile = undefined;
+	agent.taskFile = undefined;
 }
 
 // ── Helpers ─────────────────────────────────────────────────────
@@ -417,9 +475,9 @@ function getPiInvocation(args: string[]): { command: string; args: string[] } {
 	return { command: "pi", args };
 }
 
-function getPanePid(windowName: string): number {
+function getPanePid(paneId: string): number {
 	const raw = execSync(
-		`tmux display-message -t ':${shellEscape(windowName)}' -p '#{pane_pid}'`,
+		`tmux display-message -t ${shellQuote(paneId)} -p '#{pane_pid}'`,
 		{ encoding: "utf-8" },
 	).trim();
 	return parseInt(raw, 10);
@@ -433,6 +491,16 @@ function formatUptime(ms: number): string {
 	const hours = Math.floor(minutes / 60);
 	const remainingMinutes = minutes % 60;
 	return `${hours}h${remainingMinutes}m ago`;
+}
+
+function sanitizeGroupSegment(value: string, fallback: string = "window"): string {
+	const sanitized = value
+		.trim()
+		.replace(/[^a-zA-Z0-9_.-]+/g, "-")
+		.replace(/^[^a-zA-Z0-9]+/, "")
+		.slice(0, 50)
+		.replace(/[^a-zA-Z0-9]+$/, "");
+	return sanitized || fallback;
 }
 
 // ── /agents TUI component ──────────────────────────────────────────
@@ -499,7 +567,7 @@ class AgentListComponent {
 			const agent = this.items[this.selected];
 			if (agent) {
 				try {
-					execSync(`tmux select-window -t ':${shellEscape(agent.tmuxWindow)}'`);
+					execSync(`tmux select-pane -t ${shellQuote(agent.paneId)}`);
 				} catch {
 					// window gone
 				}
@@ -512,8 +580,9 @@ class AgentListComponent {
 		if (data === "x" || data === "X") {
 			const agent = this.items[this.selected];
 			if (agent && agent.status === "running") {
-				tmuxKillWindow(agent.tmuxWindow);
-				cleanupPromptFile(agent.promptFile);
+				tmuxKillPane(agent.paneId);
+				tmuxSelectLayout(agent.tmuxWindow);
+				cleanupAgentTempFiles(agent);
 				agent.status = "exited";
 				agents.delete(agent.name);
 				saveRegistry();
@@ -529,6 +598,8 @@ class AgentListComponent {
 				.filter((a) => a.status !== "running")
 				.map((a) => a.name);
 			for (const name of deadNames) {
+				const agent = agents.get(name);
+				if (agent) cleanupAgentTempFiles(agent);
 				agents.delete(name);
 			}
 			saveRegistry();
@@ -643,7 +714,7 @@ class AgentListComponent {
 
 // ── Result detail interfaces ───────────────────────────────────────
 
-interface SpawnResultDetails { name: string; pid: number; model?: string; thinking?: string; profile?: string; tools?: string[]; }
+interface SpawnResultDetails { name: string; pid: number; paneId?: string; group?: string; model?: string; thinking?: string; profile?: string; tools?: string[]; }
 interface SteerResultDetails { name: string; message: string; }
 interface ListResultDetails {
 	running: { name: string; pid: number; model?: string; profile?: string; uptime: number; }[];
@@ -678,7 +749,7 @@ function requireAgent(name: string): TrackedAgent {
 
 function buildAgentCommand(opts: {
 	name: string; socketPath: string; model?: string; thinking?: string;
-	tools?: string[]; promptFile?: string;
+	tools?: string[]; promptFile?: string; taskFile: string;
 }): string {
 	const invocation = getPiInvocation([]);
 	const parts: string[] = [];
@@ -718,6 +789,9 @@ function buildAgentCommand(opts: {
 		parts.push("--append-system-prompt", shellQuote(opts.promptFile));
 	}
 
+	// Initial task prompt file
+	parts.push(shellQuote(`@${opts.taskFile}`));
+
 	return parts.join(" ");
 }
 
@@ -734,6 +808,7 @@ export default function (pi: ExtensionAPI) {
 					agentProfile?: string;
 					summary: string;
 					result: string;
+					autoReported?: boolean;
 			  }
 			| undefined;
 
@@ -743,9 +818,11 @@ export default function (pi: ExtensionAPI) {
 		}
 
 		const profileLabel = details.agentProfile ? ` (${details.agentProfile})` : "";
+		const autoLabel = details.autoReported ? theme.fg("dim", " [auto]") : "";
 		const header =
 			theme.fg("accent", `📋 Agent ${details.agentName}${profileLabel}: `) +
-			theme.fg("text", details.summary);
+			theme.fg("text", details.summary) +
+			autoLabel;
 
 		if (!expanded) {
 			return new Text(header, 0, 0);
@@ -789,16 +866,22 @@ export default function (pi: ExtensionAPI) {
 			const names = running.map((a) => a.adopted ? `${a.name} [adopted]` : a.name).join(", ");
 			const choice = await ctx.ui.select(
 				`${running.length} tmux agent${running.length > 1 ? "s" : ""} still running (${names})`,
-				["Kill all agent windows", "Leave running"],
+				["Kill all agent panes", "Leave running"],
 			);
 
-			if (choice === "Kill all agent windows") {
+			if (choice === "Kill all agent panes") {
 				for (const agent of running) {
-					tmuxKillWindow(agent.tmuxWindow);
-					cleanupPromptFile(agent.promptFile);
+					tmuxKillPane(agent.paneId);
+					tmuxSelectLayout(agent.tmuxWindow);
+					cleanupAgentTempFiles(agent);
 				}
 				agents.clear();
 			}
+		}
+
+		// The child process has already received startup file arguments; do not leave temp files behind on shutdown.
+		for (const agent of agents.values()) {
+			cleanupAgentTempFiles(agent);
 		}
 
 		// Save state, close server
@@ -826,17 +909,21 @@ export default function (pi: ExtensionAPI) {
 			"Spawn a new pi agent in a tmux window. The agent runs autonomously and can report results back.",
 		promptSnippet: "Spawn a subagent pi session in a tmux window for delegated tasks",
 		promptGuidelines: [
-			"Use agent_spawn to delegate tasks to subagents running in tmux windows.",
+			"Use agent_spawn to delegate tasks to subagents running in tmux panes.",
+			"Pass the task as a complete markdown brief using exactly these headers: # Goal, # Success Criteria, # Constraints, # Output, # Stop Rules.",
+			"The child agent's final assistant message is auto-reported to this conversation; report_result is optional for explicit structured reports.",
 			"Use agent profiles (agent parameter) when available — they configure model, tools, and system prompt.",
-			"After spawning, the agent works autonomously. It will call report_result when done — the result appears as a message in this conversation.",
-			"Do NOT peek or poll agents after spawning. Wait for their report_result to arrive. Constant peeking defeats the purpose of delegation.",
+			"Do NOT peek or poll agents after spawning. Wait for their auto-report/result to arrive. Constant peeking defeats the purpose of delegation.",
 			"Only use agent_peek if an agent has been running unusually long and you suspect it's stuck.",
 			"Use agent_steer only when you need to redirect an agent. It interrupts their current work.",
 			"Use agent_list to see running agents and available profiles before spawning.",
 		],
 		parameters: Type.Object({
-			name: Type.String({ description: "Unique name for the agent (also tmux window name)" }),
+			name: Type.String({ description: "Unique name for the agent" }),
 			task: Type.String({ description: "Task to delegate to the agent" }),
+			group: Type.Optional(
+				Type.String({ description: "Optional tmux window group. Agents with the same group share panes in one window." }),
+			),
 			agent: Type.Optional(
 				Type.String({ description: "Agent profile name from .md files (e.g., 'scout', 'reviewer')" }),
 			),
@@ -854,6 +941,7 @@ export default function (pi: ExtensionAPI) {
 			const {
 				name,
 				task,
+				group,
 				agent: agentProfileName,
 				model: modelOverride,
 				thinking: thinkingOverride,
@@ -864,12 +952,25 @@ export default function (pi: ExtensionAPI) {
 				throw new Error('Agent name must be 1-50 chars: alphanumeric, hyphens, underscores. Must start with alphanumeric.');
 			}
 
+			// Refresh first so manually closed panes do not keep stale names reserved.
+			refreshStatuses();
+
 			// Validate name uniqueness
 			if (agents.has(name)) {
 				throw new Error(`Agent "${name}" already exists. Use agent_stop to remove it first.`);
 			}
-			if (tmuxWindowExists(name)) {
-				throw new Error(`Tmux window "${name}" already exists. Choose a different name.`);
+
+			const parentWindow = sanitizeGroupSegment(tmuxCurrentWindowName());
+			const explicitGroup = group?.trim();
+			const windowGroup = explicitGroup || `agents-${parentWindow}-${process.pid}`;
+			if (explicitGroup && !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$/.test(explicitGroup)) {
+				throw new Error("Group must be 1-100 chars: alphanumeric, dots, hyphens, underscores. Must start with alphanumeric.");
+			}
+			const ownedGroupWindow = [...agents.values()].some(
+				(a) => a.status === "running" && a.tmuxWindow === windowGroup,
+			);
+			if (tmuxWindowExists(windowGroup) && !ownedGroupWindow) {
+				throw new Error(`Tmux group window "${windowGroup}" already exists but is not owned by this tmux-agents session.`);
 			}
 
 			// Load agent config if specified
@@ -889,75 +990,75 @@ export default function (pi: ExtensionAPI) {
 			const model = modelOverride ?? agentConfig?.model ?? ctx.model?.id;
 			const thinking = thinkingOverride ?? agentConfig?.thinking;
 
-			// Write system prompt to temp file if needed
 			let promptFile: string | undefined;
-			if (agentConfig?.systemPrompt?.trim()) {
-				const tmpDir = mkdtempSync(path.join(os.tmpdir(), "pi-tmux-agents-"));
+			let taskFile: string | undefined;
+			let paneId = "";
+			let pid: number;
+			try {
+				// Write system prompt to temp file if needed.
+				if (agentConfig?.systemPrompt?.trim()) {
+					const tmpDir = mkdtempSync(path.join(os.tmpdir(), "pi-tmux-agents-"));
+					const safeName = name.replace(/[^\w.-]+/g, "_");
+					promptFile = path.join(tmpDir, `prompt-${safeName}.md`);
+					writeFileSync(promptFile, agentConfig.systemPrompt, {
+						encoding: "utf-8",
+						mode: 0o600,
+					});
+				}
+
+				// Write complete task prompt to temp file. The delegating agent owns the brief content.
+				const taskTmpDir = mkdtempSync(path.join(os.tmpdir(), "pi-tmux-agents-"));
 				const safeName = name.replace(/[^\w.-]+/g, "_");
-				promptFile = path.join(tmpDir, `prompt-${safeName}.md`);
-				writeFileSync(promptFile, agentConfig.systemPrompt, {
+				taskFile = path.join(taskTmpDir, `task-${safeName}.md`);
+				writeFileSync(taskFile, `${task.trim()}\n`, {
 					encoding: "utf-8",
 					mode: 0o600,
 				});
-			}
 
-			// Build pi command
-			const cmd = buildAgentCommand({
-				name,
-				socketPath: sessionSocketPath,
-				model,
-				thinking,
-				tools: agentConfig?.tools,
-				promptFile,
-			});
+				// Build pi command
+				const cmd = buildAgentCommand({
+					name,
+					socketPath: sessionSocketPath,
+					model,
+					thinking,
+					tools: agentConfig?.tools,
+					promptFile,
+					taskFile,
+				});
+				const command = `${cmd}; exit`;
 
-			// Create tmux window and send command ('; exit' auto-closes window when pi exits)
-			tmuxNewWindow(name);
-			tmuxSendKeys(name, cmd + '; exit');
-
-			let pid: number;
-			try {
-				// Poll for readiness instead of fixed sleep
-				const deadline = Date.now() + 15000;
-				while (Date.now() < deadline) {
-					if (!tmuxWindowExists(name)) {
-						throw new Error(`Agent "${name}" failed to start — tmux window exited during boot.`);
-					}
-					const screen = tmuxCapture(name, 10);
-					// Detect pi's input prompt (the > character at start of line)
-					if (screen.match(/^>/m)) {
-						break;
-					}
-					await sleep(500);
-				}
-				if (!tmuxWindowExists(name)) {
-					throw new Error(`Agent "${name}" failed to start — tmux window exited during boot.`);
-				}
-
-				// Send task
-				tmuxSendKeys(name, task);
+				paneId = ownedGroupWindow
+					? tmuxSplitWindow(windowGroup, command, ctx.cwd)
+					: tmuxNewWindow(windowGroup, command, ctx.cwd);
+				tmuxSetPaneTitle(paneId, name);
+				tmuxSelectLayout(windowGroup);
 
 				// Get pane PID for tracking
-				pid = getPanePid(name);
+				pid = getPanePid(paneId);
 
 				// Track agent
 				const tracked: TrackedAgent = {
 					name,
-					tmuxWindow: name,
+					tmuxWindow: windowGroup,
+					paneId,
+					group: windowGroup,
 					pid,
 					agentProfile: agentProfileName,
 					model,
 					startedAt: Date.now(),
 					cwd: ctx.cwd,
 					promptFile,
+					taskFile,
 					status: "running",
 				};
 				agents.set(name, tracked);
 				saveRegistry();
 				emitStatus();
 			} catch (err) {
-				cleanupPromptFile(promptFile);
-				try { tmuxKillWindow(name); } catch {}
+				cleanupTempFile(promptFile);
+				cleanupTempFile(taskFile);
+				if (paneId) tmuxKillPane(paneId);
+				tmuxSelectLayout(windowGroup);
 				throw err;
 			}
 
@@ -971,12 +1072,14 @@ export default function (pi: ExtensionAPI) {
 				content: [
 					{
 						type: "text" as const,
-						text: `Agent "${name}" spawned in tmux window (PID ${pid}).${meta.length ? "\n" + meta.join(", ") : ""}\nTask: ${task}`,
+						text: `Agent "${name}" spawned in tmux window "${windowGroup}" pane ${paneId} (PID ${pid}).${meta.length ? "\n" + meta.join(", ") : ""}\nTask: ${task}`,
 					},
 				],
 				details: {
 					name,
 					pid,
+					paneId,
+					group: windowGroup,
 					model,
 					thinking,
 					profile: agentProfileName,
@@ -1011,7 +1114,7 @@ export default function (pi: ExtensionAPI) {
 			let line =
 				theme.fg("success", "● ") +
 				theme.fg("accent", details.name) +
-				theme.fg("dim", ` (PID ${details.pid})`);
+				theme.fg("dim", ` (PID ${details.pid}${details.group ? `, ${details.group}` : ""})`);
 			const meta: string[] = [];
 			if (details.model) meta.push(`model: ${details.model}`);
 			if (details.tools) meta.push(`tools: ${details.tools.join(",")}`);
@@ -1038,12 +1141,13 @@ export default function (pi: ExtensionAPI) {
 			const agent = requireAgent(name);
 			let content: string;
 			try {
-				content = tmuxCapture(agent.tmuxWindow, lines);
+				content = tmuxCapture(agent.paneId, lines);
 			} catch {
+				cleanupAgentTempFiles(agent);
 				agent.status = "exited";
 				saveRegistry();
 				emitStatus();
-				throw new Error(`Agent "${name}" tmux window no longer exists.`);
+				throw new Error(`Agent "${name}" tmux pane no longer exists.`);
 			}
 
 			return {
@@ -1093,16 +1197,17 @@ export default function (pi: ExtensionAPI) {
 			const agent = requireAgent(name);
 			try {
 				// Send Escape to abort if busy, no-op if idle
-				tmuxSendRawKeys(agent.tmuxWindow, "Escape");
+				tmuxSendRawKeys(agent.paneId, "Escape");
 				await sleep(500);
 
 				// Send steering message
-				tmuxSendKeys(agent.tmuxWindow, message);
+				tmuxSendKeys(agent.paneId, message);
 			} catch {
+				cleanupAgentTempFiles(agent);
 				agent.status = "exited";
 				saveRegistry();
 				emitStatus();
-				throw new Error(`Agent "${name}" tmux window no longer exists.`);
+				throw new Error(`Agent "${name}" tmux pane no longer exists.`);
 			}
 
 			return {
@@ -1236,8 +1341,8 @@ export default function (pi: ExtensionAPI) {
 		name: "agent_stop",
 		label: "Stop Agent",
 		description:
-			"Stop a running agent. Sends Ctrl+C/Ctrl+D first, then force-kills the tmux window if needed.",
-		promptSnippet: "Stop a running agent and clean up its tmux window",
+			"Stop a running agent. Sends Ctrl+C/Ctrl+D first, then force-kills the tmux pane if needed.",
+		promptSnippet: "Stop a running agent and clean up its tmux pane",
 		parameters: Type.Object({
 			name: Type.String({ description: "Agent name to stop" }),
 		}),
@@ -1247,21 +1352,22 @@ export default function (pi: ExtensionAPI) {
 
 			const agent = requireAgent(name);
 
-			if (tmuxWindowExists(agent.tmuxWindow)) {
+			if (tmuxPaneExists(agent.paneId)) {
 				// Graceful shutdown: Ctrl+C then Ctrl+D
-				tmuxSendRawKeys(agent.tmuxWindow, "C-c C-c");
+				tmuxSendRawKeys(agent.paneId, "C-c C-c");
 				await sleep(1000);
-				tmuxSendRawKeys(agent.tmuxWindow, "C-d");
+				tmuxSendRawKeys(agent.paneId, "C-d");
 				await sleep(2000);
 
-				// Force kill if still alive
-				if (tmuxWindowExists(agent.tmuxWindow)) {
-					tmuxKillWindow(agent.tmuxWindow);
+				// Always kill the pane if it is still present
+				if (tmuxPaneExists(agent.paneId)) {
+					tmuxKillPane(agent.paneId);
 				}
+				tmuxSelectLayout(agent.tmuxWindow);
 			}
 
-			// Clean up temp prompt file
-			cleanupPromptFile(agent.promptFile);
+			// Clean up temp prompt files
+			cleanupAgentTempFiles(agent);
 
 			// Remove from registry
 			agents.delete(name);

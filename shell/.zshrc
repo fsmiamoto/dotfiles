@@ -89,6 +89,7 @@ alias mr="printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'"
 
 alias cl="claude"
 alias cly="claude --dangerously-skip-permissions --effort xhigh --model claude-opus-4-6"
+alias coy="codex --dangerously-bypass-approvals-and-sandbox"
 
 alias g="git"
 alias gc="git commit"

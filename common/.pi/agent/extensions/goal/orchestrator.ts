@@ -593,9 +593,10 @@ export class GoalOrchestrator {
 			throw new Error("Extension context is not bound; cannot run /goal.");
 		}
 
-		const model = this.resolveModel(ctx.modelRegistry, role.model);
+		const modelPattern = role.model || ctx.model?.id || "";
+		const model = this.resolveModel(ctx.modelRegistry, modelPattern);
 		if (!model) {
-			this.emitInfo(`No available model matches '${role.model}'. Pausing.`);
+			this.emitInfo(`No available model matches '${modelPattern || "current/default"}'. Pausing.`);
 			const action = await this.awaitResume();
 			if (action === "quit") return "quit";
 			// retry: try again with fresh registry state

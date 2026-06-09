@@ -1,10 +1,9 @@
 /**
  * Loads the four /goal role definitions from
- *   ~/.pi/agent/workflow/{planner,builder,verifier,reviewer}.md
+ *   ~/.pi/agent/goal/{planner,builder,verifier,reviewer}.md
  *
  * Each role is a markdown file with YAML frontmatter:
  *   ---
- *   model: <pattern>
  *   tools: read, bash, edit, ...
  *   ---
  *   <system prompt body>
@@ -29,12 +28,12 @@ interface RoleFrontmatter {
 	tools?: string;
 }
 
-function workflowDir(): string {
-	return join(getAgentDir(), "workflow");
+function goalDir(): string {
+	return join(getAgentDir(), "goal");
 }
 
 export function loadRole(name: RoleName): RoleDefinition {
-	const file = join(workflowDir(), `${name}.md`);
+	const file = join(goalDir(), `${name}.md`);
 	let raw: string;
 	try {
 		raw = readFileSync(file, "utf-8");

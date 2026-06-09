@@ -18,6 +18,11 @@ export type LogType =
 	| "edge"
 	| "action"
 	| "scratchpad_write"
+	| "tasks_planned"
+	| "task_start"
+	| "task_status"
+	| "task_done"
+	| "task_blocked"
 	| "run_end";
 
 export interface RunLogger {

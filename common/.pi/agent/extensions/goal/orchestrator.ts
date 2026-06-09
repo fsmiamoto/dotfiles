@@ -1,12 +1,11 @@
 /**
- * /goal orchestrator — deterministic Planner → Builder → Verifier → Review → Ready
- * state machine. Each node entry creates a FRESH AgentSession.
+ * /goal orchestrator — deterministic Planner → per-task Builder → Verifier
+ * → Review → Ready state machine. Each node entry creates a FRESH AgentSession.
  *
  * See ~/.dotfiles/spec.html (or the in-repo spec) for the full design.
  */
 
 import {
-	AuthStorage,
 	createAgentSession,
 	DefaultResourceLoader,
 	defineTool,
@@ -38,6 +37,36 @@ async function makeLoader(opts: any): Promise<any> {
 
 type NodeState = "planner" | "builder" | "verifier" | "reviewer";
 type RunPhase = NodeState | "ready" | "idle";
+type TaskStatus = "todo" | "running" | "verifying" | "reviewing" | "done" | "blocked";
+
+interface PlannerTaskList {
+	version: 1;
+	goal: string;
+	summary: string;
+	tasks: PlannedTask[];
+}
+
+interface PlannedTask {
+	id: string;
+	title: string;
+	description: string;
+	acceptance: string[];
+	verification: string[];
+	scope?: string[];
+	out_of_scope?: string[];
+}
+
+interface RuntimeTask extends PlannedTask {
+	status: TaskStatus;
+	attempts: number;
+	lastVerdict?: {
+		node: NodeState;
+		status: string;
+		reason: string;
+	};
+	startedAt?: number;
+	finishedAt?: number;
+}
 
 interface RecordedVerdict {
 	status: string;
@@ -51,10 +80,13 @@ interface RunState {
 	roles: Record<RoleName, RoleDefinition>;
 	logger: RunLogger;
 	startedAt: number;
-	loops: number; // Builder entry count
 	phase: RunPhase;
 	lastVerdict?: { node: NodeState; status: string; reason: string };
 	plan: string; // Planner output, used as canonical handoff
+	planSummary: string;
+	tasks: RuntimeTask[];
+	currentTaskIndex: number;
+	plannerJsonError?: string;
 	scratchpads: Record<RoleName, string[]>;
 	currentSession?: AgentSession;
 	currentRole?: RoleName;
@@ -75,7 +107,7 @@ interface RunState {
 
 const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 const STATUS_KEY = "goal-status";
-const WIDGET_KEY = "goal-status-widget";
+const WIDGET_KEY = "goal-tasks";
 
 const NODE_LABELS: Record<NodeState, string> = {
 	planner: "PLANNER",
@@ -83,14 +115,6 @@ const NODE_LABELS: Record<NodeState, string> = {
 	verifier: "VERIFIER",
 	reviewer: "REVIEW",
 };
-
-const BREADCRUMB_ORDER: { phase: NodeState | "ready"; label: string }[] = [
-	{ phase: "planner", label: "Plan" },
-	{ phase: "builder", label: "Build" },
-	{ phase: "verifier", label: "Verify" },
-	{ phase: "reviewer", label: "Review" },
-	{ phase: "ready", label: "Ready" },
-];
 
 function formatElapsed(ms: number): string {
 	const total = Math.floor(ms / 1000);
@@ -103,6 +127,71 @@ function formatElapsed(ms: number): string {
 function truncate(text: string, max = 200): string {
 	if (text.length <= max) return text;
 	return `${text.slice(0, max - 1)}…`;
+}
+
+function formatList(items: string[]): string {
+	if (items.length === 0) return "- none";
+	return items.map((item) => `- ${item}`).join("\n");
+}
+
+function asNonEmptyString(value: unknown, path: string): string {
+	if (typeof value !== "string" || value.trim().length === 0) {
+		throw new Error(`${path} must be a non-empty string`);
+	}
+	return value.trim();
+}
+
+function asStringArray(value: unknown, path: string, opts: { requiredNonEmpty: boolean }): string[] {
+	if (!Array.isArray(value)) {
+		if (!opts.requiredNonEmpty && value === undefined) return [];
+		throw new Error(`${path} must be an array`);
+	}
+	const items = value
+		.map((item, idx) => asNonEmptyString(item, `${path}[${idx}]`))
+		.filter((item) => item.length > 0);
+	if (opts.requiredNonEmpty && items.length === 0) {
+		throw new Error(`${path} must contain at least one item`);
+	}
+	return items;
+}
+
+function parseAndValidatePlannerJson(finalText: string): PlannerTaskList {
+	const raw = finalText.trim();
+	if (!raw) throw new Error("Planner produced empty output");
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(raw);
+	} catch (err) {
+		throw new Error(`Planner output is not valid JSON: ${(err as Error).message}`);
+	}
+	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+		throw new Error("Planner output must be a JSON object");
+	}
+	const obj = parsed as Record<string, unknown>;
+	if (obj.version !== 1) throw new Error("Planner JSON version must be 1");
+	const goal = asNonEmptyString(obj.goal, "goal");
+	const summary = asNonEmptyString(obj.summary, "summary");
+	if (!Array.isArray(obj.tasks) || obj.tasks.length === 0) {
+		throw new Error("tasks must be a non-empty array");
+	}
+	const tasks = obj.tasks.map((item, idx): PlannedTask => {
+		if (!item || typeof item !== "object" || Array.isArray(item)) {
+			throw new Error(`tasks[${idx}] must be an object`);
+		}
+		const task = item as Record<string, unknown>;
+		return {
+			id: `T${idx + 1}`,
+			title: asNonEmptyString(task.title, `tasks[${idx}].title`),
+			description: asNonEmptyString(task.description, `tasks[${idx}].description`),
+			acceptance: asStringArray(task.acceptance, `tasks[${idx}].acceptance`, { requiredNonEmpty: true }),
+			verification: asStringArray(task.verification, `tasks[${idx}].verification`, { requiredNonEmpty: false }),
+			scope: asStringArray(task.scope, `tasks[${idx}].scope`, { requiredNonEmpty: false }),
+			out_of_scope: asStringArray(task.out_of_scope, `tasks[${idx}].out_of_scope`, {
+				requiredNonEmpty: false,
+			}),
+		};
+	});
+	return { version: 1, goal, summary, tasks };
 }
 
 // ── Custom message types & content shape ─────────────────────────────
@@ -248,9 +337,11 @@ export class GoalOrchestrator {
 			roles,
 			logger,
 			startedAt: Date.now(),
-			loops: 0,
 			phase: "planner",
 			plan: "",
+			planSummary: "",
+			tasks: [],
+			currentTaskIndex: -1,
 			scratchpads: { planner: [], builder: [], verifier: [], reviewer: [] },
 			paused: false,
 			resumePending: false,
@@ -276,137 +367,212 @@ export class GoalOrchestrator {
 
 	private async runLoop(): Promise<void> {
 		const s = this.state!;
-		// Planner runs once.
-		s.phase = "planner";
-		this.renderStatus();
-		const plannerOutcome = await this.runNode("planner");
-		if (plannerOutcome === "quit") {
+		const taskList = await this.runPlannerTaskList();
+		if (taskList === "quit") {
 			await this.endRun("quit");
 			return;
 		}
-		// Use the planner's final assistant text as the canonical plan.
-		s.plan = plannerOutcome.finalText.trim() || "(planner produced no plan)";
-		s.logger.log("edge", { from: "planner", to: "builder" });
+		if (taskList === "invalid") {
+			this.emitInfo("Planner failed to produce valid task JSON after one retry. Stopping.");
+			await this.endRun("quit");
+			return;
+		}
 
-		// Builder loop.
-		while (true) {
-			s.phase = "builder";
-			s.loops += 1;
-			this.renderStatus();
-			const builderOutcome = await this.runNode("builder");
-			if (builderOutcome === "quit") {
-				await this.endRun("quit");
-				return;
-			}
-			const v = builderOutcome.verdict;
-			s.lastVerdict = { node: "builder", status: v.status, reason: v.reason };
-			s.logger.log("verdict", { node: "builder", source: v.source, status: v.status, reason: v.reason });
-			if (v.status === "not_done") {
-				s.logger.log("edge", { from: "builder", to: "builder" });
-				continue;
-			}
-			if (v.status !== "done") {
-				// Unknown verdict — pause for human.
-				this.emitInfo(`Builder verdict could not be classified (${v.status}). Pausing.`);
-				const action = await this.awaitResume();
-				if (action === "quit") {
+		s.plan = JSON.stringify(taskList, null, 2);
+		s.planSummary = taskList.summary;
+		s.tasks = taskList.tasks.map((task) => ({
+			...task,
+			status: "todo" as const,
+			attempts: 0,
+		}));
+		s.currentTaskIndex = 0;
+		s.lastVerdict = undefined;
+		s.logger.log("tasks_planned", {
+			count: s.tasks.length,
+			tasks: s.tasks.map((task) => ({ id: task.id, title: task.title })),
+		});
+		this.renderStatus();
+		s.logger.log("edge", { from: "planner", to: "builder", taskId: this.currentTask()?.id });
+
+		for (let i = 0; i < s.tasks.length; i++) {
+			s.currentTaskIndex = i;
+			this.resetPerTaskScratchpads();
+			const task = s.tasks[i];
+			while (task.status !== "done") {
+				if (s.quitting) {
 					await this.endRun("quit");
 					return;
 				}
-				if (action === "retry") continue;
-				if (action === "skip") {
-					// fall through to Verifier
-				}
-			}
-			s.logger.log("edge", { from: "builder", to: "verifier" });
-
-			// Verifier.
-			s.phase = "verifier";
-			this.renderStatus();
-			const verifierOutcome = await this.runNode("verifier");
-			if (verifierOutcome === "quit") {
-				await this.endRun("quit");
-				return;
-			}
-			const vv = verifierOutcome.verdict;
-			s.lastVerdict = { node: "verifier", status: vv.status, reason: vv.reason };
-			s.logger.log("verdict", { node: "verifier", source: vv.source, status: vv.status, reason: vv.reason });
-			if (vv.status === "reject") {
-				s.logger.log("edge", { from: "verifier", to: "builder" });
-				continue;
-			}
-			if (vv.status !== "accept") {
-				this.emitInfo(`Verifier verdict could not be classified (${vv.status}). Pausing.`);
-				const action = await this.awaitResume();
-				if (action === "quit") {
+				task.status = "running";
+				task.startedAt ??= Date.now();
+				task.attempts += 1;
+				s.phase = "builder";
+				s.logger.log("task_start", { taskId: task.id, attempt: task.attempts });
+				s.logger.log("task_status", { taskId: task.id, status: task.status });
+				this.renderStatus();
+				const builderOutcome = await this.runNode("builder");
+				if (builderOutcome === "quit") {
 					await this.endRun("quit");
 					return;
 				}
-				if (action === "retry") {
-					s.logger.log("edge", { from: "verifier", to: "verifier" });
-					// re-run verifier (treat retry as same node fresh)
-					s.phase = "verifier";
-					// Loop back: easiest is to call runNode again here, but
-					// the outer while restarts from Builder. We handle this
-					// by recursing once.
-					const reRun = await this.runNode("verifier");
-					if (reRun === "quit") {
+				const bv = builderOutcome.verdict;
+				this.recordTaskVerdict(task, "builder", bv);
+				if (bv.status === "not_done") {
+					s.logger.log("edge", { from: "builder", to: "builder", taskId: task.id });
+					continue;
+				}
+				if (bv.status !== "done") {
+					this.emitInfo(`Builder verdict for ${task.id} could not be classified (${bv.status}). Pausing.`);
+					const action = await this.awaitResume();
+					if (action === "quit") {
 						await this.endRun("quit");
 						return;
 					}
-					const rv = reRun.verdict;
-					s.lastVerdict = { node: "verifier", status: rv.status, reason: rv.reason };
-					s.logger.log("verdict", { node: "verifier", source: rv.source, status: rv.status, reason: rv.reason });
-					if (rv.status !== "accept") {
-						if (rv.status === "reject") {
-							s.logger.log("edge", { from: "verifier", to: "builder" });
-							continue;
-						}
-					}
+					if (action === "retry") continue;
 				}
-				// skip falls through
-			}
-			s.logger.log("edge", { from: "verifier", to: "reviewer" });
+				s.logger.log("edge", { from: "builder", to: "verifier", taskId: task.id });
 
-			// Reviewer.
-			s.phase = "reviewer";
-			this.renderStatus();
-			const reviewerOutcome = await this.runNode("reviewer");
-			if (reviewerOutcome === "quit") {
-				await this.endRun("quit");
-				return;
-			}
-			const rv = reviewerOutcome.verdict;
-			s.lastVerdict = { node: "reviewer", status: rv.status, reason: rv.reason };
-			s.logger.log("verdict", { node: "reviewer", source: rv.source, status: rv.status, reason: rv.reason });
-			if (rv.status === "reject") {
-				s.logger.log("edge", { from: "reviewer", to: "builder" });
-				continue;
-			}
-			if (rv.status === "approved") {
-				s.logger.log("edge", { from: "reviewer", to: "ready" });
-				s.phase = "ready";
+				task.status = "verifying";
+				s.phase = "verifier";
+				s.logger.log("task_status", { taskId: task.id, status: task.status });
 				this.renderStatus();
-				this.emitInfo(`✓ Ready. ${rv.reason}`);
-				await this.endRun("ready");
-				return;
-			}
-			// Unknown — pause.
-			this.emitInfo(`Reviewer verdict could not be classified (${rv.status}). Pausing.`);
-			const action = await this.awaitResume();
-			if (action === "quit") {
-				await this.endRun("quit");
-				return;
-			}
-			if (action === "skip") {
-				s.logger.log("edge", { from: "reviewer", to: "ready" });
-				s.phase = "ready";
+				const verifierOutcome = await this.runNode("verifier");
+				if (verifierOutcome === "quit") {
+					await this.endRun("quit");
+					return;
+				}
+				const vv = verifierOutcome.verdict;
+				this.recordTaskVerdict(task, "verifier", vv);
+				if (vv.status === "reject") {
+					s.logger.log("edge", { from: "verifier", to: "builder", taskId: task.id });
+					continue;
+				}
+				if (vv.status !== "accept") {
+					this.emitInfo(`Verifier verdict for ${task.id} could not be classified (${vv.status}). Pausing.`);
+					const action = await this.awaitResume();
+					if (action === "quit") {
+						await this.endRun("quit");
+						return;
+					}
+					if (action === "retry") continue;
+				}
+				s.logger.log("edge", { from: "verifier", to: "reviewer", taskId: task.id });
+
+				task.status = "reviewing";
+				s.phase = "reviewer";
+				s.logger.log("task_status", { taskId: task.id, status: task.status });
 				this.renderStatus();
-				await this.endRun("ready");
-				return;
+				const reviewerOutcome = await this.runNode("reviewer");
+				if (reviewerOutcome === "quit") {
+					await this.endRun("quit");
+					return;
+				}
+				const rv = reviewerOutcome.verdict;
+				this.recordTaskVerdict(task, "reviewer", rv);
+				if (rv.status === "reject") {
+					s.logger.log("edge", { from: "reviewer", to: "builder", taskId: task.id });
+					continue;
+				}
+				if (rv.status !== "approved") {
+					this.emitInfo(`Reviewer verdict for ${task.id} could not be classified (${rv.status}). Pausing.`);
+					const action = await this.awaitResume();
+					if (action === "quit") {
+						await this.endRun("quit");
+						return;
+					}
+					if (action === "retry") continue;
+				}
+				task.status = "done";
+				task.finishedAt = Date.now();
+				s.logger.log("task_done", {
+					taskId: task.id,
+					elapsed: task.finishedAt - (task.startedAt ?? task.finishedAt),
+				});
+				s.logger.log("task_status", { taskId: task.id, status: task.status });
+				this.renderStatus();
+				const nextTask = s.tasks[i + 1];
+				s.logger.log("edge", {
+					from: "reviewer",
+					to: nextTask ? "builder" : "ready",
+					taskId: task.id,
+					nextTaskId: nextTask?.id,
+				});
 			}
-			// retry: loop back to Builder
 		}
+
+		if (s.tasks.every((task) => task.status === "done")) {
+			s.phase = "ready";
+			this.renderStatus();
+			this.emitInfo("✓ Ready. All planned tasks are done.");
+			await this.endRun("ready");
+			return;
+		}
+		this.emitInfo("Task runner stopped before all tasks were done.");
+		await this.endRun("quit");
+	}
+
+	private async runPlannerTaskList(): Promise<"quit" | "invalid" | PlannerTaskList> {
+		const s = this.state!;
+		let lastError = "";
+		for (let attempt = 1; attempt <= 2; attempt++) {
+			s.phase = "planner";
+			s.plannerJsonError = attempt === 1 ? undefined : lastError;
+			this.renderStatus();
+			const plannerOutcome = await this.runNode("planner");
+			if (plannerOutcome === "quit") return "quit";
+			try {
+				const taskList = parseAndValidatePlannerJson(plannerOutcome.finalText);
+				s.plannerJsonError = undefined;
+				return taskList;
+			} catch (err) {
+				lastError = (err as Error).message;
+				s.logger.log("verdict", {
+					node: "planner",
+					source: "classifier",
+					status: "invalid_json",
+					reason: lastError,
+				});
+				if (attempt === 1) {
+					this.emitInfo(`Planner JSON invalid; retrying once: ${lastError}`);
+					s.logger.log("edge", { from: "planner", to: "planner" });
+				}
+			}
+		}
+		s.plannerJsonError = undefined;
+		this.emitInfo(`Planner JSON invalid: ${lastError}`);
+		return "invalid";
+	}
+
+	private recordTaskVerdict(
+		task: RuntimeTask,
+		node: Exclude<NodeState, "planner">,
+		verdict: RecordedVerdict,
+	): void {
+		const s = this.state!;
+		const lastVerdict = { node, status: verdict.status, reason: verdict.reason };
+		s.lastVerdict = lastVerdict;
+		task.lastVerdict = lastVerdict;
+		s.logger.log("verdict", {
+			node,
+			taskId: task.id,
+			source: verdict.source,
+			status: verdict.status,
+			reason: verdict.reason,
+		});
+		this.renderStatus();
+	}
+
+	private currentTask(): RuntimeTask | undefined {
+		const s = this.state;
+		if (!s || s.currentTaskIndex < 0) return undefined;
+		return s.tasks[s.currentTaskIndex];
+	}
+
+	private resetPerTaskScratchpads(): void {
+		const s = this.state!;
+		s.scratchpads.builder = [];
+		s.scratchpads.verifier = [];
+		s.scratchpads.reviewer = [];
 	}
 
 	// ── Single node run ─────────────────────────────────────────────
@@ -418,7 +584,8 @@ export class GoalOrchestrator {
 		if (s.quitting) return "quit";
 		const role = s.roles[this.roleForNode(node)];
 		const seed = this.buildSeed(node);
-		s.logger.log("node_enter", { node, seed });
+		const task = node === "planner" ? undefined : this.currentTask();
+		s.logger.log("node_enter", { node, taskId: task?.id, seed });
 		this.emitHeader(node);
 
 		const ctx = this.ctx();
@@ -476,7 +643,9 @@ export class GoalOrchestrator {
 		try {
 			await session.prompt(seed);
 		} catch (err) {
-			this.emitInfo(`${NODE_LABELS[node]} crashed: ${(err as Error).message}`);
+			if (!s.recordedVerdict) {
+				this.emitInfo(`${NODE_LABELS[node]} crashed: ${(err as Error).message}`);
+			}
 		} finally {
 			unsubscribe();
 		}
@@ -507,8 +676,14 @@ export class GoalOrchestrator {
 			}
 			if (action === "skip") {
 				const verdict = { status: this.positiveStatus(node), reason: "manual skip", source: "skip" as const };
-				s.logger.log("verdict", { node, source: "skip", status: verdict.status, reason: verdict.reason });
-				s.logger.log("node_output", { node, output: lastAssistantText });
+				s.logger.log("verdict", {
+					node,
+					taskId: this.currentTask()?.id,
+					source: "skip",
+					status: verdict.status,
+					reason: verdict.reason,
+				});
+				s.logger.log("node_output", { node, taskId: this.currentTask()?.id, output: lastAssistantText });
 				try { session.dispose(); } catch {}
 				s.currentSession = undefined;
 				s.currentRole = undefined;
@@ -533,14 +708,26 @@ export class GoalOrchestrator {
 			const classified = await this.classifyVerdict(node, lastAssistantText, ctx);
 			if (classified) {
 				verdict = { ...classified, source: "classifier" };
-				s.logger.log("verdict", { node, source: "classifier", status: verdict.status, reason: verdict.reason });
+				s.logger.log("verdict", {
+					node,
+					taskId: this.currentTask()?.id,
+					source: "classifier",
+					status: verdict.status,
+					reason: verdict.reason,
+				});
 			} else {
 				this.emitInfo(`Classifier could not extract a verdict for ${NODE_LABELS[node]}; pausing.`);
 				const action = await this.awaitResume();
 				if (action === "quit") return "quit";
 				if (action === "skip") {
 					verdict = { status: this.positiveStatus(node), reason: "manual skip", source: "skip" };
-					s.logger.log("verdict", { node, source: "skip", status: verdict.status, reason: verdict.reason });
+					s.logger.log("verdict", {
+						node,
+						taskId: this.currentTask()?.id,
+						source: "skip",
+						status: verdict.status,
+						reason: verdict.reason,
+					});
 				} else {
 					// retry: re-run the same node fresh.
 					try {
@@ -554,7 +741,7 @@ export class GoalOrchestrator {
 			}
 		}
 
-		s.logger.log("node_output", { node, output: lastAssistantText });
+		s.logger.log("node_output", { node, taskId: this.currentTask()?.id, output: lastAssistantText });
 		try {
 			session.dispose();
 		} catch {
@@ -583,6 +770,14 @@ export class GoalOrchestrator {
 				const p = params as { status: string; reason: string };
 				if (this.state) {
 					this.state.recordedVerdict = { status: p.status, reason: p.reason, source: "tool" };
+					const session = this.state.currentSession;
+					setTimeout(() => {
+						try {
+							session?.abort();
+						} catch {
+							// ignore
+						}
+					}, 0);
 				}
 				return {
 					content: [{ type: "text" as const, text: `Verdict recorded: ${p.status} — ${p.reason}` }],
@@ -658,20 +853,39 @@ export class GoalOrchestrator {
 		const s = this.state!;
 		const role = this.roleForNode(node);
 		const notes = s.scratchpads[role];
-		const lastVerdict = s.lastVerdict;
+		const task = this.currentTask();
 		const lines: string[] = [];
 
 		lines.push(`# Goal\n${s.goal}\n`);
 		if (s.conversationTail) {
 			lines.push(`# Recent conversation\n${s.conversationTail}\n`);
 		}
-		if (node !== "planner") {
-			lines.push(`# Plan (from Planner)\n${s.plan}\n`);
-		}
-		if (lastVerdict && node !== "planner") {
+		if (node === "planner") {
+			if (s.plannerJsonError) {
+				lines.push(
+					`# Previous planner output was invalid\nError: ${s.plannerJsonError}\n\nRetry once. Output strict JSON only, with no markdown fence and no prose before or after.\n`,
+				);
+			}
+		} else if (task) {
+			const completed = s.tasks
+				.filter((candidate) => candidate.status === "done")
+				.map((candidate) => candidate.id)
+				.join(", ");
 			lines.push(
-				`# Upstream handoff (from ${NODE_LABELS[lastVerdict.node]})\nstatus: ${lastVerdict.status}\nreason: ${lastVerdict.reason}\n`,
+				`# Task progress\nCompleted: ${completed || "none"}\nCurrent: ${task.id} of ${s.tasks.length}\n`,
 			);
+			lines.push(
+				`# Current task\nid: ${task.id}\ntitle: ${task.title}\ndescription: ${task.description}\n`,
+			);
+			lines.push(`# Acceptance criteria\n${formatList(task.acceptance)}\n`);
+			lines.push(`# Suggested verification\n${formatList(task.verification)}\n`);
+			lines.push(`# Scope\n${formatList(task.scope ?? [])}\n`);
+			lines.push(`# Out of scope\n${formatList(task.out_of_scope ?? [])}\n`);
+			if (task.lastVerdict) {
+				lines.push(
+					`# Previous verdict for this task\nnode: ${task.lastVerdict.node}\nstatus: ${task.lastVerdict.status}\nreason: ${task.lastVerdict.reason}\n`,
+				);
+			}
 		}
 		if (notes.length > 0) {
 			lines.push(`# Your private notes from earlier attempts\n- ${notes.join("\n- ")}\n`);
@@ -681,7 +895,11 @@ export class GoalOrchestrator {
 			s.pendingSteer = undefined;
 		}
 		lines.push(
-			`# Your role\nYou are the ${NODE_LABELS[node]} node. Follow your system prompt. Call your verdict tool when you finish.`,
+			`# Your role\nYou are the ${NODE_LABELS[node]} node. Follow your system prompt. ${
+				node === "planner"
+					? "Output strict JSON only."
+					: "Work only on the current task. Call your verdict tool when you finish."
+			}`,
 		);
 		return lines.join("\n");
 	}
@@ -878,40 +1096,82 @@ export class GoalOrchestrator {
 		if (!ctx || !this.state) return;
 		const s = this.state;
 		const spinner = SPINNER[s.spinnerFrame];
-		const phaseLabel =
-			s.phase === "ready"
-				? "READY"
-				: s.phase === "idle"
-				? "IDLE"
-				: NODE_LABELS[s.phase as NodeState] ?? s.phase.toUpperCase();
-		const currentSegment = `${spinner} ${phaseLabel}`;
-
-		const order = BREADCRUMB_ORDER;
-		const currentIdx = order.findIndex((b) => b.phase === s.phase);
-		const breadcrumb = order
-			.map((b, idx) => {
-				if (s.phase === "ready") return idx <= currentIdx ? `✓${b.label}` : b.label;
-				if (idx < currentIdx) return `✓${b.label}`;
-				if (idx === currentIdx) return `▶${b.label}`;
-				return b.label;
-			})
-			.join(" ▸ ");
-
-		const loops = `loops ${s.loops}`;
+		const task = this.currentTask();
+		const phaseLabel = this.phaseLabel();
 		const elapsed = formatElapsed(Date.now() - s.startedAt);
-		const verdict = s.lastVerdict
-			? `last: ${NODE_LABELS[s.lastVerdict.node]} ${s.lastVerdict.status} — ${truncate(s.lastVerdict.reason, 60)}`
+		const taskPosition = task ? `${s.currentTaskIndex + 1}/${s.tasks.length}` : `0/${s.tasks.length}`;
+		const attempt = task ? `attempt ${task.attempts}` : "attempt —";
+		const verdict = task?.lastVerdict
+			? `last: ${NODE_LABELS[task.lastVerdict.node]} ${task.lastVerdict.status} — ${truncate(task.lastVerdict.reason, 60)}`
 			: "last: —";
-
-		const segments = [currentSegment, breadcrumb, loops, elapsed, verdict];
+		const currentSegment =
+			s.tasks.length > 0 ? `${spinner} ${task?.id ?? "T?"}/${s.tasks.length} ${phaseLabel}` : `${spinner} ${phaseLabel}`;
+		const segments = [`/goal ${currentSegment}`, attempt, elapsed, verdict];
 		if (s.paused) segments.unshift("PAUSED");
 		const statusText = segments.join(" │ ");
-		// Keep setStatus for Pi's native footer, but also render an explicit
-		// below-editor widget. Some user statusline extensions compress or
-		// truncate extension statuses; the widget keeps the state-machine
-		// dashboard visible, matching the spec mock.
 		ctx.ui.setStatus(STATUS_KEY, statusText);
-		ctx.ui.setWidget(WIDGET_KEY, [statusText], { placement: "belowEditor" });
+		ctx.ui.setWidget(WIDGET_KEY, this.renderTaskWidgetLines(taskPosition, attempt, elapsed, verdict), {
+			placement: "belowEditor",
+		});
+	}
+
+	private phaseLabel(): string {
+		const s = this.state!;
+		if (s.phase === "ready") return "READY";
+		if (s.phase === "idle") return "IDLE";
+		if (s.phase === "planner") return "PLANNER";
+		return NODE_LABELS[s.phase];
+	}
+
+	private renderTaskWidgetLines(taskPosition: string, attempt: string, elapsed: string, verdict: string): string[] {
+		const s = this.state!;
+		const width = 72;
+		const inner = width - 2;
+		const lines = [`╭─ /goal tasks ${"─".repeat(width - 16)}╮`];
+		lines.push(this.boxLine(`Goal: ${truncate(s.goal, inner - 6)}`, inner));
+		if (s.planSummary) {
+			lines.push(this.boxLine(`Plan: ${truncate(s.planSummary, inner - 6)}`, inner));
+		}
+		lines.push(this.boxLine("", inner));
+		if (s.tasks.length === 0) {
+			lines.push(this.boxLine(`${this.phaseLabel()} waiting for planner task JSON`, inner));
+		} else {
+			for (const task of s.tasks) {
+				const symbol = this.taskSymbol(task.status);
+				const role =
+					task.status === "running" || task.status === "verifying" || task.status === "reviewing"
+						? this.phaseLabel()
+						: "";
+				const roleSuffix = role ? ` ${role}` : "";
+				lines.push(this.boxLine(`${symbol} ${task.id}  ${truncate(task.title, 48)}${roleSuffix}`, inner));
+			}
+		}
+		lines.push(this.boxLine("", inner));
+		lines.push(this.boxLine(`Current: ${taskPosition} · ${attempt} · elapsed ${elapsed} · ${verdict}`, inner));
+		lines.push(`╰${"─".repeat(width)}╯`);
+		return lines;
+	}
+
+	private boxLine(text: string, innerWidth: number): string {
+		const clipped = truncate(text, innerWidth);
+		const pad = Math.max(0, innerWidth - clipped.length);
+		return `│ ${clipped}${" ".repeat(pad)} │`;
+	}
+
+	private taskSymbol(status: TaskStatus): string {
+		switch (status) {
+			case "done":
+				return "✓";
+			case "running":
+			case "verifying":
+			case "reviewing":
+				return "▶";
+			case "blocked":
+				return "!";
+			case "todo":
+			default:
+				return "○";
+		}
 	}
 
 	// ── Renderer & emit helpers ─────────────────────────────────────
@@ -925,9 +1185,11 @@ export class GoalOrchestrator {
 
 	private emitHeader(node: NodeState): void {
 		const bar = "━".repeat(8);
+		const task = node === "planner" ? undefined : this.currentTask();
+		const taskPart = task ? ` · ${task.id} ${task.title}` : "";
 		this.pi.sendMessage({
 			customType: GOAL_MSG_TYPE,
-			content: `${bar} ${NODE_LABELS[node]} ${bar}`,
+			content: `${bar} ${NODE_LABELS[node]}${taskPart} ${bar}`,
 			display: true,
 			details: { kind: "header" } satisfies GoalStreamDetails,
 		});
@@ -955,9 +1217,11 @@ export class GoalOrchestrator {
 		const positive = verdict.status === this.positiveStatus(node);
 		const marker: "✓" | "↻" | "✗" = positive ? "✓" : verdict.status === "not_done" ? "↻" : "✗";
 		const tag = verdict.source === "classifier" ? " [classifier]" : verdict.source === "skip" ? " [skipped]" : "";
+		const task = node === "planner" ? undefined : this.currentTask();
+		const taskPart = task ? ` ${task.id}` : "";
 		this.pi.sendMessage({
 			customType: GOAL_MSG_TYPE,
-			content: `${marker} ${NODE_LABELS[node]} → ${verdict.status}${tag} — ${verdict.reason}`,
+			content: `${marker} ${NODE_LABELS[node]}${taskPart} → ${verdict.status}${tag} — ${verdict.reason}`,
 			display: true,
 			details: { kind: "verdict", positive, marker } satisfies GoalStreamDetails,
 		});

@@ -1,6 +1,6 @@
 /**
- * Loads the four /goal role definitions from
- *   ~/.pi/agent/goal/{planner,builder,verifier,reviewer}.md
+ * Loads the five /goal role definitions from
+ *   ~/.pi/agent/goal/{planner,builder,verifier,reviewer,gate}.md
  *
  * Each role is a markdown file with YAML frontmatter:
  *   ---
@@ -13,7 +13,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { getAgentDir, parseFrontmatter } from "@earendil-works/pi-coding-agent";
 
-export type RoleName = "planner" | "builder" | "verifier" | "reviewer";
+export type RoleName = "planner" | "builder" | "verifier" | "reviewer" | "gate";
 
 export interface RoleDefinition {
 	name: RoleName;
@@ -63,5 +63,6 @@ export function loadAllRoles(): Record<RoleName, RoleDefinition> {
 		builder: loadRole("builder"),
 		verifier: loadRole("verifier"),
 		reviewer: loadRole("reviewer"),
+		gate: loadRole("gate"),
 	};
 }

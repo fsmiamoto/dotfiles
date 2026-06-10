@@ -1,6 +1,7 @@
 /**
  * /goal orchestrator — deterministic Planner → per-task Builder → Verifier
- * → Review → Ready state machine. Each node entry creates a FRESH AgentSession.
+ * → Review → goal-level Gate → Ready state machine. Each node entry creates
+ * a FRESH AgentSession.
  *
  * See ~/.dotfiles/spec.html (or the in-repo spec) for the full design.
  */
@@ -22,6 +23,7 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import { StringEnum, Type } from "@earendil-works/pi-ai";
 import type { Model } from "@earendil-works/pi-ai";
+import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 import { loadAllRoles, type RoleDefinition, type RoleName } from "./nodes.ts";
 import { createRunLogger, type RunLogger } from "./log.ts";
 import { GOAL_MSG_TYPE, type GoalStreamDetails } from "./renderer.ts";
@@ -35,7 +37,7 @@ async function makeLoader(opts: any): Promise<any> {
 
 // ── Types ────────────────────────────────────────────────────────────
 
-type NodeState = "planner" | "builder" | "verifier" | "reviewer";
+type NodeState = "planner" | "builder" | "verifier" | "reviewer" | "gate";
 type RunPhase = NodeState | "ready" | "idle";
 type TaskStatus = "todo" | "running" | "verifying" | "reviewing" | "done" | "blocked";
 
@@ -64,6 +66,8 @@ interface RuntimeTask extends PlannedTask {
 		status: string;
 		reason: string;
 	};
+	/** Full verdict history; Gate reads per-node final verdicts (incl. RISK flags). */
+	verdicts: Array<{ node: NodeState; status: string; reason: string }>;
 	startedAt?: number;
 	finishedAt?: number;
 }
@@ -73,6 +77,9 @@ interface RecordedVerdict {
 	reason: string;
 	source: "tool" | "classifier" | "skip";
 }
+
+type UiTheme = ExtensionContext["ui"]["theme"];
+type ThemeColor = Parameters<UiTheme["fg"]>[0];
 
 interface RunState {
 	goal: string;
@@ -114,6 +121,7 @@ const NODE_LABELS: Record<NodeState, string> = {
 	builder: "BUILDER",
 	verifier: "VERIFIER",
 	reviewer: "REVIEW",
+	gate: "GATE",
 };
 
 function formatElapsed(ms: number): string {
@@ -342,7 +350,7 @@ export class GoalOrchestrator {
 			planSummary: "",
 			tasks: [],
 			currentTaskIndex: -1,
-			scratchpads: { planner: [], builder: [], verifier: [], reviewer: [] },
+			scratchpads: { planner: [], builder: [], verifier: [], reviewer: [], gate: [] },
 			paused: false,
 			resumePending: false,
 			spinnerFrame: 0,
@@ -384,6 +392,7 @@ export class GoalOrchestrator {
 			...task,
 			status: "todo" as const,
 			attempts: 0,
+			verdicts: [],
 		}));
 		s.currentTaskIndex = 0;
 		s.lastVerdict = undefined;
@@ -493,7 +502,7 @@ export class GoalOrchestrator {
 				const nextTask = s.tasks[i + 1];
 				s.logger.log("edge", {
 					from: "reviewer",
-					to: nextTask ? "builder" : "ready",
+					to: nextTask ? "builder" : "gate",
 					taskId: task.id,
 					nextTaskId: nextTask?.id,
 				});
@@ -501,6 +510,40 @@ export class GoalOrchestrator {
 		}
 
 		if (s.tasks.every((task) => task.status === "done")) {
+			while (true) {
+				if (s.quitting) {
+					await this.endRun("quit");
+					return;
+				}
+				s.phase = "gate";
+				this.renderStatus();
+				const gateOutcome = await this.runNode("gate");
+				if (gateOutcome === "quit") {
+					await this.endRun("quit");
+					return;
+				}
+				const gv = gateOutcome.verdict;
+				s.lastVerdict = { node: "gate", status: gv.status, reason: gv.reason };
+				s.logger.log("verdict", {
+					node: "gate",
+					source: gv.source,
+					status: gv.status,
+					reason: gv.reason,
+				});
+				this.renderStatus();
+				if (gv.status === "accept") break;
+				this.emitInfo(
+					`Gate did not accept (${gv.status}): ${truncate(gv.reason)} — pausing. /goal retry re-runs the gate, /goal skip accepts anyway, /goal quit stops.`,
+				);
+				const action = await this.awaitResume();
+				if (action === "quit") {
+					await this.endRun("quit");
+					return;
+				}
+				if (action === "skip") break;
+				// retry: loop re-runs the gate with its scratchpad intact.
+			}
+			s.logger.log("edge", { from: "gate", to: "ready" });
 			s.phase = "ready";
 			this.renderStatus();
 			this.emitInfo("✓ Ready. All planned tasks are done.");
@@ -552,6 +595,7 @@ export class GoalOrchestrator {
 		const lastVerdict = { node, status: verdict.status, reason: verdict.reason };
 		s.lastVerdict = lastVerdict;
 		task.lastVerdict = lastVerdict;
+		task.verdicts.push(lastVerdict);
 		s.logger.log("verdict", {
 			node,
 			taskId: task.id,
@@ -584,7 +628,7 @@ export class GoalOrchestrator {
 		if (s.quitting) return "quit";
 		const role = s.roles[this.roleForNode(node)];
 		const seed = this.buildSeed(node);
-		const task = node === "planner" ? undefined : this.currentTask();
+		const task = node === "planner" || node === "gate" ? undefined : this.currentTask();
 		s.logger.log("node_enter", { node, taskId: task?.id, seed });
 		this.emitHeader(node);
 
@@ -819,6 +863,8 @@ export class GoalOrchestrator {
 				return { name: "verdict", statuses: ["accept", "reject"] as const };
 			case "reviewer":
 				return { name: "verdict", statuses: ["approved", "reject"] as const };
+			case "gate":
+				return { name: "verdict", statuses: ["accept", "reject"] as const };
 		}
 	}
 
@@ -832,6 +878,8 @@ export class GoalOrchestrator {
 				return "accept";
 			case "reviewer":
 				return "approved";
+			case "gate":
+				return "accept";
 		}
 	}
 
@@ -845,6 +893,8 @@ export class GoalOrchestrator {
 				return "verifier";
 			case "reviewer":
 				return "reviewer";
+			case "gate":
+				return "gate";
 		}
 	}
 
@@ -867,6 +917,24 @@ export class GoalOrchestrator {
 					`# Previous planner output was invalid\nError: ${s.plannerJsonError}\n\nRetry once. Output strict JSON only, with no markdown fence and no prose before or after.\n`,
 				);
 			}
+		} else if (node === "gate") {
+			if (s.planSummary) {
+				lines.push(`# Plan summary\n${s.planSummary}\n`);
+			}
+			const rows = s.tasks.map((t) => {
+				const lastByNode = (n: NodeState) =>
+					[...t.verdicts].reverse().find((v) => v.node === n);
+				const verifier = lastByNode("verifier");
+				const reviewer = lastByNode("reviewer");
+				return [
+					`## ${t.id} — ${t.title}`,
+					`description: ${t.description}`,
+					`acceptance:\n${formatList(t.acceptance)}`,
+					`verifier verdict: ${verifier ? `${verifier.status} — ${verifier.reason}` : "—"}`,
+					`reviewer verdict: ${reviewer ? `${reviewer.status} — ${reviewer.reason}` : "—"}`,
+				].join("\n");
+			});
+			lines.push(`# Completed tasks\n${rows.join("\n\n")}\n`);
 		} else if (task) {
 			const completed = s.tasks
 				.filter((candidate) => candidate.status === "done")
@@ -891,7 +959,7 @@ export class GoalOrchestrator {
 		if (notes.length > 0) {
 			lines.push(`# Your private notes from earlier attempts\n- ${notes.join("\n- ")}\n`);
 		}
-		if (s.pendingSteer && (node === "builder" || node === "verifier" || node === "reviewer")) {
+		if (s.pendingSteer && node !== "planner") {
 			lines.push(`# User steer (delivered on retry)\n${s.pendingSteer}\n`);
 			s.pendingSteer = undefined;
 		}
@@ -899,7 +967,9 @@ export class GoalOrchestrator {
 			`# Your role\nYou are the ${NODE_LABELS[node]} node. Follow your system prompt. ${
 				node === "planner"
 					? "Output strict JSON only."
-					: "Work only on the current task. Call your verdict tool when you finish."
+					: node === "gate"
+						? "Verify the integrated goal end-to-end. Call your verdict tool when you finish."
+						: "Work only on the current task. Call your verdict tool when you finish."
 			}`,
 		);
 		return lines.join("\n");
@@ -1096,22 +1166,12 @@ export class GoalOrchestrator {
 		const ctx = this.ctx();
 		if (!ctx || !this.state) return;
 		const s = this.state;
-		const spinner = SPINNER[s.spinnerFrame];
-		const task = this.currentTask();
-		const phaseLabel = this.phaseLabel();
-		const elapsed = formatElapsed(Date.now() - s.startedAt);
-		const taskPosition = task ? `${s.currentTaskIndex + 1}/${s.tasks.length}` : `0/${s.tasks.length}`;
-		const attempt = task ? `attempt ${task.attempts}` : "attempt —";
-		const verdict = task?.lastVerdict
-			? `last: ${NODE_LABELS[task.lastVerdict.node]} ${task.lastVerdict.status} — ${truncate(task.lastVerdict.reason, 60)}`
-			: "last: —";
-		const currentSegment =
-			s.tasks.length > 0 ? `${spinner} ${task?.id ?? "T?"}/${s.tasks.length} ${phaseLabel}` : `${spinner} ${phaseLabel}`;
-		const segments = [`/goal ${currentSegment}`, attempt, elapsed, verdict];
-		if (s.paused) segments.unshift("PAUSED");
-		const statusText = segments.join(" │ ");
+		const statusText = ctx.ui.theme.fg(
+			s.paused ? "warning" : "accent",
+			`◆ /goal${s.paused ? " paused" : ""}`,
+		);
 		ctx.ui.setStatus(STATUS_KEY, statusText);
-		ctx.ui.setWidget(WIDGET_KEY, this.renderTaskWidgetLines(taskPosition, attempt, elapsed, verdict), {
+		ctx.ui.setWidget(WIDGET_KEY, this.renderTaskWidgetLines(ctx.ui.theme), {
 			placement: "belowEditor",
 		});
 	}
@@ -1124,39 +1184,219 @@ export class GoalOrchestrator {
 		return NODE_LABELS[s.phase];
 	}
 
-	private renderTaskWidgetLines(taskPosition: string, attempt: string, elapsed: string, verdict: string): string[] {
+	private renderTaskWidgetLines(theme: UiTheme): string[] {
 		const s = this.state!;
-		const width = 72;
-		const inner = width - 2;
-		const lines = [`╭─ /goal tasks ${"─".repeat(width - 16)}╮`];
-		lines.push(this.boxLine(`Goal: ${truncate(s.goal, inner - 6)}`, inner));
-		if (s.planSummary) {
-			lines.push(this.boxLine(`Plan: ${truncate(s.planSummary, inner - 6)}`, inner));
+		const task = this.currentTask();
+		const basePhase = this.phaseLabel();
+		const phase = `${basePhase}${s.paused ? " · PAUSED" : ""}`;
+		const phaseColor: ThemeColor = s.paused ? "warning" : "accent";
+		const elapsed = formatElapsed(Date.now() - s.startedAt);
+		const taskPosition = task ? `${s.currentTaskIndex + 1}/${s.tasks.length}` : `0/${s.tasks.length}`;
+		const attempt = task ? String(task.attempts) : "—";
+		const width = 76;
+		const contentWidth = width - 4;
+		const title = " ◆ /goal ";
+		const headerLead = "─".repeat(3);
+		const headerTail = "─".repeat(Math.max(0, width - 2 - visibleWidth(headerLead + title)));
+		const lines = [
+			theme.fg("border", `╭${headerLead}`) +
+				theme.fg("accent", theme.bold(title)) +
+				theme.fg("border", `${headerTail}╮`),
+		];
+
+		lines.push(
+			this.cardLineStyled(
+				theme.fg("muted", "Identity: ") + theme.fg("accent", "/goal") + theme.fg("text", " orchestrator"),
+				contentWidth,
+				theme,
+			),
+		);
+		lines.push(this.cardLineStyled(theme.fg(phaseColor, `Phase: ${phase}`), contentWidth, theme));
+		lines.push(this.cardLineStyled(theme.fg("text", `Elapsed: ${elapsed}`), contentWidth, theme));
+		lines.push(
+			this.cardLineStyled(
+				theme.fg("muted", `Attempt: ${attempt} · task ${taskPosition}`),
+				contentWidth,
+				theme,
+			),
+		);
+		if (task) {
+			lines.push(
+				this.cardLineStyled(
+					theme.fg("muted", "Current: ") + theme.fg("accent", task.id) + theme.fg("text", ` · ${task.title}`),
+					contentWidth,
+					theme,
+				),
+			);
 		}
-		lines.push(this.boxLine("", inner));
+		lines.push(this.cardDivider(width, theme));
+		lines.push(this.cardLineStyled(theme.fg("text", `Goal: ${s.goal}`), contentWidth, theme));
+		if (s.planSummary) {
+			lines.push(this.cardLineStyled(theme.fg("muted", `Summary: ${s.planSummary}`), contentWidth, theme));
+		}
+		lines.push(this.cardDivider(width, theme));
+
 		if (s.tasks.length === 0) {
-			lines.push(this.boxLine(`${this.phaseLabel()} waiting for planner task JSON`, inner));
+			const waiting = `${this.phaseLabel()} waiting for planner task JSON`;
+			lines.push(this.cardLineStyled(theme.fg("warning", waiting), contentWidth, theme));
 		} else {
-			for (const task of s.tasks) {
-				const symbol = this.taskSymbol(task.status);
-				const role =
-					task.status === "running" || task.status === "verifying" || task.status === "reviewing"
-						? this.phaseLabel()
-						: "";
-				const roleSuffix = role ? ` ${role}` : "";
-				lines.push(this.boxLine(`${symbol} ${task.id}  ${truncate(task.title, 48)}${roleSuffix}`, inner));
+			lines.push(this.progressLine(s.tasks, contentWidth, theme));
+			lines.push(this.cardDivider(width, theme));
+			for (const item of this.visibleTaskItems(s.tasks, s.currentTaskIndex)) {
+				if (item.kind === "hidden") {
+					lines.push(this.cardLineStyled(theme.fg("dim", this.hiddenTasksLabel(s.tasks, item.start, item.count)), contentWidth, theme));
+				} else {
+					lines.push(this.taskRow(item.task, item.index === s.currentTaskIndex, contentWidth, theme));
+				}
 			}
 		}
-		lines.push(this.boxLine("", inner));
-		lines.push(this.boxLine(`Current: ${taskPosition} · ${attempt} · elapsed ${elapsed} · ${verdict}`, inner));
-		lines.push(`╰${"─".repeat(width)}╯`);
+
+		lines.push(this.cardDivider(width, theme));
+		lines.push(this.lastVerdictLine(contentWidth, theme));
+		lines.push(theme.fg("border", `╰${"─".repeat(width - 2)}╯`));
 		return lines;
 	}
 
-	private boxLine(text: string, innerWidth: number): string {
-		const clipped = truncate(text, innerWidth);
-		const pad = Math.max(0, innerWidth - clipped.length);
-		return `│ ${clipped}${" ".repeat(pad)} │`;
+	private cardLineStyled(styledText: string, contentWidth: number, theme: UiTheme): string {
+		const clipped = truncateToWidth(styledText, contentWidth);
+		const pad = Math.max(0, contentWidth - visibleWidth(clipped));
+		return theme.fg("border", "│") + ` ${clipped}${" ".repeat(pad)} ` + theme.fg("border", "│");
+	}
+
+	private cardDivider(width: number, theme: UiTheme): string {
+		return theme.fg("border", `├${"─".repeat(width - 2)}┤`);
+	}
+
+	private progressLine(tasks: RuntimeTask[], contentWidth: number, theme: UiTheme): string {
+		const done = tasks.filter((task) => task.status === "done").length;
+		const label = `${done}/${tasks.length} done`;
+		const prefix = "Progress: ";
+		const barWidth = Math.max(10, Math.min(28, contentWidth - visibleWidth(prefix) - visibleWidth(label) - 3));
+		let completedWidth = tasks.length === 0 ? 0 : Math.round((done / tasks.length) * barWidth);
+		if (done > 0 && completedWidth === 0) completedWidth = 1;
+		if (done < tasks.length && completedWidth === barWidth) completedWidth = barWidth - 1;
+		const remainingWidth = Math.max(0, barWidth - completedWidth);
+		return this.cardLineStyled(
+			theme.fg("muted", prefix) +
+				theme.fg("success", "█".repeat(completedWidth)) +
+				theme.fg("dim", "░".repeat(remainingWidth)) +
+				theme.fg("muted", ` ${label}`),
+			contentWidth,
+			theme,
+		);
+	}
+
+	private visibleTaskItems(
+		tasks: RuntimeTask[],
+		currentTaskIndex: number,
+	): Array<{ kind: "task"; task: RuntimeTask; index: number } | { kind: "hidden"; start: number; count: number }> {
+		if (tasks.length <= 5) {
+			return tasks.map((task, index) => ({ kind: "task" as const, task, index }));
+		}
+		const current = Math.min(Math.max(currentTaskIndex, 0), tasks.length - 1);
+		const maxVisible = 5;
+		let start = Math.max(0, current - 2);
+		let end = start + maxVisible;
+		if (end > tasks.length) {
+			end = tasks.length;
+			start = Math.max(0, end - maxVisible);
+		}
+		const items: Array<{ kind: "task"; task: RuntimeTask; index: number } | { kind: "hidden"; start: number; count: number }> = [];
+		if (start > 0) items.push({ kind: "hidden", start: 0, count: start });
+		for (let index = start; index < end; index++) {
+			items.push({ kind: "task", task: tasks[index], index });
+		}
+		if (end < tasks.length) items.push({ kind: "hidden", start: end, count: tasks.length - end });
+		return items;
+	}
+
+	private hiddenTasksLabel(tasks: RuntimeTask[], start: number, count: number): string {
+		const hidden = tasks.slice(start, start + count);
+		const noun = count === 1 ? "task" : "tasks";
+		const completed = hidden.length > 0 && hidden.every((task) => task.status === "done") ? "completed " : "";
+		return `… ${count} ${completed}${noun} hidden`;
+	}
+
+	private taskRow(task: RuntimeTask, isCurrent: boolean, contentWidth: number, theme: UiTheme): string {
+		const symbol = this.taskSymbol(task.status);
+		const right = this.taskRightLabel(task);
+		const rightWidth = right ? visibleWidth(right) : 0;
+		const prefix = `${symbol} ${task.id}  `;
+		const titleWidth = Math.max(8, contentWidth - visibleWidth(prefix) - rightWidth - (right ? 1 : 0));
+		const title = truncateToWidth(task.title, titleWidth);
+		const left = `${prefix}${title}`;
+		const color = this.taskColor(task.status, isCurrent);
+		const gap = right ? " ".repeat(Math.max(1, contentWidth - visibleWidth(left) - rightWidth)) : "";
+		const styled = theme.fg(color, left) + gap + (right ? theme.fg(color, right) : "");
+		return this.cardLineStyled(styled, contentWidth, theme);
+	}
+
+	private taskRightLabel(task: RuntimeTask): string {
+		switch (task.status) {
+			case "running":
+				return task.attempts > 0 ? `BUILDER · try ${task.attempts}` : "BUILDER";
+			case "verifying":
+				return "VERIFIER";
+			case "reviewing":
+				return "REVIEW";
+			case "done":
+				return "done";
+			case "blocked":
+				return "blocked";
+			case "todo":
+			default:
+				return "";
+		}
+	}
+
+	private taskColor(status: TaskStatus, isCurrent: boolean): ThemeColor {
+		switch (status) {
+			case "done":
+				return "success";
+			case "running":
+			case "verifying":
+			case "reviewing":
+				return isCurrent ? "accent" : "warning";
+			case "blocked":
+				return "error";
+			case "todo":
+			default:
+				return "dim";
+		}
+	}
+
+	private lastVerdictLine(contentWidth: number, theme: UiTheme): string {
+		const verdict = this.state?.lastVerdict;
+		if (!verdict) return this.cardLineStyled(theme.fg("muted", "last: —"), contentWidth, theme);
+		const statusColor = this.verdictStatusColor(verdict.status);
+		const reason = verdict.reason.replace(/\s+/g, " ").trim();
+		return this.cardLineStyled(
+			theme.fg("muted", "last: ") +
+				theme.fg(statusColor, `${NODE_LABELS[verdict.node]} ${verdict.status}`) +
+				theme.fg("dim", " — ") +
+				theme.fg(statusColor, reason || "—"),
+			contentWidth,
+			theme,
+		);
+	}
+
+	private verdictStatusColor(status: string): ThemeColor {
+		const normalized = status.toLowerCase();
+		if (normalized === "done" || normalized === "accept" || normalized === "approved" || normalized === "ready") {
+			return "success";
+		}
+		if (normalized === "not_done") return "warning";
+		if (
+			normalized === "reject" ||
+			normalized === "rejected" ||
+			normalized === "fail" ||
+			normalized === "failed" ||
+			normalized === "block" ||
+			normalized === "blocked"
+		) {
+			return "error";
+		}
+		return "muted";
 	}
 
 	private taskSymbol(status: TaskStatus): string {
@@ -1186,7 +1426,7 @@ export class GoalOrchestrator {
 
 	private emitHeader(node: NodeState): void {
 		const bar = "━".repeat(8);
-		const task = node === "planner" ? undefined : this.currentTask();
+		const task = node === "planner" || node === "gate" ? undefined : this.currentTask();
 		const taskPart = task ? ` · ${task.id} ${task.title}` : "";
 		this.pi.sendMessage({
 			customType: GOAL_MSG_TYPE,
@@ -1218,7 +1458,7 @@ export class GoalOrchestrator {
 		const positive = verdict.status === this.positiveStatus(node);
 		const marker: "✓" | "↻" | "✗" = positive ? "✓" : verdict.status === "not_done" ? "↻" : "✗";
 		const tag = verdict.source === "classifier" ? " [classifier]" : verdict.source === "skip" ? " [skipped]" : "";
-		const task = node === "planner" ? undefined : this.currentTask();
+		const task = node === "planner" || node === "gate" ? undefined : this.currentTask();
 		const taskPart = task ? ` ${task.id}` : "";
 		this.pi.sendMessage({
 			customType: GOAL_MSG_TYPE,

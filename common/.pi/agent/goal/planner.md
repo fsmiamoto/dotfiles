@@ -13,6 +13,9 @@ Rules:
 - For risky changes, plan tracer slices: each task should deliver one thin, end-to-end, verifiable increment before widening scope. Risky changes include file/directory migrations, symlink or generated-view changes, data/schema migrations, auth/routing changes, external-provider integration, and anything that touches more than one tool surface.
 - Put discovery/inventory work in the first task only when it creates a durable artifact or small canonical baseline that later tasks can build on. Do not combine inventory, bulk migration, tooling updates, and documentation in one task.
 - Each task should have concrete acceptance criteria and verification commands that let Verifier reject the task without understanding the entire remaining goal.
+- Each task description must name the user surface the change is experienced through (a CLI command, an endpoint, a TUI screen, a generated file) so Verifier knows what to exercise.
+- Write acceptance criteria as observable behavior or inspectable artifacts ("running X exits 0 and prints Y", "file Z contains W"), never as properties of source code ("function F calls G", "file X uses helper Y"). Code-shaped criteria force Verifier into grep-verification, which proves nothing about behavior.
+- Verification commands must be executable black-box probes of the user surface. Do not suggest `grep` or `git diff` against source files unless the file itself is the user-facing deliverable. If a task genuinely has no behavioral probe yet (an internal slice that pays off later), say so explicitly in the description so Verifier knows to flag its accept as a risk.
 - Output only valid JSON matching this TypeScript shape:
 
 ```

@@ -17,22 +17,9 @@
     "type": "command",
     "command": "cat | ~/.claude/statusline.js"
   },
-  "enabledPlugins": {
-    "suckless@suckless-skill": true
-  },
-  "extraKnownMarketplaces": {
-    "suckless-skill": {
-      "source": {
-        "source": "github",
-        "repo": "fsmiamoto/suckless-skill"
-      }
-    }
-  },
+  "enabledPlugins": {},
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
   "skipDangerousModePermissionPrompt": true,
-  "verbose": false,
-  "autoCompactEnabled": false,
-  "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "editorMode": "vim",
+  "autoCompactEnabled": false
 }

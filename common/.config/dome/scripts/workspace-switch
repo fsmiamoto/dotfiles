@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+
+target="${1:-}"
+[ -n "$target" ] || exit 2
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/dome"
+state_file="$state_dir/workspace-state"
+mkdir -p "$state_dir"
+
+current="$(dome query workspaces 2>/dev/null | python3 -c 'import json,sys
+try:
+    data=json.load(sys.stdin)
+except Exception:
+    data=[]
+for ws in data:
+    if ws.get("is_focused"):
+        print(ws.get("name", ""))
+        break
+' 2>/dev/null || true)"
+
+previous=""
+[ -f "$state_file" ] && previous="$(sed -n '2p' "$state_file" 2>/dev/null || true)"
+
+if [ -n "$current" ] && [ "$current" != "$target" ]; then
+  previous="$current"
+fi
+
+if dome focus workspace "$target"; then
+  {
+    printf '%s\n' "$target"
+    printf '%s\n' "$previous"
+  } > "$state_file"
+
+  if command -v sketchybar >/dev/null 2>&1; then
+    sketchybar --trigger dome_workspace_change FOCUSED_WORKSPACE="$target" >/dev/null 2>&1 || true
+  fi
+fi

@@ -1,0 +1,52 @@
+#!/bin/sh
+set -eu
+
+direction="${1:-next}"
+workspaces="1 2 3 4 Slack Mail Term Notes IDE Anki 0 5 6 7 8 9"
+
+current="$(dome query workspaces 2>/dev/null | python3 -c 'import json,sys
+try:
+    data=json.load(sys.stdin)
+except Exception:
+    data=[]
+for ws in data:
+    if ws.get("is_focused"):
+        print(ws.get("name", ""))
+        break
+' 2>/dev/null || true)"
+[ -n "$current" ] || current="1"
+
+set -- $workspaces
+count=$#
+idx=1
+found=0
+for ws do
+  if [ "$ws" = "$current" ]; then
+    found=1
+    break
+  fi
+  idx=$((idx + 1))
+done
+
+if [ "$found" -eq 0 ]; then
+  idx=1
+fi
+
+case "$direction" in
+  prev|previous)
+    next_idx=$((idx - 1))
+    [ "$next_idx" -ge 1 ] || next_idx=$count
+    ;;
+  *)
+    next_idx=$((idx + 1))
+    [ "$next_idx" -le "$count" ] || next_idx=1
+    ;;
+esac
+
+i=1
+for ws do
+  if [ "$i" -eq "$next_idx" ]; then
+    exec "$HOME/.config/dome/scripts/workspace-switch" "$ws"
+  fi
+  i=$((i + 1))
+done

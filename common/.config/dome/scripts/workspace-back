@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+state_file="${XDG_RUNTIME_DIR:-/tmp}/dome/workspace-state"
+previous=""
+[ -f "$state_file" ] && previous="$(sed -n '2p' "$state_file" 2>/dev/null || true)"
+[ -n "$previous" ] || exit 0
+
+exec "$HOME/.config/dome/scripts/workspace-switch" "$previous"

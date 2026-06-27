@@ -1,0 +1,122 @@
+border_size = 6.0
+theme = "mocha"
+log_level = "info"
+start_at_login = true
+
+[font]
+text_size = 14.0
+subtext_size = 12.0
+family = "0xProto Nerd Font"
+
+[macos]
+on_open = [
+  { bundle_id = "com.tinyspeck.slackmacgap", workspace = "Slack" },
+  { bundle_id = "com.microsoft.Outlook", workspace = "Mail" },
+  { bundle_id = "com.apple.mail", workspace = "Mail" },
+  { bundle_id = "de.tutao.tutanota", workspace = "Mail" },
+  { bundle_id = "com.jetbrains.intellij", workspace = "IDE" },
+  { bundle_id = "md.obsidian", workspace = "Notes" },
+  { bundle_id = "net.ankiweb.dtop", workspace = "Anki" },
+  { bundle_id = "net.ankiweb.launcher", workspace = "Anki" },
+  { bundle_id = "com.mitchellh.ghostty", mode = "float" },
+]
+
+[keymaps]
+# Launchers
+"alt+return" = ["exec open -a Finder"]
+
+# Workspaces: numeric defaults, using Option/Alt instead of Command/Meta.
+"alt+0" = ["exec ~/.config/dome/scripts/workspace-switch 0"]
+"alt+1" = ["exec ~/.config/dome/scripts/workspace-switch 1"]
+"alt+2" = ["exec ~/.config/dome/scripts/workspace-switch 2"]
+"alt+3" = ["exec ~/.config/dome/scripts/workspace-switch 3"]
+"alt+4" = ["exec ~/.config/dome/scripts/workspace-switch 4"]
+"alt+5" = ["exec ~/.config/dome/scripts/workspace-switch 5"]
+"alt+6" = ["exec ~/.config/dome/scripts/workspace-switch 6"]
+"alt+7" = ["exec ~/.config/dome/scripts/workspace-switch 7"]
+"alt+8" = ["exec ~/.config/dome/scripts/workspace-switch 8"]
+"alt+9" = ["exec ~/.config/dome/scripts/workspace-switch 9"]
+
+"alt+shift+0" = ["move workspace 0"]
+"alt+shift+1" = ["move workspace 1"]
+"alt+shift+2" = ["move workspace 2"]
+"alt+shift+3" = ["move workspace 3"]
+"alt+shift+4" = ["move workspace 4"]
+"alt+shift+5" = ["move workspace 5"]
+"alt+shift+6" = ["move workspace 6"]
+"alt+shift+7" = ["move workspace 7"]
+"alt+shift+8" = ["move workspace 8"]
+"alt+shift+9" = ["move workspace 9"]
+
+# Named workspaces from the AeroSpace config.
+"alt+a" = ["exec ~/.config/dome/scripts/workspace-switch Anki"]
+"alt+t" = ["exec ~/.config/dome/scripts/workspace-switch Term"]
+"alt+m" = ["exec ~/.config/dome/scripts/workspace-switch Mail"]
+"alt+n" = ["exec ~/.config/dome/scripts/workspace-switch Notes"]
+
+"alt+shift+a" = ["move workspace Anki"]
+"alt+shift+t" = ["move workspace Term"]
+"alt+shift+m" = ["move workspace Mail"]
+"alt+shift+n" = ["move workspace Notes"]
+
+# Focus and move windows.
+"alt+h" = ["focus left"]
+"alt+j" = ["focus down"]
+"alt+k" = ["focus up"]
+"alt+l" = ["focus right"]
+"alt+p" = ["focus parent"]
+"alt+[" = ["focus tab prev"]
+"alt+]" = ["focus tab next"]
+
+"alt+shift+h" = ["move left"]
+"alt+shift+j" = ["move down"]
+"alt+shift+k" = ["move up"]
+"alt+shift+l" = ["move right"]
+
+# Container/layout controls.
+"alt+e" = ["toggle spawn"]
+"alt+d" = ["toggle direction"]
+"alt+b" = ["toggle layout"]
+"alt+/" = ["toggle direction"]
+"alt+," = ["toggle layout"]
+
+# Window state.
+"alt+f" = ["toggle fullscreen"]
+"alt+shift+f" = ["toggle float"]
+"alt+q" = ["exec osascript -e 'tell application \"System Events\" to keystroke \"w\" using command down'"]
+
+# Workspace navigation helpers.
+"alt+tab" = ["exec ~/.config/dome/scripts/workspace-back"]
+"alt+left" = ["exec ~/.config/dome/scripts/workspace-cycle prev"]
+"alt+right" = ["exec ~/.config/dome/scripts/workspace-cycle next"]
+
+# Master layout resize equivalents.
+"alt+-" = ["master shrink"]
+"alt+=" = ["master grow"]
+
+# Monitor controls. Dome's defaults are Meta+Alt+hjkl; since Alt is now the
+# main modifier, use Ctrl+Alt for monitor focus/move.
+"alt+ctrl+h" = ["focus monitor left"]
+"alt+ctrl+j" = ["focus monitor down"]
+"alt+ctrl+k" = ["focus monitor up"]
+"alt+ctrl+l" = ["focus monitor right"]
+"alt+ctrl+shift+h" = ["move monitor left"]
+"alt+ctrl+shift+j" = ["move monitor down"]
+"alt+ctrl+shift+k" = ["move monitor up"]
+"alt+ctrl+shift+l" = ["move monitor right"]
+
+# Modes and process control.
+"alt+shift+;" = ["mode service"]
+"alt+shift+q" = ["exit"]
+
+[keymaps.mode.service]
+"escape" = ["mode default"]
+"r" = ["mode default"]
+"f" = ["toggle float", "mode default"]
+"h" = ["master shrink", "mode default"]
+"l" = ["master grow", "mode default"]
+"alt+shift+h" = ["move monitor left", "mode default"]
+"alt+shift+j" = ["move monitor down", "mode default"]
+"alt+shift+k" = ["move monitor up", "mode default"]
+"alt+shift+l" = ["move monitor right", "mode default"]
+"backspace" = ["exec osascript -e 'tell application \"System Events\" to keystroke \"w\" using command down'", "mode default"]

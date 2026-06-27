@@ -5,9 +5,12 @@ min_height = "5%"
 max_width = 0
 max_height = 0
 
+[padding]
+top = 40.0
+
 [partition_tree]
 automatic_tiling = true
-tab_bar_height = 24.0
+tab_bar_height = 0.0
 
 [master]
 master_ratio = 0.5

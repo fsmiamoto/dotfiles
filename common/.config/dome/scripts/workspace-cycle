@@ -4,7 +4,12 @@ set -eu
 direction="${1:-next}"
 workspaces="1 2 3 4 Slack Mail Term Notes IDE Anki 0 5 6 7 8 9"
 
-current="$(dome query workspaces 2>/dev/null | python3 -c 'import json,sys
+DOME_CLI="${DOME_CLI:-/opt/homebrew/bin/dome}"
+if [ ! -x "$DOME_CLI" ]; then
+  DOME_CLI="/Applications/Dome.app/Contents/MacOS/dome"
+fi
+
+current="$("$DOME_CLI" query workspaces 2>/dev/null | python3 -c 'import json,sys
 try:
     data=json.load(sys.stdin)
 except Exception:

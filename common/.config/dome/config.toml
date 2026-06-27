@@ -1,4 +1,4 @@
-border_size = 6.0
+border_size = 7.0
 theme = "mocha"
 log_level = "info"
 start_at_login = true
@@ -74,9 +74,6 @@ on_open = [
 "alt+shift+l" = ["move right"]
 
 # Container/layout controls.
-"alt+e" = ["toggle spawn"]
-"alt+d" = ["toggle direction"]
-"alt+b" = ["toggle layout"]
 "alt+/" = ["toggle direction"]
 "alt+," = ["toggle layout"]
 

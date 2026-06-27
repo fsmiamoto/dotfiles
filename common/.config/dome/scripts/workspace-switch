@@ -4,11 +4,17 @@ set -eu
 target="${1:-}"
 [ -n "$target" ] || exit 2
 
+DOME_CLI="${DOME_CLI:-/opt/homebrew/bin/dome}"
+if [ ! -x "$DOME_CLI" ]; then
+  DOME_CLI="/Applications/Dome.app/Contents/MacOS/dome"
+fi
+SKETCHYBAR_CLI="${SKETCHYBAR_CLI:-/opt/homebrew/bin/sketchybar}"
+
 state_dir="${XDG_RUNTIME_DIR:-/tmp}/dome"
 state_file="$state_dir/workspace-state"
 mkdir -p "$state_dir"
 
-current="$(dome query workspaces 2>/dev/null | python3 -c 'import json,sys
+current="$("$DOME_CLI" query workspaces 2>/dev/null | python3 -c 'import json,sys
 try:
     data=json.load(sys.stdin)
 except Exception:
@@ -26,13 +32,15 @@ if [ -n "$current" ] && [ "$current" != "$target" ]; then
   previous="$current"
 fi
 
-if dome focus workspace "$target"; then
+if "$DOME_CLI" focus workspace "$target"; then
   {
     printf '%s\n' "$target"
     printf '%s\n' "$previous"
   } > "$state_file"
 
-  if command -v sketchybar >/dev/null 2>&1; then
-    sketchybar --trigger dome_workspace_change FOCUSED_WORKSPACE="$target" >/dev/null 2>&1 || true
+  if [ -x "$SKETCHYBAR_CLI" ]; then
+    USER="${USER:-$(id -un)}"
+    export USER
+    "$SKETCHYBAR_CLI" --trigger dome_workspace_change FOCUSED_WORKSPACE="$target" >/dev/null 2>&1 || true
   fi
 fi

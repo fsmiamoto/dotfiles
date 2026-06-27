@@ -12,7 +12,8 @@
     "npm:pi-web-access",
     "npm:pi-tool-display",
     "npm:pi-context",
-    "npm:@juicesharp/rpiv-ask-user-question"
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@plannotator/pi-extension"
   ],
   "hideThinkingBlock": false
 }

@@ -20,6 +20,9 @@ import {
 	openSync,
 	closeSync,
 	existsSync,
+	readdirSync,
+	renameSync,
+	unlinkSync,
 } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
@@ -52,7 +55,12 @@ interface RegistryEntry {
 // ── Constants ──────────────────────────────────────────────────────
 
 const BG_DIR = path.join(os.homedir(), ".pi", "bg");
-const REGISTRY_PATH = path.join(BG_DIR, "registry.json");
+// Per-pid registry so each pi session only owns processes IT spawned. Mirrors
+// the pattern in extensions/tmux-agents/index.ts (registry-${pid}.json). The
+// legacy shared ~/.pi/bg/registry.json is intentionally NOT read; it's GC'd on
+// startup along with any other stale per-pid registries.
+const REGISTRY_PATH = path.join(BG_DIR, `registry-${process.pid}.json`);
+const LEGACY_REGISTRY_PATH = path.join(BG_DIR, "registry.json");
 const LOGS_DIR = path.join(BG_DIR, "logs");
 
 // ── In-memory state ────────────────────────────────────────────────
@@ -67,16 +75,20 @@ function ensureDirs(): void {
 	mkdirSync(LOGS_DIR, { recursive: true });
 }
 
-function loadRegistry(): RegistryEntry[] {
+function loadRegistryFile(filePath: string): RegistryEntry[] {
 	try {
-		if (!existsSync(REGISTRY_PATH)) return [];
-		const raw = readFileSync(REGISTRY_PATH, "utf-8");
+		if (!existsSync(filePath)) return [];
+		const raw = readFileSync(filePath, "utf-8");
 		const parsed = JSON.parse(raw);
 		if (!Array.isArray(parsed)) return [];
 		return parsed;
 	} catch {
 		return [];
 	}
+}
+
+function loadRegistry(): RegistryEntry[] {
+	return loadRegistryFile(REGISTRY_PATH);
 }
 
 function saveRegistry(): void {
@@ -94,9 +106,42 @@ function saveRegistry(): void {
 		}
 	}
 	try {
-		writeFileSync(REGISTRY_PATH, JSON.stringify(entries, null, 2), "utf-8");
+		// Atomic write to avoid corrupting on crash mid-write.
+		const tmpPath = REGISTRY_PATH + ".tmp";
+		writeFileSync(tmpPath, JSON.stringify(entries, null, 2), "utf-8");
+		renameSync(tmpPath, REGISTRY_PATH);
 	} catch {
 		// Best-effort — directory might be gone
+	}
+}
+
+/**
+ * GC any per-pid registries whose owning pi session is dead, plus the legacy
+ * shared registry.json. Called on session_start, before adoption.
+ *
+ * For dead-owner registries, the surviving detached child processes are
+ * abandoned by the bg extension — they keep running but are no longer tracked.
+ * That's the correct behavior: a fresh pi session has no business claiming
+ * ownership of unrelated background work, and the user can `ps`/`kill` directly
+ * if they want to clean them up.
+ */
+function gcStaleRegistries(): void {
+	try {
+		if (existsSync(LEGACY_REGISTRY_PATH)) {
+			try { unlinkSync(LEGACY_REGISTRY_PATH); } catch {}
+		}
+		const files = readdirSync(BG_DIR);
+		for (const f of files) {
+			const match = f.match(/^registry-(\d+)\.json(\.tmp)?$/);
+			if (!match) continue;
+			const ownerPid = Number.parseInt(match[1], 10);
+			if (Number.isNaN(ownerPid)) continue;
+			if (ownerPid === process.pid) continue; // our own
+			if (isAlive(ownerPid)) continue; // owner still alive — leave it
+			try { unlinkSync(path.join(BG_DIR, f)); } catch {}
+		}
+	} catch {
+		// Best-effort GC; never fatal
 	}
 }
 
@@ -252,6 +297,13 @@ function killAll(): number {
 
 // ── Re-adoption ────────────────────────────────────────────────────
 
+/**
+ * Re-adopt processes owned by THIS pi session (matched by pid in the registry
+ * filename). On a fresh pi process this is always empty; the function is still
+ * called for symmetry and to defensively write an empty registry.
+ *
+ * Cross-session inheritance is intentionally NOT supported. See gcStaleRegistries.
+ */
 function adoptProcesses(): void {
 	const entries = loadRegistry();
 	processes.clear();
@@ -537,35 +589,30 @@ export default function (pi: ExtensionAPI) {
 
 	pi.on("session_start", async (_event, _ctx) => {
 		ensureDirs();
+		gcStaleRegistries();
 		adoptProcesses();
 	});
 
 	// ── Shutdown handler ─────────────────────────────────────────────
 
-	pi.on("session_shutdown", async (_event, ctx) => {
+	// NOTE: do NOT call ctx.ui.select() here. pi's interactive shutdown order
+	// (interactive-mode.js:2647) tears down the TUI BEFORE awaiting the
+	// session_shutdown handlers, so any modal opened from this handler creates
+	// a Promise that never resolves and hangs /quit forever. We just persist
+	// final state silently; surviving detached processes are intentional (the
+	// whole point of bg vs. bash) and ownership is per-pid now, so we never
+	// surprise a future session with them.
+	pi.on("session_shutdown", async (_event, _ctx) => {
 		refreshStatuses();
-		const running = [...processes.values()].filter(
+		saveRegistry();
+		// Drop our per-pid registry entirely if nothing is running — keeps
+		// ~/.pi/bg/ tidy across many short-lived pi sessions.
+		const stillRunning = [...processes.values()].some(
 			(p) => p.status === "running",
 		);
-
-		if (running.length === 0) return;
-
-		if (ctx.hasUI) {
-			const names = running.map((p) => p.name).join(", ");
-			const choice = await ctx.ui.select(
-				`${running.length} background process${running.length > 1 ? "es" : ""} still running (${names})`,
-				["Kill all and exit", "Leave running"],
-			);
-
-			if (choice === "Kill all and exit") {
-				killAll();
-				// Brief wait for SIGTERM to take effect
-				await sleep(500);
-			}
+		if (!stillRunning) {
+			try { unlinkSync(REGISTRY_PATH); } catch {}
 		}
-
-		// Always save final state (registry reflects what's still alive)
-		saveRegistry();
 	});
 
 	// ── /bg command ──────────────────────────────────────────────────

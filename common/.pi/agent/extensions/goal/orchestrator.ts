@@ -163,19 +163,52 @@ function asStringArray(value: unknown, path: string, opts: { requiredNonEmpty: b
 	return items;
 }
 
-function parseAndValidatePlannerJson(finalText: string): PlannerTaskList {
-	const raw = finalText.trim();
-	if (!raw) throw new Error("Planner produced empty output");
-	let parsed: unknown;
-	try {
-		parsed = JSON.parse(raw);
-	} catch (err) {
-		throw new Error(`Planner output is not valid JSON: ${(err as Error).message}`);
+function extractBalancedJsonObjects(text: string): string[] {
+	const objects: string[] = [];
+	for (let start = text.indexOf("{"); start !== -1; start = text.indexOf("{", start + 1)) {
+		let depth = 0;
+		let inString = false;
+		let escaped = false;
+		for (let i = start; i < text.length; i++) {
+			const ch = text[i];
+			if (inString) {
+				if (escaped) {
+					escaped = false;
+				} else if (ch === "\\") {
+					escaped = true;
+				} else if (ch === '"') {
+					inString = false;
+				}
+				continue;
+			}
+			if (ch === '"') {
+				inString = true;
+				continue;
+			}
+			if (ch === "{") depth++;
+			if (ch === "}") {
+				depth--;
+				if (depth === 0) {
+					objects.push(text.slice(start, i + 1));
+					break;
+				}
+			}
+		}
 	}
-	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-		throw new Error("Planner output must be a JSON object");
+	return objects;
+}
+
+function plannerJsonCandidates(raw: string): string[] {
+	const candidates = [raw];
+	for (const match of raw.matchAll(/```(?:json|JSON)?\s*([\s\S]*?)```/g)) {
+		const fenced = match[1]?.trim();
+		if (fenced) candidates.push(fenced);
 	}
-	const obj = parsed as Record<string, unknown>;
+	candidates.push(...extractBalancedJsonObjects(raw).map((candidate) => candidate.trim()));
+	return [...new Set(candidates.filter(Boolean))];
+}
+
+function validatePlannerObject(obj: Record<string, unknown>): PlannerTaskList {
 	if (obj.version !== 1) throw new Error("Planner JSON version must be 1");
 	const goal = asNonEmptyString(obj.goal, "goal");
 	const summary = asNonEmptyString(obj.summary, "summary");
@@ -200,6 +233,33 @@ function parseAndValidatePlannerJson(finalText: string): PlannerTaskList {
 		};
 	});
 	return { version: 1, goal, summary, tasks };
+}
+
+function parseAndValidatePlannerJson(finalText: string): PlannerTaskList {
+	const raw = finalText.trim();
+	if (!raw) throw new Error("Planner produced empty output");
+	let firstSyntaxError = "";
+	let firstValidationError = "";
+	for (const candidate of plannerJsonCandidates(raw)) {
+		let parsed: unknown;
+		try {
+			parsed = JSON.parse(candidate);
+		} catch (err) {
+			firstSyntaxError ||= (err as Error).message;
+			continue;
+		}
+		if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+			firstValidationError ||= "Planner output must be a JSON object";
+			continue;
+		}
+		try {
+			return validatePlannerObject(parsed as Record<string, unknown>);
+		} catch (err) {
+			firstValidationError ||= (err as Error).message;
+		}
+	}
+	if (firstValidationError) throw new Error(firstValidationError);
+	throw new Error(`Planner output is not valid JSON: ${firstSyntaxError}`);
 }
 
 // ── Custom message types & content shape ─────────────────────────────

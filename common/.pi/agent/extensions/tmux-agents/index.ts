@@ -18,6 +18,7 @@ import * as path from "node:path";
 import * as os from "node:os";
 import { Type } from "@sinclair/typebox";
 import { discoverAgents, type AgentConfig } from "./agents.ts";
+import { preflightModel } from "./model-selection.ts";
 
 // ── Data types ─────────────────────────────────────────────────────
 
@@ -166,6 +167,14 @@ function tmuxSendKeys(paneId: string, keys: string): void {
 
 function tmuxSendRawKeys(paneId: string, keys: string): void {
 	execSync(`tmux send-keys -t ${shellQuote(paneId)} ${keys}`);
+}
+
+function tmuxTrySendRawKeys(paneId: string, keys: string): void {
+	try {
+		execSync(`tmux send-keys -t ${shellQuote(paneId)} ${keys}`, { stdio: "ignore" });
+	} catch {
+		// The pane may exit between the existence check and this signal.
+	}
 }
 
 function tmuxCapture(paneId: string, lines: number = 100): string {
@@ -858,26 +867,15 @@ export default function (pi: ExtensionAPI) {
 		}
 	});
 
-	pi.on("session_shutdown", async (_event, ctx) => {
+	// NOTE: do NOT call ctx.ui.select() in this handler. pi's interactive
+	// shutdown order (interactive-mode.js:2647) tears down the TUI BEFORE
+	// awaiting session_shutdown handlers, so any modal opened here creates a
+	// Promise that never resolves and hangs /quit forever. Running subagents
+	// are left alive on purpose (the registry persists them; a future pi
+	// session can adopt them via the dead-owner branch in adoptOrphans).
+	// User can `agent_stop` / `agent_list` first if they want to triage.
+	pi.on("session_shutdown", async (_event, _ctx) => {
 		refreshStatuses();
-		const running = [...agents.values()].filter((a) => a.status === "running");
-
-		if (running.length > 0 && ctx.hasUI) {
-			const names = running.map((a) => a.adopted ? `${a.name} [adopted]` : a.name).join(", ");
-			const choice = await ctx.ui.select(
-				`${running.length} tmux agent${running.length > 1 ? "s" : ""} still running (${names})`,
-				["Kill all agent panes", "Leave running"],
-			);
-
-			if (choice === "Kill all agent panes") {
-				for (const agent of running) {
-					tmuxKillPane(agent.paneId);
-					tmuxSelectLayout(agent.tmuxWindow);
-					cleanupAgentTempFiles(agent);
-				}
-				agents.clear();
-			}
-		}
 
 		// The child process has already received startup file arguments; do not leave temp files behind on shutdown.
 		for (const agent of agents.values()) {
@@ -913,6 +911,7 @@ export default function (pi: ExtensionAPI) {
 			"Pass the task as a complete markdown brief using exactly these headers: # Goal, # Success Criteria, # Constraints, # Output, # Stop Rules.",
 			"The child agent's final assistant message is auto-reported to this conversation; report_result is optional for explicit structured reports.",
 			"Use agent profiles (agent parameter) when available — they configure model, tools, and system prompt.",
+			"For normal delegation, omit model to inherit the exact parent provider/model; a configured profile model takes precedence over inheritance.",
 			"Do NOT peek or poll agents after spawning. Wait for their auto-report/result to arrive. Constant peeking defeats the purpose of delegation.",
 			"Only use agent_peek if an agent has been running unusually long and you suspect it's stuck.",
 			"Use agent_steer only when you need to redirect an agent. It interrupts their current work.",
@@ -928,7 +927,9 @@ export default function (pi: ExtensionAPI) {
 				Type.String({ description: "Agent profile name from .md files (e.g., 'scout', 'reviewer')" }),
 			),
 			model: Type.Optional(
-				Type.String({ description: "Model override (default: orchestrator's current model)" }),
+				Type.String({
+					description: "Deliberate model override in provider/model form. Bare model IDs are rejected; omit for normal delegation.",
+				}),
 			),
 			thinking: Type.Optional(Type.String({ description: "Thinking level override" })),
 		}),
@@ -952,7 +953,29 @@ export default function (pi: ExtensionAPI) {
 				throw new Error('Agent name must be 1-50 chars: alphanumeric, hyphens, underscores. Must start with alphanumeric.');
 			}
 
-			// Refresh first so manually closed panes do not keep stale names reserved.
+			// Load agent config before selecting the model so profile precedence can be enforced.
+			let agentConfig: AgentConfig | undefined;
+			if (agentProfileName) {
+				const discovery = discoverAgents(ctx.cwd, "both");
+				agentConfig = discovery.agents.find((a) => a.name === agentProfileName);
+				if (!agentConfig) {
+					const available = discovery.agents.map((a) => a.name).join(", ") || "none";
+					throw new Error(
+						`Agent profile "${agentProfileName}" not found. Available: ${available}`,
+					);
+				}
+			}
+
+			// Resolve and authenticate the exact selected model before any spawn side effects.
+			const modelSelection = await preflightModel({
+				override: modelOverride,
+				profile: agentConfig?.model,
+				parent: ctx.model,
+			}, ctx.modelRegistry);
+			const model = modelSelection.qualified;
+			const thinking = thinkingOverride ?? agentConfig?.thinking;
+
+			// Refresh only after preflight so rejected requests cannot mutate the registry.
 			refreshStatuses();
 
 			// Validate name uniqueness
@@ -972,23 +995,6 @@ export default function (pi: ExtensionAPI) {
 			if (tmuxWindowExists(windowGroup) && !ownedGroupWindow) {
 				throw new Error(`Tmux group window "${windowGroup}" already exists but is not owned by this tmux-agents session.`);
 			}
-
-			// Load agent config if specified
-			let agentConfig: AgentConfig | undefined;
-			if (agentProfileName) {
-				const discovery = discoverAgents(ctx.cwd, "both");
-				agentConfig = discovery.agents.find((a) => a.name === agentProfileName);
-				if (!agentConfig) {
-					const available = discovery.agents.map((a) => a.name).join(", ") || "none";
-					throw new Error(
-						`Agent profile "${agentProfileName}" not found. Available: ${available}`,
-					);
-				}
-			}
-
-			// Determine model and thinking level
-			const model = modelOverride ?? agentConfig?.model ?? ctx.model?.id;
-			const thinking = thinkingOverride ?? agentConfig?.thinking;
 
 			let promptFile: string | undefined;
 			let taskFile: string | undefined;
@@ -1350,14 +1356,22 @@ export default function (pi: ExtensionAPI) {
 		async execute(_toolCallId, params, _signal, _onUpdate, _ctx) {
 			const { name } = params;
 
-			const agent = requireAgent(name);
+			const agent = agents.get(name);
+			if (!agent) {
+				return {
+					content: [{ type: "text" as const, text: `Agent "${name}" is already stopped.` }],
+					details: { name },
+				};
+			}
 
 			if (tmuxPaneExists(agent.paneId)) {
-				// Graceful shutdown: Ctrl+C then Ctrl+D
-				tmuxSendRawKeys(agent.paneId, "C-c C-c");
+				// Graceful shutdown signals are best-effort because the pane can exit at any point.
+				tmuxTrySendRawKeys(agent.paneId, "C-c C-c");
 				await sleep(1000);
-				tmuxSendRawKeys(agent.paneId, "C-d");
-				await sleep(2000);
+				if (tmuxPaneExists(agent.paneId)) {
+					tmuxTrySendRawKeys(agent.paneId, "C-d");
+					await sleep(2000);
+				}
 
 				// Always kill the pane if it is still present
 				if (tmuxPaneExists(agent.paneId)) {

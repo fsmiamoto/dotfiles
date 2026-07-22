@@ -46,7 +46,7 @@ navigate_pane_up = "k"
 navigate_pane_right = "l"
 
 [[keys.command]]
-key = "cmd+r"
+key = "prefix+/"
 type = "plugin_action"
 command = "persiyanov.reviewr.toggle" # <plugin_id>.<action_id> — note the id, not the name.
 
@@ -63,3 +63,6 @@ scrollback_limit_bytes = 10000000
 
 [ui.toast]
 delivery = "terminal"
+
+[experimental]
+pane_history = false

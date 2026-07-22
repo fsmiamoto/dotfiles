@@ -1,11 +1,11 @@
 {
-  "lastChangelogVersion": "0.80.10",
+  "lastChangelogVersion": "0.81.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "compaction": {
     "enabled": false
   },
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "theme": "tokyonight",
   "quietStartup": true,
   "packages": [

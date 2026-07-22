@@ -6,3 +6,7 @@ NOTES.md
 PROGRESS.md
 .scratch
 *.html
+
+# mansk owns generated links; keep only the target directory scaffold.
+common/.agents/skills/*
+!common/.agents/skills/.gitkeep

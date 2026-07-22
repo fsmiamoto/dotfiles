@@ -17,33 +17,84 @@ prefix = "ctrl+a"
 # Tabs are the closest Herdr equivalent to tmux windows.
 new_tab = "prefix+o"
 previous_tab = ["prefix+p", "ctrl+left"]
-next_tab = ["prefix+n", "ctrl+right"]
+next_tab = "ctrl+right"
 switch_tab = "prefix+1..9"
-close_tab = "prefix+x"
+close_tab = ""
+
+# Workspaces are the closest Herdr equivalent to tmux sessions.
+workspace_picker = "prefix+w"
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+
+# Cycle through detected agents without taking Ctrl+Left/Right from tabs.
+previous_agent = "ctrl+shift+left"
+next_agent = "ctrl+shift+right"
 
 # Pane layout and movement.
 split_vertical = ["prefix+|", "prefix+backslash"]
 split_horizontal = "prefix+minus"
-focus_pane_left = ["ctrl+h", "prefix+h"]
-focus_pane_down = ["ctrl+j", "prefix+j"]
-focus_pane_up = ["ctrl+k", "prefix+k"]
-focus_pane_right = ["ctrl+l", "prefix+l"]
-last_pane = "prefix+ctrl+backslash"
+focus_pane_left = "ctrl+h"
+focus_pane_down = "ctrl+j"
+focus_pane_up = "ctrl+k"
+focus_pane_right = "ctrl+l"
+last_pane = "ctrl+backslash"
 close_pane = "prefix+q"
 
 # Familiar tmux utility bindings.
 copy_mode = ["prefix+[", "ctrl+up"]
-goto = ["prefix+g", "ctrl+/"]
+goto = ["prefix+g", "prefix+n", "ctrl+/"]
 reload_config = "prefix+r"
 detach = "prefix+d"
-resize_mode = "prefix+shift+r"
+resize_mode = ""
 zoom = "prefix+z"
 
 # Vim-style navigation inside Herdr's workspace/pane navigator.
+navigate_workspace_up = "k"
+navigate_workspace_down = "j"
 navigate_pane_left = "h"
-navigate_pane_down = "j"
-navigate_pane_up = "k"
+navigate_pane_down = "ctrl+j"
+navigate_pane_up = "ctrl+k"
 navigate_pane_right = "l"
+
+# tmux-style one-step pane resizing.
+[[keys.command]]
+key = "prefix+h"
+type = "shell"
+command = '"$HERDR_BIN_PATH" pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction left --amount 0.05'
+description = "resize pane left"
+
+[[keys.command]]
+key = "prefix+j"
+type = "shell"
+command = '"$HERDR_BIN_PATH" pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction down --amount 0.05'
+description = "resize pane down"
+
+[[keys.command]]
+key = "prefix+k"
+type = "shell"
+command = '"$HERDR_BIN_PATH" pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction up --amount 0.05'
+description = "resize pane up"
+
+[[keys.command]]
+key = "prefix+l"
+type = "shell"
+command = '"$HERDR_BIN_PATH" pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction right --amount 0.05'
+description = "resize pane right"
+
+# Herdr has no native respawn action. Create a replacement shell first, then
+# close the old pane only if creation succeeds so the surrounding layout remains.
+[[keys.command]]
+key = "prefix+shift+r"
+type = "shell"
+command = '"$HERDR_BIN_PATH" pane split --pane "$HERDR_ACTIVE_PANE_ID" --direction right --focus && "$HERDR_BIN_PATH" pane close "$HERDR_ACTIVE_PANE_ID"'
+description = "respawn pane"
+
+# Match tmux's confirmation before killing a window/tab.
+[[keys.command]]
+key = "prefix+x"
+type = "popup"
+command = '''printf 'Close active tab? [y/N] '; read -r answer; case "$answer" in y|Y) exec "$HERDR_BIN_PATH" tab close "$HERDR_ACTIVE_TAB_ID";; esac'''
+description = "close tab with confirmation"
 
 [[keys.command]]
 key = "prefix+/"

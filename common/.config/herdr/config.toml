@@ -1,0 +1,65 @@
+# Herdr test-drive profile based on ~/.tmux.conf.
+# Keep this intentionally small so new Herdr defaults continue to apply.
+
+onboarding = false
+
+[theme]
+name = "tokyo-night"
+
+auto_switch = false
+[terminal]
+new_cwd = "follow"
+
+[keys]
+# Match tmux: Ctrl-a, release, then the action key.
+prefix = "ctrl+a"
+
+# Tabs are the closest Herdr equivalent to tmux windows.
+new_tab = "prefix+o"
+previous_tab = ["prefix+p", "ctrl+left"]
+next_tab = ["prefix+n", "ctrl+right"]
+switch_tab = "prefix+1..9"
+close_tab = "prefix+x"
+
+# Pane layout and movement.
+split_vertical = ["prefix+|", "prefix+backslash"]
+split_horizontal = "prefix+minus"
+focus_pane_left = ["ctrl+h", "prefix+h"]
+focus_pane_down = ["ctrl+j", "prefix+j"]
+focus_pane_up = ["ctrl+k", "prefix+k"]
+focus_pane_right = ["ctrl+l", "prefix+l"]
+last_pane = "prefix+ctrl+backslash"
+close_pane = "prefix+q"
+
+# Familiar tmux utility bindings.
+copy_mode = ["prefix+[", "ctrl+up"]
+goto = ["prefix+g", "ctrl+/"]
+reload_config = "prefix+r"
+detach = "prefix+d"
+resize_mode = "prefix+shift+r"
+zoom = "prefix+z"
+
+# Vim-style navigation inside Herdr's workspace/pane navigator.
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle" # <plugin_id>.<action_id> — note the id, not the name.
+
+[ui]
+# tmux creates a new window immediately rather than asking for a name.
+prompt_new_tab_name = false
+pane_gaps = false
+copy_on_select = true
+
+show_agent_labels_on_pane_borders = true
+[advanced]
+# Match the tmux history-limit setting.
+scrollback_limit_bytes = 10000000
+
+[ui.toast]
+delivery = "terminal"

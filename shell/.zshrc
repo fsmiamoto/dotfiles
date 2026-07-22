@@ -142,6 +142,8 @@ alias ta="tmux attach-session -t"
 alias td="tmux detach"
 alias tkv="tmux kill-server"
 
+alias hw='herdr workspace create --cwd "$PWD" --label "${PWD:t}" --focus'
+
 alias tf="terraform"
 
 alias d="docker"

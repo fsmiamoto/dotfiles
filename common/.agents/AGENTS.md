@@ -9,3 +9,50 @@ channel you can.
 ## servant
 
 Whenever you want to surface some static HTML/artifact for alignment with the user, prefer using the `servant` CLI.
+
+## Subagents
+Use subagents to scale your impact and preserve your context window.
+
+For research tasks where you answer can be sumarrized in a paragraph, let it be done by a peer agent.
+
+For coding tasks where you have a detailed spec as well, use them and use your intelligence to ensure
+it delivered the right thing.
+
+After spawning a subagent, wait for its automatic report. Do not peek, poll, or run sleep commands to wait for it. Only inspect a subagent if it has run unusually long and there is concrete reason to suspect it is stuck; steer it only when redirection is necessary.
+
+### Subagent model selection
+
+- Selection precedence is: explicit override > provider-qualified profile model > exact parent provider/model.
+- For normal delegation, omit `model` so `agent_spawn` inherits the exact parent provider/model.
+- Deliberate overrides must use `provider/model`; bare model IDs are rejected.
+
+## cmux
+
+Most of the time, the user will be using this host from a remote machine so they'll use cmux for better ergonomics.
+
+You have a CLI at `~/.cmux/bin/cmux` to interact with it.
+
+### Notifications
+- Use `~/.cmux/bin/cmux notify` when you need the user's attention.
+- `cmux notify` takes flags; do **not** pass a JSON payload.
+- Good cases: waiting on user input, notable failures, or important task completion.
+- Use notifications sparingly and avoid spam.
+- Use title = tool/agent name and body = actionable message; include project/host/cwd context in the body if useful.
+- Examples:
+  - `~/.cmux/bin/cmux notify --title "Pi" --body "[$(basename "$PWD")] Need your input on this change"`
+  - `~/.cmux/bin/cmux notify --title "Pi" --body "[$(basename "$PWD")] Tests finished successfully"`
+
+### Browser
+- Use cmux browser panes to show useful URLs, localhost dev servers, and browser-viewable artifacts.
+- Use cmux browser as a user-visible surface, not as the primary automated QA tool; keep Playwright/headless tooling for repeatable browser tests.
+- Open pages when useful, including external URLs when they help the task.
+- For a different/new thing, open a new split: `cmux browser open-split http://localhost:5173`.
+- When iterating on the same page and you know the browser surface, reuse it: `cmux browser surface:2 navigate http://localhost:5173`.
+- Use judgment before opening sensitive pages; ask first for admin consoles, credentials, production dashboards, or personal data.
+- Gotcha: file:// doesn't work
+
+### Local files and directories
+- To show local HTML/static artifacts, serve them over a temporary localhost HTTP server and open that URL with `cmux browser`.
+- Pick an available/free port; use named background processes for temporary servers and stop them when the review/task is done.
+- Viewing through the cmux browser plus reporting the remote path is enough; do not copy artifacts to the user's Mac unless explicitly asked.
+- Automatically open dev servers/artifacts only when useful for visual review, QA, or a final deliverable; otherwise report the URL/path.

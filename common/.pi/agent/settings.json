@@ -5,7 +5,7 @@
   "compaction": {
     "enabled": false
   },
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "theme": "tokyonight",
   "quietStartup": true,
   "packages": [

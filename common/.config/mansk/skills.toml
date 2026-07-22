@@ -1,6 +1,10 @@
 schema = 1
 default-targets = ["claude", "agents"]
 
+[targets]
+claude = ".claude/skills"
+agents = ".agents/skills"
+
 # Matt Pocock's engineering skills.
 [[skills]]
 source = "https://github.com/mattpocock/skills.git"

@@ -2,7 +2,18 @@
   "schema": 1,
   "local": [],
   "git": {
+    "https://github.com/anthropics/claude-code.git": "ac062f33ab0ca7c62b9df648d0f2027fa9b969f0",
     "https://github.com/mattpocock/skills.git": "ed37663cc5fbef691ddfecd080dff42f7e7e350d"
   },
-  "collections": []
+  "collections": [
+    {
+      "source": "git@github.com:fsmiamoto/skills.git",
+      "root": "skills",
+      "commit": "44ca89db87247d0f4d143631d8d0df1640bac507",
+      "members": [
+        "playwright-cli",
+        "tty-test"
+      ]
+    }
+  ]
 }

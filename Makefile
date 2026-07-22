@@ -16,11 +16,8 @@ endif
 COMMON_PACKAGES = common shell
 VERBOSE ?= 0
 
-# Shared agent skills: canonical location is .claude/skills/
-# Pi gets symlinks to avoid duplication
-CLAUDE_SKILLS_DIR = common/.claude/skills
-PI_SKILLS_DIR = common/.pi/agent/skills
-CODEX_SKILLS_DIR = common/.agents/skills
+# Agent skills are declared in common/.config/mansk/skills.toml and
+# installed reproducibly by mansk into Claude and the shared agents target.
 
 config: backup scripts install sync-skills
 
@@ -162,20 +159,11 @@ else
 endif
 
 sync-skills:
-	@echo "Syncing shared skills (claude → pi, codex)..."
-	@mkdir -p $(PI_SKILLS_DIR) $(CODEX_SKILLS_DIR)
-	@for skill in $(CLAUDE_SKILLS_DIR)/*/; do \
-		name=$$(basename "$$skill"); \
-		pi_target=$(PI_SKILLS_DIR)/$$name; \
-		codex_target=$(CODEX_SKILLS_DIR)/$$name; \
-		if [ ! -e "$$pi_target" ] && [ ! -L "$$pi_target" ]; then \
-			ln -s ../../../.claude/skills/$$name "$$pi_target"; \
-			echo "  linked pi/$$name"; \
-		fi; \
-		if [ ! -e "$$codex_target" ] && [ ! -L "$$codex_target" ]; then \
-			ln -s ../../.claude/skills/$$name "$$codex_target"; \
-			echo "  linked codex/$$name"; \
-		fi; \
-	done
+	@echo "Syncing agent skills with mansk..."
+	@if ! command -v mansk >/dev/null 2>&1; then \
+		echo "Error: mansk is not installed."; \
+		exit 1; \
+	fi
+	@mansk sync
 
 .PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills

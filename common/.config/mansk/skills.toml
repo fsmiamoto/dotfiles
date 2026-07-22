@@ -1,6 +1,7 @@
 schema = 1
 default-targets = ["claude", "agents"]
 
+# Matt Pocock's engineering skills.
 [[skills]]
 source = "https://github.com/mattpocock/skills.git"
 selector = "refs/heads/main"
@@ -20,3 +21,15 @@ path = "skills/engineering/to-tickets"
 source = "https://github.com/mattpocock/skills.git"
 selector = "refs/heads/main"
 path = "skills/engineering/wayfinder"
+
+# Anthropic's frontend-design skill.
+[[skills]]
+source = "https://github.com/anthropics/claude-code.git"
+selector = "refs/heads/main"
+path = "plugins/frontend-design/skills/frontend-design"
+
+# Every direct skill under skills/ in the private personal repository.
+[[collections]]
+source = "git@github.com:fsmiamoto/skills.git"
+selector = "refs/heads/main"
+root = "skills"

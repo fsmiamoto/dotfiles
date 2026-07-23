@@ -1,3 +1,8 @@
+## Skills and configuration
+The user has a dotfiles repo at ~/.dotfiles that controls most of the system configuration.
+
+Agent skills are maneged through the mansk CLI and have a manifest in the dotfiles.
+
 ## Communication guidelines
 Be extremely concise. Sacrifice grammar for the sake of concision.
 

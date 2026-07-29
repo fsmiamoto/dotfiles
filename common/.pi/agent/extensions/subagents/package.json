@@ -1,0 +1,24 @@
+{
+  "name": "subagents",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit -p .",
+    "prepare": "effect-tsgo patch",
+    "test": "node --test --experimental-strip-types manager.test.ts result-delivery.test.ts context-usage.test.ts takeover.test.ts by-the-way.test.ts",
+    "test:live": "node --test --experimental-strip-types claude.test.ts codex.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.216",
+    "@earendil-works/pi-ai": "0.81.1",
+    "@earendil-works/pi-coding-agent": "0.81.1",
+    "@earendil-works/pi-tui": "0.81.1",
+    "effect": "^4.0.0-beta.99",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@effect/tsgo": "^0.24.2",
+    "@types/node": "^24.12.4",
+    "typescript": "^7.0.2"
+  }
+}

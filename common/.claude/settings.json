@@ -20,6 +20,7 @@
   },
   "enabledPlugins": {},
   "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "autoCompactEnabled": false

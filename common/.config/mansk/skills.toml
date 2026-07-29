@@ -5,7 +5,18 @@ default-targets = ["claude", "agents"]
 claude = ".claude/skills"
 agents = ".agents/skills"
 
-# Matt Pocock's engineering skills.
+# Matt Pocock's skills.
+[[skills]]
+source = "https://github.com/mattpocock/skills.git"
+selector = "refs/heads/main"
+path = "skills/productivity/grill-me"
+
+# Required by grill-me, which delegates to /grilling.
+[[skills]]
+source = "https://github.com/mattpocock/skills.git"
+selector = "refs/heads/main"
+path = "skills/productivity/grilling"
+
 [[skills]]
 source = "https://github.com/mattpocock/skills.git"
 selector = "refs/heads/main"

@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.82.0",
+  "lastChangelogVersion": "0.82.1",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "compaction": {
@@ -13,7 +13,8 @@
     "npm:pi-tool-display",
     "npm:pi-context",
     "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@plannotator/pi-extension"
+    "npm:@plannotator/pi-extension",
+    "npm:pi-openai-fast-mode"
   ],
   "hideThinkingBlock": false
 }

@@ -11,9 +11,21 @@ Humans have limited mental bandwidth so remember that when communicating.
 Use principles like the Pyramid one to create the highest bandwidth communication
 channel you can.
 
+## Hunk reviews
+
+When the user asks to look at, read, or address their Hunk comments, run:
+
+```bash
+hunk session comment list --repo . --type user --json
+```
+
+Treat the returned user comments as review feedback for the current task.
+
 ## servant
 
 Whenever you want to surface some static HTML/artifact for alignment with the user, prefer using the `servant` CLI.
+
+Static HTML created only for explanation or alignment does not need Playwright or automated browser QA. 
 
 ## Subagents
 Use subagents to scale your impact and preserve your context window.

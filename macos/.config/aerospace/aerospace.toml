@@ -131,6 +131,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-t = 'workspace Term'
     alt-m = 'workspace Mail'
     alt-n = "workspace Notes"
+    alt-w = 'workspace WhatsApp'
 
     alt-f = 'fullscreen'
     alt-q = 'close'
@@ -144,6 +145,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-t = 'move-node-to-workspace Term'
     alt-shift-m = 'move-node-to-workspace Mail'
     alt-shift-n = 'move-node-to-workspace Notes'
+    alt-shift-w = 'move-node-to-workspace WhatsApp'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
@@ -202,6 +204,10 @@ automatically-unhide-macos-hidden-apps = false
 [[on-window-detected]]
     if.app-id = 'net.ankiweb.dtop'
     run = 'move-node-to-workspace Anki'
+
+[[on-window-detected]]
+    if.app-id = 'net.whatsapp.WhatsApp'
+    run = 'move-node-to-workspace WhatsApp'
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'

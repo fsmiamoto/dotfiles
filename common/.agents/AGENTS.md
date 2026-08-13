@@ -25,7 +25,17 @@ Treat the returned user comments as review feedback for the current task.
 
 Whenever you want to surface some static HTML/artifact for alignment with the user, prefer using the `servant` CLI.
 
-Static HTML created only for explanation or alignment does not need Playwright or automated browser QA. 
+Static HTML created only for explanation or alignment does not need Playwright or automated browser QA.
+
+## Markdown previews
+
+To preview Markdown locally with GitHub-like rendering, use:
+
+```bash
+uvx grip README.md
+```
+
+Open the localhost URL it prints.
 
 ## Subagents
 Use subagents to scale your impact and preserve your context window.

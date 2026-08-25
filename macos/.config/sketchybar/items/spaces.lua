@@ -8,6 +8,7 @@ local workspace_to_icon = {
 	["Mail"] = "",
 	["Term"] = "",
 	["Notes"] = "󰠮",
+	["GitHub"] = "",
 	["Cal"] = "",
 	["Anki"] = "",
 	["WhatsApp"] = "",

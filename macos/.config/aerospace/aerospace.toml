@@ -134,6 +134,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-w = 'workspace WhatsApp'
     alt-s = 'workspace Slack'
     alt-c = 'workspace Cal'
+    alt-g = 'workspace GitHub'
 
     alt-f = 'fullscreen'
     alt-q = 'close'
@@ -149,6 +150,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-n = 'move-node-to-workspace Notes'
     alt-shift-w = 'move-node-to-workspace WhatsApp'
     alt-shift-c = 'move-node-to-workspace Cal'
+    alt-shift-g = 'move-node-to-workspace GitHub'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
@@ -195,6 +197,10 @@ automatically-unhide-macos-hidden-apps = false
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.kjbdgfilnfhdoflbpgamdcdgpehopbep' # Google Calendar PWA
     run = 'move-node-to-workspace Cal'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome.app.mjoklplbddabcmpepnokjaffbmgbkkgg' # GitHub PWA
+    run = 'move-node-to-workspace GitHub'
 
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.fmgjjmmmlfnkbppncabfkddbjimcfncm' # Gmail PWA

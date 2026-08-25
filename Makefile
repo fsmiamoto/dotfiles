@@ -53,7 +53,7 @@ install:
 	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
 		[ ! -d "$$pkg" ] && continue; \
 		[ $(VERBOSE) -ne 0 ] && echo "Stowing $$pkg"; \
-		stow --adopt $$pkg -t $(HOME); \
+		stow --no-folding --adopt $$pkg -t $(HOME); \
 	done
 
 migrate:
@@ -73,7 +73,7 @@ migrate:
 	@for pkg in $(COMMON_PACKAGES) $(PLATFORM_PACKAGE); do \
 		[ ! -d "$$pkg" ] && continue; \
 		[ $(VERBOSE) -ne 0 ] && echo "Stowing $$pkg"; \
-		stow $$pkg -t $(HOME); \
+		stow --no-folding $$pkg -t $(HOME); \
 	done
 
 unstow:

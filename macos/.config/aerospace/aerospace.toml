@@ -135,6 +135,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-s = 'workspace Slack'
     alt-c = 'workspace Cal'
     alt-g = 'workspace GitHub'
+    alt-i = 'workspace Jira'
 
     alt-f = 'fullscreen'
     alt-q = 'close'
@@ -151,6 +152,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-w = 'move-node-to-workspace WhatsApp'
     alt-shift-c = 'move-node-to-workspace Cal'
     alt-shift-g = 'move-node-to-workspace GitHub'
+    alt-shift-i = 'move-node-to-workspace Jira'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
@@ -201,6 +203,10 @@ automatically-unhide-macos-hidden-apps = false
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.mjoklplbddabcmpepnokjaffbmgbkkgg' # GitHub PWA
     run = 'move-node-to-workspace GitHub'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome.app.oamkdfjdongdeodjlcfgdjgggjbdcgna' # Jira PWA
+    run = 'move-node-to-workspace Jira'
 
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.fmgjjmmmlfnkbppncabfkddbjimcfncm' # Gmail PWA

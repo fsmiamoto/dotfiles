@@ -8,12 +8,30 @@ local workspace_to_icon = {
 	["Mail"] = "",
 	["Term"] = "",
 	["Notes"] = "󰠮",
-	["IDE"] = "",
+	["Cal"] = "",
 	["Anki"] = "",
 	["WhatsApp"] = "",
 }
 
 sbar.exec("aerospace list-workspaces --all", function(spaces)
+	local space_items = {}
+
+	-- Only show workspaces that have windows (plus the focused one).
+	local function refresh_visibility(focused)
+		sbar.exec("aerospace list-workspaces --monitor all --empty no", function(nonempty)
+			local visible = {}
+			for name in nonempty:gmatch("[^\r\n]+") do
+				visible[name] = true
+			end
+			if focused then
+				visible[focused] = true
+			end
+			for name, item in pairs(space_items) do
+				item:set({ drawing = visible[name] or false })
+			end
+		end)
+	end
+
 	for space_name in spaces:gmatch("[^\r\n]+") do
 		local space = sbar.add("item", "space." .. space_name, {
 			icon = {
@@ -41,7 +59,9 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			},
 			popup = { background = { border_width = 5, border_color = colors.black } },
 			click_script = "aerospace workspace " .. space_name,
+			drawing = false,
 		})
+		space_items[space_name] = space
 
 		space:subscribe("mouse.clicked", function()
 			sbar.animate("tanh", 8, function()
@@ -101,6 +121,18 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			end
 		end)
 	end
+
+	local watcher = sbar.add("item", "space.watcher", {
+		drawing = false,
+		updates = true,
+	})
+	watcher:subscribe("aerospace_workspace_change", function(env)
+		refresh_visibility(env.FOCUSED_WORKSPACE)
+	end)
+
+	sbar.exec("aerospace list-workspaces --focused", function(focused)
+		refresh_visibility(focused:match("[^\r\n]+"))
+	end)
 
 	local front_app = sbar.add("item", "space.front_app", {
 		display = "active",

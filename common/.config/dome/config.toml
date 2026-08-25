@@ -14,7 +14,9 @@ on_open = [
   { bundle_id = "com.microsoft.Outlook", workspace = "Mail" },
   { bundle_id = "com.apple.mail", workspace = "Mail" },
   { bundle_id = "de.tutao.tutanota", workspace = "Mail" },
-  { bundle_id = "com.jetbrains.intellij", workspace = "IDE" },
+  { bundle_id = "com.google.Chrome.app.kjbdgfilnfhdoflbpgamdcdgpehopbep", workspace = "Cal" },  # Google Calendar PWA
+  { bundle_id = "com.google.Chrome.app.fmgjjmmmlfnkbppncabfkddbjimcfncm", workspace = "Mail" }, # Gmail PWA
+  { bundle_id = "com.google.Chrome.app.pommaclcbfghclhalboakcipcmmndhcj", workspace = "Mail" }, # Google Chat PWA
   { bundle_id = "md.obsidian", workspace = "Notes" },
   { bundle_id = "net.ankiweb.dtop", workspace = "Anki" },
   { bundle_id = "net.ankiweb.launcher", workspace = "Anki" },
@@ -53,11 +55,13 @@ on_open = [
 "alt+t" = ["exec ~/.config/dome/scripts/workspace-switch Term"]
 "alt+m" = ["exec ~/.config/dome/scripts/workspace-switch Mail"]
 "alt+n" = ["exec ~/.config/dome/scripts/workspace-switch Notes"]
+"alt+c" = ["exec ~/.config/dome/scripts/workspace-switch Cal"]
 
 "alt+shift+a" = ["move workspace Anki"]
 "alt+shift+t" = ["move workspace Term"]
 "alt+shift+m" = ["move workspace Mail"]
 "alt+shift+n" = ["move workspace Notes"]
+"alt+shift+c" = ["move workspace Cal"]
 
 # Focus and move windows.
 "alt+h" = ["focus left"]

@@ -9,7 +9,7 @@ after-login-command = []
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = [ 'exec-and-forget sketchybar' ]
+after-startup-command = [ 'exec-and-forget sketchybar', 'exec-and-forget borders' ]
 
 # Notify Sketchybar about workspace change
 exec-on-workspace-change = ['/bin/bash', '-c',
@@ -132,6 +132,8 @@ automatically-unhide-macos-hidden-apps = false
     alt-m = 'workspace Mail'
     alt-n = "workspace Notes"
     alt-w = 'workspace WhatsApp'
+    alt-s = 'workspace Slack'
+    alt-c = 'workspace Cal'
 
     alt-f = 'fullscreen'
     alt-q = 'close'
@@ -146,6 +148,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-m = 'move-node-to-workspace Mail'
     alt-shift-n = 'move-node-to-workspace Notes'
     alt-shift-w = 'move-node-to-workspace WhatsApp'
+    alt-shift-c = 'move-node-to-workspace Cal'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
@@ -190,8 +193,16 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace Mail'
 
 [[on-window-detected]]
-    if.app-id = 'com.jetbrains.intellij'
-    run = 'move-node-to-workspace IDE'
+    if.app-id = 'com.google.Chrome.app.kjbdgfilnfhdoflbpgamdcdgpehopbep' # Google Calendar PWA
+    run = 'move-node-to-workspace Cal'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome.app.fmgjjmmmlfnkbppncabfkddbjimcfncm' # Gmail PWA
+    run = 'move-node-to-workspace Mail'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome.app.pommaclcbfghclhalboakcipcmmndhcj' # Google Chat PWA
+    run = 'move-node-to-workspace Mail'
 
 [[on-window-detected]]
     if.app-id = 'md.obsidian'
@@ -214,4 +225,3 @@ automatically-unhide-macos-hidden-apps = false
 2 = 'main'
 3 = 'secondary'
 4 = 'secondary'
-IDE = 'secondary'

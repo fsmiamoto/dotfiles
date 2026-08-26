@@ -1,7 +1,15 @@
 ## Skills and configuration
 The user has a dotfiles repo at ~/.dotfiles that controls most of the system configuration.
 
-Agent skills are maneged through the mansk CLI and have a manifest in the dotfiles.
+Agent skills are managed through the mansk CLI and have a manifest in the dotfiles.
+
+## Git commits
+Before committing, check `git log` and match the repo's existing commit message conventions (e.g. conventional commits like `feat:`/`fix:`).
+
+## Obsidian vault
+The user has an Obsidian vault at `~/Documents/Vault` with personal notes, work notes (e.g. `sakanaai/` for current job), reports, and reference material.
+
+Search it (grep/find) when relevant context might exist there; save reports/analyses there when the user asks to persist something for later reference.
 
 ## Communication guidelines
 Be extremely concise. Sacrifice grammar for the sake of concision.
@@ -57,17 +65,17 @@ After spawning a subagent, wait for its automatic report. Do not peek, poll, or 
 
 Most of the time, the user will be using this host from a remote machine so they'll use cmux for better ergonomics.
 
-You have a CLI at `~/.cmux/bin/cmux` to interact with it.
+You have a `cmux` CLI on PATH to interact with it (app bundle locally, `~/.cmux/bin` on remote hosts — always invoke it as bare `cmux`).
 
 ### Notifications
-- Use `~/.cmux/bin/cmux notify` when you need the user's attention.
+- Use `cmux notify` when you need the user's attention.
 - `cmux notify` takes flags; do **not** pass a JSON payload.
 - Good cases: waiting on user input, notable failures, or important task completion.
 - Use notifications sparingly and avoid spam.
 - Use title = tool/agent name and body = actionable message; include project/host/cwd context in the body if useful.
 - Examples:
-  - `~/.cmux/bin/cmux notify --title "Pi" --body "[$(basename "$PWD")] Need your input on this change"`
-  - `~/.cmux/bin/cmux notify --title "Pi" --body "[$(basename "$PWD")] Tests finished successfully"`
+  - `cmux notify --title "Pi" --body "[$(basename "$PWD")] Need your input on this change"`
+  - `cmux notify --title "Pi" --body "[$(basename "$PWD")] Tests finished successfully"`
 
 ### Browser
 - Use cmux browser panes to show useful URLs, localhost dev servers, and browser-viewable artifacts.

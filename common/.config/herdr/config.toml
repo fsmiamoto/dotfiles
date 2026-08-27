@@ -15,7 +15,7 @@ new_cwd = "follow"
 prefix = "ctrl+a"
 
 # Tabs are the closest Herdr equivalent to tmux windows.
-new_tab = "prefix+o"
+# new_tab uses Herdr's default: prefix+c (matches tmux).
 previous_tab = ["prefix+p", "ctrl+left"]
 next_tab = "ctrl+right"
 switch_tab = "prefix+1..9"

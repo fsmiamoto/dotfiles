@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# wt — tiny wrapper around `herdr worktree` for branch-per-worktree workflow.
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+wt — git worktrees via herdr
+
+Usage:
+  wt <branch> [base]   Create worktree for <branch> (new or existing) and focus it.
+                       New branches start from [base] (default: current HEAD).
+  wt ls                List worktree workspaces
+  wt open <branch>     Open an existing worktree
+  wt rm                Remove a worktree checkout (see herdr worktree remove --help)
+EOF
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  "" | -h | --help) usage ;;
+  ls | list) herdr worktree list ;;
+  open) shift; herdr worktree open "$@" ;;
+  rm | remove) shift; herdr worktree remove "$@" ;;
+  *)
+    branch="$1"
+    base="${2:-HEAD}"
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+      herdr worktree create --branch "$branch" --focus
+    else
+      herdr worktree create --branch "$branch" --base "$base" --focus
+    fi
+    ;;
+esac

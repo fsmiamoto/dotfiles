@@ -19,7 +19,11 @@ VERBOSE ?= 0
 # Agent skills are declared in common/.config/mansk/skills.toml and
 # installed reproducibly by mansk into Claude and the shared agents target.
 
-config: backup scripts install sync-skills
+# Cargo-installed CLI tools (own projects), installed from git for reproducibility.
+CARGO_TOOLS = mansk servant
+FORCE ?= 0
+
+config: backup scripts install cargo-tools sync-skills
 
 macos: packages config defaults
 
@@ -159,12 +163,37 @@ else
 	@echo "sketchybar is only available on macOS"
 endif
 
+cargo-tools:
+	@echo "Installing cargo tools..."
+	@export PATH="$$HOME/.cargo/bin:$$PATH"; \
+	if ! command -v cargo >/dev/null 2>&1; then \
+		if command -v rustup >/dev/null 2>&1; then \
+			echo "Bootstrapping stable Rust toolchain with rustup..."; \
+			rustup default stable; \
+		else \
+			echo "Installing rustup + stable Rust toolchain..."; \
+			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+				sh -s -- -y --profile minimal --default-toolchain stable --no-modify-path; \
+		fi; \
+	fi; \
+	if ! command -v cargo >/dev/null 2>&1; then \
+		echo "Error: cargo bootstrap failed."; \
+		exit 1; \
+	fi; \
+	for tool in $(CARGO_TOOLS); do \
+		if [ $(FORCE) -eq 0 ] && command -v $$tool >/dev/null 2>&1; then \
+			echo "$$tool already installed, skipping (use FORCE=1 to reinstall)"; \
+		else \
+			cargo install --git https://github.com/fsmiamoto/$$tool --locked --force || exit 1; \
+		fi; \
+	done
+
 sync-skills:
 	@echo "Syncing agent skills with mansk..."
 	@if ! command -v mansk >/dev/null 2>&1; then \
-		echo "Error: mansk is not installed."; \
+		echo "Error: mansk is not installed. Run 'make cargo-tools' first."; \
 		exit 1; \
 	fi
 	@mansk sync
 
-.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills cargo-tools

@@ -6,6 +6,8 @@ Agent skills are managed through the mansk CLI and have a manifest in the dotfil
 ## Git commits
 Before committing, check `git log` and match the repo's existing commit message conventions (e.g. conventional commits like `feat:`/`fix:`).
 
+Never push a commit without explicit permission from the user.
+
 ## Obsidian vault
 The user has an Obsidian vault at `~/Documents/Vault` with personal notes, work notes (e.g. `sakanaai/` for current job), reports, and reference material.
 

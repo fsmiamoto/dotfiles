@@ -127,9 +127,6 @@ export default function(pi: ExtensionAPI) {
 					const runningSubagents = Number(
 						subagentStatus.match(/(\d+) running/)?.[1] ?? 0,
 					);
-					const failedSubagents = Number(
-						subagentStatus.match(/(\d+) failed/)?.[1] ?? 0,
-					);
 
 					// Left: directory | branch | context gauge
 					const dirSection =
@@ -149,6 +146,13 @@ export default function(pi: ExtensionAPI) {
 						  theme.fg("muted", ` ${bgCount}`)
 						: "";
 
+					// Subagents indicator (only when ≥1 running)
+					const subagentSection = runningSubagents > 0
+						? theme.fg("dim", ` ${SEP} `) +
+						  theme.fg("warning", "󰚩") +
+						  theme.fg("muted", ` ${runningSubagents}`)
+						: "";
+
 					const left =
 						" " +
 						dirSection +
@@ -157,7 +161,8 @@ export default function(pi: ExtensionAPI) {
 							: "") +
 						theme.fg("dim", ` ${SEP} `) +
 						gauge +
-						bgSection;
+						bgSection +
+						subagentSection;
 
 					// Right: turn + tokens + cost | model | thinking
 					const turnLabel = isStreaming
@@ -198,27 +203,7 @@ export default function(pi: ExtensionAPI) {
 					const rightW = visibleWidth(right);
 
 					const pad = " ".repeat(Math.max(1, width - leftW - rightW));
-					const lines = [truncateToWidth(left + pad + right, width)];
-
-					if (runningSubagents > 0 || failedSubagents > 0) {
-						const indicators: string[] = [];
-						if (runningSubagents > 0) {
-							indicators.push(
-								theme.fg("warning", "󰚩") +
-									theme.fg("muted", ` ${runningSubagents}`),
-							);
-						}
-						if (failedSubagents > 0) {
-							indicators.push(
-								theme.fg("error", "󰅙") +
-									theme.fg("muted", ` ${failedSubagents}`),
-							);
-						}
-						const subagentLine = " " + indicators.join(theme.fg("dim", ` ${SEP} `));
-						lines.push(truncateToWidth(subagentLine, width));
-					}
-
-					return lines;
+					return [truncateToWidth(left + pad + right, width)];
 				},
 			};
 		});

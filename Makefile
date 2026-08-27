@@ -100,6 +100,7 @@ packages:
 	@echo "Installing packages..."
 ifeq ($(UNAME_S),Darwin)
 	@if [ -f $(PACKAGE_FILE) ]; then \
+		grep -E '^tap ' $(PACKAGE_FILE) | cut -d'"' -f2 | xargs -n1 brew trust; \
 		brew bundle --file=$(PACKAGE_FILE); \
 	else \
 		echo "$(PACKAGE_FILE) not found, skipping package installation"; \

@@ -34,6 +34,7 @@ npm
 elixir
 inotify-tools
 ripgrep
+rustup
 octave
 aws-cli
 ttf-nerd-fonts-symbols-mono

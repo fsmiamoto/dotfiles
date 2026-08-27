@@ -7,27 +7,83 @@ usage() {
 wt — git worktrees via herdr
 
 Usage:
+  wt                   Interactive: fuzzy-pick base branch, then name the new tree
   wt <branch> [base]   Create worktree for <branch> (new or existing) and focus it.
                        New branches start from [base] (default: current HEAD).
-  wt ls                List worktree workspaces
-  wt open <branch>     Open an existing worktree
-  wt rm                Remove a worktree checkout (see herdr worktree remove --help)
+  wt ls                List worktrees
+  wt open [branch]     Open an existing worktree (fuzzy-pick when omitted)
+  wt rm                Remove a worktree checkout (fuzzy-pick when omitted)
 EOF
+}
+
+summarize() {
+  jq -r '.result | "\(.worktree.branch) -> \(.worktree.path) (workspace #\(.workspace.number // .worktree.open_workspace_id // "?"))"'
+}
+
+pick_branch() { # $1: fzf prompt
+  git for-each-ref refs/heads refs/remotes --format='%(refname:short)' \
+    | sed 's|^origin/||' | grep -vx 'HEAD\|origin' | sort -u \
+    | fzf --height=40% --reverse --prompt="$1"
+}
+
+list_worktrees() {
+  herdr worktree list | jq -r '
+    .result.worktrees[]
+    | [ (.branch // "(detached)"),
+        (if .open_workspace_id then "open:\(.open_workspace_id)" else "-" end),
+        .path ]
+    | @tsv'
+}
+
+create() { # $1: branch, $2: base (optional)
+  local branch="$1" base="${2:-HEAD}"
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    herdr worktree create --branch "$branch" --focus | summarize
+  else
+    herdr worktree create --branch "$branch" --base "$base" --focus | summarize
+  fi
+}
+
+pick_worktree() { # prints full tsv row of selection: branch, ws, path
+  list_worktrees | fzf --height=40% --reverse --prompt="${1:-worktree> }" \
+    --delimiter=$'\t'
 }
 
 cmd="${1:-}"
 case "$cmd" in
-  "" | -h | --help) usage ;;
-  ls | list) herdr worktree list ;;
-  open) shift; herdr worktree open "$@" ;;
-  rm | remove) shift; herdr worktree remove "$@" ;;
-  *)
-    branch="$1"
-    base="${2:-HEAD}"
-    if git show-ref --verify --quiet "refs/heads/$branch"; then
-      herdr worktree create --branch "$branch" --focus
+  -h | --help) usage ;;
+  ls | list) list_worktrees | column -t -s$'\t' ;;
+  open)
+    shift
+    if [[ $# -eq 1 && "$1" != --* ]]; then
+      herdr worktree open --branch "$1" --focus | summarize
+    elif [[ $# -gt 0 ]]; then
+      herdr worktree open "$@" | summarize
     else
-      herdr worktree create --branch "$branch" --base "$base" --focus
+      row=$(pick_worktree "open> ") || exit 1
+      herdr worktree open --path "$(cut -f3 <<<"$row")" --focus | summarize
     fi
     ;;
+  rm | remove)
+    shift
+    if [[ $# -gt 0 ]]; then
+      herdr worktree remove "$@"
+    else
+      row=$(pick_worktree "remove> ") || exit 1
+      ws=$(cut -f2 <<<"$row")
+      if [[ "$ws" == open:* ]]; then
+        herdr worktree remove --workspace "${ws#open:}"
+      else
+        git worktree remove "$(cut -f3 <<<"$row")"
+      fi
+    fi
+    ;;
+  "" | new)
+    base=$(pick_branch "base branch> ")
+    [[ -z "$base" ]] && exit 1
+    read -r -p "new branch name: " branch
+    [[ -z "$branch" ]] && exit 1
+    create "$branch" "$base"
+    ;;
+  *) create "$1" "${2:-HEAD}" ;;
 esac

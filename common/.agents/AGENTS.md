@@ -3,6 +3,12 @@ The user has a dotfiles repo at ~/.dotfiles that controls most of the system con
 
 Agent skills are managed through the mansk CLI and have a manifest in the dotfiles.
 
+## Git worktrees
+When working in herdr, use the `wt` script instead of raw `git worktree` — raw worktrees don't get registered with herdr and won't show in its UI, even when placed under `~/.herdr/worktrees/`:
+
+- `wt <branch> [base]` — create worktree for branch (new branches start from base, default current HEAD)
+- `wt ls` / `wt open [branch]` / `wt rm`
+
 ## Git commits
 Before committing, check `git log` and match the repo's existing commit message conventions (e.g. conventional commits like `feat:`/`fix:`).
 

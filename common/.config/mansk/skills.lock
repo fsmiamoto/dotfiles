@@ -9,9 +9,10 @@
     {
       "source": "git@github.com:fsmiamoto/skills.git",
       "root": "skills",
-      "commit": "bd53b64d900dbd94cff8d00d25d68b8bbc31af8b",
+      "commit": "bcb493c8ffa144db4678a1ebd8211aada1c7a902",
       "members": [
         "delegate",
+        "grill",
         "implement",
         "playwright-cli",
         "pr-comments",

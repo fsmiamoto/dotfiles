@@ -2,7 +2,7 @@
   "schema": 1,
   "local": [],
   "git": {
-    "https://github.com/anthropics/claude-code.git": "005c5dade90c2c59c88d819d8723e7b579addb5e",
+    "https://github.com/anthropics/claude-code.git": "f1af9b1f4b1fd4c776135381606edada82ef638e",
     "https://github.com/mattpocock/skills.git": "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76"
   },
   "collections": [

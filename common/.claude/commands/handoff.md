@@ -1,5 +1,5 @@
 ---
-description: Hand off the current session to a new one in a tmux pane with a context summary
+description: Hand off the current session to a new one in a herdr (or tmux) pane with a context summary
 argument-hint: [optional steering context for the next session]
 ---
 # Handoff
@@ -36,7 +36,23 @@ Once the summary is final:
 
 1. Write the handoff summary to `/tmp/handoff-TIMESTAMP.md` (use the actual Unix timestamp), prefixed with: "You are picking up where a previous session left off. Here is the context:"
 
-2. Write a launcher script to `/tmp/handoff-launch-TIMESTAMP.sh`:
+2. Spawn the new session next to this one.
+
+**If running inside herdr** (`HERDR_ENV=1`):
+
+```sh
+herdr pane split --current --direction right --cwd "WORKING_DIR" --focus
+```
+
+Read the new pane ID from `.result.pane.pane_id`, then start Claude there with the summary as the initial prompt:
+
+```sh
+herdr agent start handoff-TIMESTAMP --kind claude --pane NEW_PANE_ID -- --dangerously-skip-permissions "$(cat /tmp/handoff-TIMESTAMP.md)"
+```
+
+If the current pane is narrow or tall (check `herdr pane layout --current` when unsure), split `down` instead of `right`.
+
+**Else, if running inside tmux** (`$TMUX` set): write a launcher script to `/tmp/handoff-launch-TIMESTAMP.sh`:
 
 ```sh
 #!/bin/sh
@@ -44,21 +60,19 @@ cd "WORKING_DIR"
 exec claude --dangerously-skip-permissions "$(cat /tmp/handoff-TIMESTAMP.md)"
 ```
 
-Replace `WORKING_DIR` with the current working directory and `TIMESTAMP` with the matching timestamp.
-
-3. Make the script executable: `chmod +x /tmp/handoff-launch-TIMESTAMP.sh`
-
-4. Open a vertical tmux split running the script:
+`chmod +x` it, then open a vertical split running it:
 
 ```sh
 tmux split-window -h /tmp/handoff-launch-TIMESTAMP.sh
 ```
 
-5. Confirm to the user that the new pane has been spawned. The current session stays open.
+**Otherwise**: write the launcher script anyway and tell the user its path so they can run it manually.
+
+3. Confirm to the user that the new pane has been spawned. The current session stays open.
 
 ## Gotchas
 
 - **Keep the summary short.** Assume you're handing it off to a competent engineer, no need to mention all the low level stuff.
 - **Do not ask questions you can answer yourself.** Read the conversation and git output first.
 - **Do not modify any project files**
-- **Do not close or disturb the current tmux pane.**
+- **Do not close or disturb the current pane.**

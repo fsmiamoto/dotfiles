@@ -1,5 +1,5 @@
 ---
-description: Hand off the current Pi session to a new tmux pane with a concise context summary
+description: Hand off the current Pi session to a new herdr (or tmux) pane with a concise context summary
 argument-hint: "[optional steering context for the next session]"
 ---
 # Handoff
@@ -39,7 +39,23 @@ Once the summary is final:
    You are picking up where a previous session left off. Here is the context:
    ```
 
-3. Write a launcher script to `/tmp/pi-handoff-launch-TIMESTAMP.sh`:
+3. Spawn the new session next to this one.
+
+   **If running inside herdr** (`HERDR_ENV=1`):
+
+   ```sh
+   herdr pane split --current --direction right --cwd "WORKING_DIR" --focus
+   ```
+
+   Read the new pane ID from `.result.pane.pane_id`, then start Pi there with the summary as the initial prompt:
+
+   ```sh
+   herdr agent start handoff-TIMESTAMP --kind pi --pane NEW_PANE_ID -- @/tmp/pi-handoff-TIMESTAMP.md
+   ```
+
+   If the current pane is narrow or tall (check `herdr pane layout --current` when unsure), split `down` instead of `right`.
+
+   **Else, if running inside tmux** (`$TMUX` set): write a launcher script to `/tmp/pi-handoff-launch-TIMESTAMP.sh`:
 
    ```sh
    #!/bin/sh
@@ -47,22 +63,19 @@ Once the summary is final:
    exec pi @/tmp/pi-handoff-TIMESTAMP.md
    ```
 
-   Replace `WORKING_DIR` and `TIMESTAMP` with the actual values.
-
-4. Make the script executable: `chmod +x /tmp/pi-handoff-launch-TIMESTAMP.sh`.
-5. If running inside tmux, open a vertical split running the script:
+   `chmod +x` it, then open a vertical split running it:
 
    ```sh
    tmux split-window -h /tmp/pi-handoff-launch-TIMESTAMP.sh
    ```
 
-   If not inside tmux, do not fail noisily; tell the user the launcher path so they can run it manually.
+   **Otherwise**: do not fail noisily; write the launcher script anyway and tell the user its path so they can run it manually.
 
-6. Confirm to the user that the new pane/session has been spawned. The current session stays open.
+4. Confirm to the user that the new pane/session has been spawned. The current session stays open.
 
 ## Gotchas
 
 - **Keep the summary short.** Assume you're handing it off to a competent engineer.
 - **Do not ask questions you can answer yourself.** Read the conversation and git output first.
 - **Do not modify project files.** Only write the temporary handoff files in `/tmp`.
-- **Do not close or disturb the current tmux pane.**
+- **Do not close or disturb the current pane.**

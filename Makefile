@@ -149,6 +149,10 @@ ifeq ($(UNAME_S),Darwin)
 	@defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 	@defaults write com.apple.Finder AppleShowAllFiles -bool true
 
+	@# Neutralize Cmd+M: remap Minimize to an unreachable chord (Ctrl+Opt+Shift+Cmd+M)
+	@defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Minimize" "@~^\$$m"
+	@defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Minimize All" "@~^\$$m"
+
 	@defaults write net.ichi2.anki NSAppSleepDisabled -bool true
 	@defaults write org.qt-project.Qt.QtWebEngineCore NSAppSleepDisabled -bool true
 

@@ -84,6 +84,7 @@ test("stub subagent completes and delivers a final result", async () => {
       manager.spawn("claude", task("Say hello to the tests")),
     );
     assert.equal(snap.status, "running");
+    assert.equal(manager.view.activeCount(), 1);
     assert.equal(snap.backend, "claude");
     assert.ok(snap.meta.sessionFilePath);
 
@@ -91,6 +92,7 @@ test("stub subagent completes and delivers a final result", async () => {
     const done = manager.view.get(snap.id);
     assert.ok(done);
     assert.equal(done.status, "done");
+    assert.equal(manager.view.activeCount(), 0);
     assert.match(
       done.finalText,
       /\[stub:claude\] completed: Say hello to the tests/,
@@ -264,6 +266,7 @@ test("send steers an idle subagent into another turn", async () => {
     assert.equal(afterFirst?.status, "done");
 
     await runTool(runtime, manager.send(snap.id, "Second turn"));
+    assert.equal(manager.view.activeCount(), 1);
     // The fresh run flips the status back to running...
     while (manager.view.get(snap.id)?.status !== "running") {
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -271,6 +274,7 @@ test("send steers an idle subagent into another turn", async () => {
     await runTool(runtime, manager.waitFor([snap.id]));
     const afterSecond = manager.view.get(snap.id);
     assert.equal(afterSecond?.status, "done");
+    assert.equal(manager.view.activeCount(), 0);
     assert.match(afterSecond?.finalText ?? "", /Second turn/);
   });
 });

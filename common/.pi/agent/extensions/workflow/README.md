@@ -1,7 +1,6 @@
 # /workflow — dynamic, task-specific state machines
 
-Unlike `/goal` (a fixed Planner→Builder→Verifier→Review→Gate pipeline), `/workflow`
-generates a **state machine tailored to each task**: a planner sub-agent designs a
+`/workflow` generates a **state machine tailored to each task**: a planner sub-agent designs a
 graph of nodes for the objective, you approve it from an HTML visualization, and a
 generic engine executes it. Graphs are saved as JSON and reusable.
 

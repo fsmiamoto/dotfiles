@@ -140,6 +140,9 @@ function resolveChildProjectTrust(options: {
 export default function (pi: ExtensionAPI) {
   let runtime: SubagentRuntime | undefined;
   let managerPromise: Promise<SubagentManagerShape> | undefined;
+  let currentManager: SubagentManagerShape | undefined;
+  let resultVersion = 0;
+  let previousActive = 0;
   let sessionContext: ExtensionContext | undefined;
   let ui: ExtensionUIContext | undefined;
   let unsubStatus: (() => void) | undefined;
@@ -152,9 +155,19 @@ export default function (pi: ExtensionAPI) {
     managerPromise ??= getRuntime()
       .runPromise(SubagentManager)
       .then((manager) => {
+        currentManager = manager;
         manager.view.setOnSettled(onSettled);
         unsubStatus?.();
-        unsubStatus = manager.view.subscribe(() => updateStatus(manager));
+        unsubStatus = manager.view.subscribe(() => {
+          updateStatus(manager);
+          const active = manager.view.activeCount();
+          if (active !== previousActive) {
+            previousActive = active;
+            // Manager notifications precede onSettled. Let result delivery
+            // record its pending reports before a handoff listener queries.
+            queueMicrotask(() => pi.events.emit("subagents:handoff-changed", {}));
+          }
+        });
         updateStatus(manager);
         return manager;
       });
@@ -226,10 +239,13 @@ export default function (pi: ExtensionAPI) {
     if (!sessionContext) return;
     if (snap.origin === "btw") {
       deliverBtwResult({ ...snap, meta: { ...snap.meta } });
+      pi.events.emit("subagents:handoff-changed", {});
       return;
     }
+    resultVersion++;
     if (consumed) {
       resultDelivery.consume([snap.id]);
+      pi.events.emit("subagents:handoff-changed", {});
       return;
     }
     // Keep the result retractable while the parent is working. A later
@@ -238,6 +254,7 @@ export default function (pi: ExtensionAPI) {
     // restarted before the deferred result flushes.
     resultDelivery.defer({ ...snap, meta: { ...snap.meta } });
     if (sessionContext?.isIdle()) flushResults();
+    pi.events.emit("subagents:handoff-changed", {});
   };
 
   pi.on("session_start", (_event, ctx) => {
@@ -246,6 +263,28 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.on("agent_settled", flushResults);
+  pi.on("message_start", (event) => {
+    if (event.message.role === "custom" && event.message.customType === "subagent-result") {
+      const details = event.message.details;
+      if (details && typeof details === "object" && "id" in details && typeof details.id === "string") {
+        resultDelivery.delivered(details.id);
+      }
+    }
+  });
+
+  // A fresh parent session disposes this runtime and all child work. /go
+  // queries synchronously before preparing a handoff and before replacement.
+  pi.events.on("subagents:handoff-query", (event: unknown) => {
+    const request = event as { reply?: (state: {
+      active: number; pendingResults: number; resultVersion: number;
+    }) => void } | undefined;
+    if (typeof request?.reply !== "function") return;
+    request.reply({
+      active: currentManager?.view.activeCount() ?? (managerPromise ? 1 : 0),
+      pendingResults: resultDelivery.pendingCount(),
+      resultVersion,
+    });
+  });
 
   pi.on("session_shutdown", async () => {
     sessionContext = undefined;
@@ -257,6 +296,9 @@ export default function (pi: ExtensionAPI) {
     const closing = runtime;
     runtime = undefined;
     managerPromise = undefined;
+    currentManager = undefined;
+    resultVersion = 0;
+    previousActive = 0;
     // Disposing the runtime runs the manager finalizer, which tears down all
     // subagent scopes (and, later, their real child processes).
     await closing?.dispose();

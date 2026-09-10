@@ -111,6 +111,8 @@ export interface SubagentReadModel {
   list(): ReadonlyArray<SubagentSnapshot>;
   get(id: string): SubagentSnapshot | undefined;
   size(): number;
+  /** Includes in-flight spawn/restart reservations, before snapshots update. */
+  activeCount(): number;
   /** Any-change notification (footer status, dashboard). */
   subscribe(listener: () => void): () => void;
   /** Per-subagent notification (takeover view). */
@@ -682,6 +684,7 @@ const makeManager = Effect.gen(function* () {
     list: () => [...entries.values()].map((entry) => entry.snapshot),
     get: (id) => entries.get(id)?.snapshot,
     size: () => entries.size,
+    activeCount: () => runningCount() + reserved,
     subscribe: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);

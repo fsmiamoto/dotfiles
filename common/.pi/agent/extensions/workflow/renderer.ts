@@ -1,7 +1,7 @@
 /**
  * Custom message renderer for /workflow stream events — clean inline colored
  * lines (cyan node headers, magenta tool lines, green/yellow/red outcomes,
- * dim info, plain assistant prose). Mirrors the /goal renderer.
+ * dim info, plain assistant prose).
  */
 
 import { Container, Spacer, Text } from "@earendil-works/pi-tui";

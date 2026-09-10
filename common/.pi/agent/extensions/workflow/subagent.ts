@@ -1,6 +1,6 @@
 /**
  * Shared helper for running a fresh sub-agent session (planner pass, agent
- * nodes, outcome classifier). Mirrors the /goal extension's session setup:
+ * nodes, outcome classifier). Uses an
  * in-memory session manager, stripped resource loader, system prompt override.
  */
 

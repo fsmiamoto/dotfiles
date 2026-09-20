@@ -14,6 +14,9 @@ Before committing, check `git log` and match the repo's existing commit message 
 
 Never push a commit without explicit permission from the user.
 
+## PR descriptions
+Short and sweet — people skim. Follow the repo's PR template if one exists.
+
 ## Obsidian vault
 The user has an Obsidian vault at `~/Documents/Vault` with personal notes, work notes (e.g. `sakanaai/` for current job), reports, and reference material.
 
@@ -62,6 +65,14 @@ For coding tasks where you have a detailed spec as well, use them and use your i
 it delivered the right thing.
 
 After spawning a subagent, wait for its automatic report. Do not peek, poll, or run sleep commands to wait for it. Only inspect a subagent if it has run unusually long and there is concrete reason to suspect it is stuck; steer it only when redirection is necessary.
+
+### Jira, Figma and Google Drive access
+
+Pi has no Jira/Figma/Google Drive MCP access — Claude Code does (MCPs + permissions configured there). To read/write Jira tickets or Google Drive docs, delegate Claude Code as subagent or call the CLI.
+
+Jira issues usully look like MAR-1234. You don't have access to any Atlassian CLI.
+
+Give it a precise, self-contained prompt to get what you need.
 
 ### Subagent model selection
 

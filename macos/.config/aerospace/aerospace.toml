@@ -133,7 +133,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-n = "workspace Notes"
     alt-w = 'workspace WhatsApp'
     alt-s = 'workspace Slack'
-    alt-c = 'workspace Cal'
+    alt-c = 'workspace ChatGPT'
     alt-g = 'workspace GitHub'
     alt-i = 'workspace Jira'
 
@@ -150,7 +150,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-m = 'move-node-to-workspace Mail'
     alt-shift-n = 'move-node-to-workspace Notes'
     alt-shift-w = 'move-node-to-workspace WhatsApp'
-    alt-shift-c = 'move-node-to-workspace Cal'
+    alt-shift-c = 'move-node-to-workspace ChatGPT'
     alt-shift-g = 'move-node-to-workspace GitHub'
     alt-shift-i = 'move-node-to-workspace Jira'
 
@@ -198,7 +198,11 @@ automatically-unhide-macos-hidden-apps = false
 
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.kjbdgfilnfhdoflbpgamdcdgpehopbep' # Google Calendar PWA
-    run = 'move-node-to-workspace Cal'
+    run = 'move-node-to-workspace Mail'
+
+[[on-window-detected]]
+    if.app-id = 'com.openai.codex' # ChatGPT desktop app
+    run = 'move-node-to-workspace ChatGPT'
 
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome.app.mjoklplbddabcmpepnokjaffbmgbkkgg' # GitHub PWA

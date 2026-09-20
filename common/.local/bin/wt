@@ -12,7 +12,7 @@ Usage:
                        New branches start from [base] (default: current HEAD).
   wt ls                List worktrees
   wt open [branch]     Open an existing worktree (fuzzy-pick when omitted)
-  wt rm                Remove a worktree checkout (fuzzy-pick when omitted)
+  wt rm                Remove current worktree (with confirm), else fuzzy-pick
 EOF
 }
 
@@ -68,14 +68,26 @@ case "$cmd" in
     shift
     if [[ $# -gt 0 ]]; then
       herdr worktree remove "$@"
+      exit
+    fi
+    # Inside a registered worktree? Offer to remove it.
+    top=$(git rev-parse --show-toplevel 2>/dev/null || true)
+    row=""
+    if [[ -n "$top" ]]; then
+      row=$(list_worktrees | awk -F'\t' -v p="$top" '$3 == p' | head -n1)
+    fi
+    if [[ -n "$row" ]]; then
+      read -r -p "remove current worktree $(cut -f1 <<<"$row") ($top)? [y/N] " ans
+      [[ "$ans" == [yY]* ]] || exit 1
+      cd "$(git rev-parse --git-common-dir)/.."
     else
       row=$(pick_worktree "remove> ") || exit 1
-      ws=$(cut -f2 <<<"$row")
-      if [[ "$ws" == open:* ]]; then
-        herdr worktree remove --workspace "${ws#open:}"
-      else
-        git worktree remove "$(cut -f3 <<<"$row")"
-      fi
+    fi
+    ws=$(cut -f2 <<<"$row")
+    if [[ "$ws" == open:* ]]; then
+      herdr worktree remove --workspace "${ws#open:}"
+    else
+      git worktree remove "$(cut -f3 <<<"$row")"
     fi
     ;;
   "" | new)

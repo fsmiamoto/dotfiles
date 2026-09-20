@@ -2,20 +2,22 @@
   "schema": 1,
   "local": [],
   "git": {
-    "https://github.com/anthropics/claude-code.git": "f1af9b1f4b1fd4c776135381606edada82ef638e",
-    "https://github.com/mattpocock/skills.git": "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76"
+    "https://github.com/DietrichGebert/ponytail.git": "356918eba965ee1eac64bd3a7f0dd02108350de5",
+    "https://github.com/anthropics/claude-code.git": "ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558",
+    "https://github.com/mattpocock/skills.git": "3cca18b368ae95cdbdebbff572ccafa662551015"
   },
   "collections": [
     {
       "source": "git@github.com:fsmiamoto/skills.git",
       "root": "skills",
-      "commit": "bcb493c8ffa144db4678a1ebd8211aada1c7a902",
+      "commit": "322a34c0080893ca0d31154f75dbecd7f7badc94",
       "members": [
         "delegate",
         "grill",
         "implement",
         "playwright-cli",
         "pr-comments",
+        "record-demo",
         "tty-test"
       ]
     }

@@ -43,6 +43,11 @@ source = "https://github.com/anthropics/claude-code.git"
 selector = "refs/heads/main"
 path = "plugins/frontend-design/skills/frontend-design"
 
+[[skills]]
+source = "https://github.com/DietrichGebert/ponytail.git"
+selector = "main"
+path = "skills/ponytail"
+
 # Every direct skill under skills/ in the private personal repository.
 [[collections]]
 source = "git@github.com:fsmiamoto/skills.git"

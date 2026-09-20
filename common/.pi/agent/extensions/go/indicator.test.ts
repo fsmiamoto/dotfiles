@@ -17,7 +17,7 @@ const state: GoState = { runId: "test", status: "running", steering: "Build a us
 const render = (patch: Partial<GoState> = {}, plan = "", width = 100) => stripVTControlCharacters(renderIndicator({ ...state, ...patch }, plan, width, theme));
 
 test("every phase names its state and gives the relevant next action", () => {
-	for (const [status, name, hint] of [["planning", "planning", "esc pause"], ["running", "running", "esc pause"], ["reviewing", "reviewing", "esc pause"], ["paused", "paused", "/go resume"], ["blocked", "blocked", "/go status"], ["done", "done", "ready to test"]] as const) {
+	for (const [status, name, hint] of [["planning", "planning", "esc pause"], ["running", "running", "esc pause"], ["reviewing", "reviewing", "esc pause"], ["paused", "paused", "/go resume"], ["blocked", "blocked", "/go resume"], ["done", "done", "ready to test"]] as const) {
 		const line = render({ status });
 		assert.ok(line.startsWith("▎ go ") && line.includes(name));
 		assert.ok(line.endsWith(hint));

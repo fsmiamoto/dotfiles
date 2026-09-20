@@ -21,6 +21,8 @@ export interface GoState {
 	resets: number;
 	journalLinesAtLastReset: number;
 	reviewRounds: number;
+	/** Completed review count when the user last resumed a blocked run. */
+	reviewRoundsAtResume?: number;
 	budget?: Budget | null;
 	tokensUsed: number;
 	stallResets: number;
@@ -41,6 +43,8 @@ export interface GoState {
 	reviewAttemptId?: string;
 	reviewPassed?: boolean;
 	detached?: boolean;
+	toolsBeforeGo?: string[];
+	toolsRestricted?: boolean;
 }
 export const DEFAULT_CONFIG: GoConfig = {
 	resetThresholdTokens: 100_000, maxReviewRounds: 2, maxStallResets: 2,

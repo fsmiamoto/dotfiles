@@ -59,6 +59,14 @@ try {
   tmux("resize-window", "-t", pane, "-x", "52", "-y", "30");
   await until(() => /go.*paused/i.test(capture()), "paused marker survives reload at narrow width");
   writeFileSync(join(cwd, "paused-narrow.txt"), capture());
+  send("/go stop");
+  await until(() => readState(cwd, sessionFile)?.status === "blocked" && /go.*blocked/i.test(capture()), "blocked marker visible");
+  assert.ok(capture().includes("/go resume"), "blocked marker offers recovery command");
+  send("/go resume");
+  await until(() => readState(cwd, sessionFile)?.status === "planning" && /go.*planning/i.test(capture()), "native command resumes blocked run");
+  assert.equal(readState(cwd, sessionFile)?.runId, first.runId, "blocked resume retains run identity");
+  tmux("send-keys", "-t", pane, "Escape");
+  await until(() => readState(cwd, sessionFile)?.status === "paused", "resumed worker pauses normally");
   send("/go reset");
   await until(() => capture().includes("/go reset. Run files preserved"), "reset completes without another session");
   assert.equal(readState(cwd, sessionFile), undefined);
@@ -72,7 +80,7 @@ try {
   assert.equal(readFileSync(goPath(cwd, "state.json"), "utf8"), legacy);
   assert.equal(readFileSync(goPath(cwd, "PLAN.md"), "utf8"), "Keep the old plan intact.\n");
   writeFileSync(join(cwd, "fresh-paused.txt"), capture());
-  console.log(JSON.stringify({ result: "PASS", cwd, checks: ["foreign paused run does not block", "visible scoped marker", "native Esc", "native reload", "52-column marker", "reset clears marker and archives", "fresh run after reset", "legacy files untouched"] }, null, 2));
+  console.log(JSON.stringify({ result: "PASS", cwd, checks: ["foreign paused run does not block", "visible scoped marker", "native Esc", "native reload", "52-column marker", "blocked marker and native same-run resume", "reset clears marker and archives", "fresh run after reset", "legacy files untouched"] }, null, 2));
 } finally {
   if (started) tmux("kill-session", "-t", pane);
   console.log(`TUI UAT artifacts: ${cwd}`);

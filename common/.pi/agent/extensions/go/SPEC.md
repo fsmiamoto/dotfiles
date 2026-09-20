@@ -39,7 +39,7 @@ Each session selects only its own run. Handoffs transfer ownership to the replac
 **Tools** (registered dynamically for the owning active run, deactivated on terminal states; `promptGuidelines` name the tool explicitly)
 - `go_launch()` — validates PLAN.md + HANDOFF.md exist, sets `running` and persists a pending launch; `agent_settled` dispatches `/go-reset` after the complete tool batch.
 - `go_done()` — sets `reviewing`, triggers reviewer.
-- `go_blocked(reason)` — sets `blocked`, notifies, stops loop.
+- `go_blocked(reason)` — sets `blocked`, notifies, stops loop. After clarifying, `/go resume` continues the same run; planning resumes planning, other blocked phases resume worker execution. Review retry allowance restarts from the current cumulative round count; budgets and prior evidence remain intact.
 
 **Events**
 - `session_start` — read `state.json`; if `sessionFile` matches current session and status is `running`, the loop is armed. Other Pi sessions in the same cwd are ignored (no hijack).
@@ -100,9 +100,9 @@ Footguns (docs §"Session replacement lifecycle"): extension is re-instantiated 
 
 ## 7. Interactions with existing setup
 
-- `handoff-reminder.ts` also fires at 100k → must no-op when the current session's scoped run says `running` or `reviewing`.
+- `handoff-reminder.ts` also fires at 100k → must no-op while any scoped run is attached to the current session, including planning, paused, blocked, and done. `/go reset` releases ownership.
 - Global `compaction.enabled=false` already — good; /go never relies on built-in compaction.
-- `pi-context` unaffected; agent may still checkpoint/compact within a segment.
+- `/go` hides redundant context/recall tools while active; running/reviewing also hide interactive feedback/question/review tools. Other originally enabled tools remain. Phase-specific goal controls and the pre-run tool selection persist through handoffs/reload; pause/terminal/reset restore the normal selection.
 
 ## 8. Non-goals
 

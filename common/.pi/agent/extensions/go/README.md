@@ -15,9 +15,14 @@ the next action. Paused/blocked runs show their reason; completed runs show
 the plan title. It adapts to narrow terminals and clears in unrelated sessions.
 
 - `/go pause` or **Esc** during work pauses; `/go resume` steers the owning session at the next tool boundary. Esc in an editor popup/dialog closes that UI without pausing the run.
-- `/go status` shows state; `/go stop` ends the run as blocked.
+- If blocked, give your clarification, then `/go resume` continues the same run, plan, journal, and budget. Plain replies do not restart the loop. Failed-review runs return to the worker for repairs with a fresh bounded review allowance; cumulative review history is retained.
+- `/go status` shows state; `/go stop` blocks the run until you resume or reset it.
 - Runs are scoped to sessions. Other sessions in the same project can start their own `/go`. Automatic handoffs keep the same run directory.
 - `/go reset` archives this session's run and clears its marker. Then `/go [steering]` starts fresh. Plans, journals, and handoffs stay on disk; reset waits for existing subagent work/results to finish.
+- While active, `/go` hides `context_checkpoint`, `context_timeline`, `context_compact`, and `recall`; its scoped journal and handoff own run memory/context. Running/reviewing also hide `request_feedback`, `request_code_review`, and `ask_user_question`; genuine decisions use `go_blocked`. Planning keeps those interactive tools for alignment.
+- Only relevant `/go` controls are exposed: launch/block during planning, done/block during work, none on the waiting worker during review. File/shell, web, background-process, subagent, and project-specific tools remain available if originally enabled. The independent reviewer still has only read/search tools.
+- Pause, completion, blocking, and reset restore your previous tool selection, including after reload or handoff. Tools you had disabled stay disabled.
+- The generic 100k handoff reminder stays silent while a run is attached to this session, including planning, pauses and completion. `/go reset` returns context reminders to normal; other sessions are unaffected.
 - Type normally while working to steer the current task.
 - `/go --tokens 2M` or `/go --minutes 90` sets an optional run budget.
 

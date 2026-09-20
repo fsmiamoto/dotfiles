@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const cwd = dirname(fileURLToPath(import.meta.url));
 const suites = [
   ["--test", ...readdirSync(cwd).filter(file => file.endsWith(".test.ts")).sort()],
-  ["scoping.uat.ts"], ["uat.ts"], ["subagents.uat.ts"], ["tui.uat.ts"],
+  ["scoping.uat.ts"], ["tools.uat.ts"], ["uat.ts"], ["subagents.uat.ts"], ["tui.uat.ts"],
 ];
 for (const args of suites) {
   console.log(`\n▶ node ${args.join(" ")}`);

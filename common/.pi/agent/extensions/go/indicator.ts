@@ -42,7 +42,7 @@ export function renderIndicator(state: GoState, plan: string, width: number, the
 		handoff: { icon: "↻", name: "handing off", color: "accent", hint: "esc pause" },
 		reviewing: { icon: "◎", name: "reviewing", color: "accent", hint: "esc pause" },
 		paused: { icon: "Ⅱ", name: "paused", color: "warning", hint: "/go resume" },
-		blocked: { icon: "!", name: "blocked", color: "error", hint: "/go status" },
+		blocked: { icon: "!", name: "blocked", color: "error", hint: "/go resume" },
 		done: { icon: "✓", name: "done", color: "success", hint: "ready to test" },
 	};
 	const { icon, name, color, hint } = phases[phase];

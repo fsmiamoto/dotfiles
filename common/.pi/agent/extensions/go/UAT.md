@@ -1,3 +1,51 @@
+# Resume blocked runs — 2026-09-11
+
+PASS: 48 unit tests + all five acceptance suites via `node common/.pi/agent/extensions/go/check.ts`.
+
+Four new transition checks first failed against the old paused-only resume guard.
+`/go resume` now accepts attached blocked runs, retaining run ID, owner, start time,
+token usage, budgets, reset count and existing PLAN/HANDOFF/JOURNAL. The prompt
+includes the prior blocker and asks the worker to use the user's latest clarification.
+Plain clarification still does not automatically restart the loop. Reset/detached
+runs remain non-resumable, and exhausted budgets still require an increased total.
+
+Review-limit blockers return to the worker for repairs, with a fresh bounded review
+allowance while cumulative review history remains intact. A regression confirms
+the renewed allowance still blocks after its limit. The real SDK UAT covers both
+worker `go_blocked` and two failed reviews, followed by clarification and same-run
+resume to completion (review count 2 → 3). Native Pi TUI verifies the blocked
+marker advertises `/go resume` and the command preserves the same run.
+
+SDK evidence: `/var/folders/xx/nlvm2q6968l0vhhzcmqpltg80000gp/T/pi-go-uat-LGLodG`
+(2 context resets, 10 extension instances).
+TTY evidence: `/var/folders/xx/nlvm2q6968l0vhhzcmqpltg80000gp/T/pi-go-scoped-tui-UCXOhK`.
+Strict runtime/UAT TypeScript and `git diff --check` passed.
+
+---
+
+# Tool policy and generic handoff reminder — 2026-09-10
+
+PASS: 43 unit tests + five real-runtime acceptance suites via `node common/.pi/agent/extensions/go/check.ts`.
+
+The generic reminder's guard previously suppressed only running/reviewing.
+Tests reproduced warnings at >100k in planning, paused, blocked and completed
+attached runs. The guard now respects session ownership until `/go reset`.
+
+`tools.uat.ts` loads the real /go and handoff-reminder extensions in both orders
+with an offline provider. It inspects tool schemas received by the model in
+planning/running/reviewing, confirms core/web/background/subagent/custom tools
+survive, and verifies restoration on pause/done/blocked/reset. Originally disabled
+tools stay disabled through reload and fresh-session launch. The independent
+reviewer retains only read/search tools. The actual 100001-token reminder is
+suppressed for attached runs and delivered again after reset.
+
+Latest focused evidence (19 provider requests per extension order):
+`/var/folders/xx/nlvm2q6968l0vhhzcmqpltg80000gp/T/pi-go-tools-uat-b9s1hz`.
+The full runner also passed session isolation, worker/reviewer lifecycle,
+real-child handoff and native terminal acceptance suites.
+
+---
+
 # Session scoping regression — 2026-09-10
 
 PASS: 35 unit tests plus four real-runtime acceptance suites on Pi 0.85.1 / Node 26.8.1.

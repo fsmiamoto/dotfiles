@@ -136,6 +136,48 @@ try {
 	assert.equal(state().status, "blocked", JSON.stringify(state()));
 	assert.equal(state().reviewRounds, 2);
 	assert.ok(!runtime.session.getActiveToolNames().includes("go_done"));
+	// A clarification is ordinary conversation; explicit resume reopens the same run.
+	async function resumeBlocked(clarification: string, expectedReviews: number) {
+		await until(() => runtime.session.isIdle, "blocked worker and native continuation settle before clarification");
+		const blocked = structuredClone(state());
+		const oldJournal = readFileSync(runPath("JOURNAL.md"), "utf8");
+		const oldPlan = readFileSync(runPath("PLAN.md"), "utf8");
+		const oldHandoff = readFileSync(runPath("HANDOFF.md"), "utf8");
+		await runtime.session.prompt(clarification);
+		assert.equal(state().status, "blocked", "Plain clarification cannot silently resume a blocked run");
+		const beforeResume = structuredClone(state());
+		const requestCount = trace().filter(row => row.event === "request").length;
+		await runtime.session.prompt("/go resume");
+		await until(() => state().status === "done" || state().status === "blocked", "blocked run resumes and completes");
+		assert.equal(state().status, "done", JSON.stringify(state()));
+		const resumed = trace().filter(row => row.event === "request").slice(requestCount).find(row => row.model === "go-uat-worker");
+		assert.ok(resumed, "Resume starts the worker to address the blocker before review");
+		assert.equal(resumed.state.status, "running");
+		for (const key of ["runId", "sessionFile", "startedAt", "tokensUsed", "resets", "reviewRounds"] as const) {
+			assert.equal(resumed.state[key], beforeResume[key], `Resume preserves ${key}`);
+		}
+		assert.ok(resumed.tools.includes("go_done") && resumed.tools.includes("go_blocked"), "Worker controls restored on resume");
+		assert.ok(resumed.userTexts.some((text: string) => text.includes(clarification)), "Worker context retains the user's clarification");
+		assert.ok(resumed.text.includes(blocked.reason!), "Resume prompt explains the previous blocker");
+		assert.ok(resumed.text.includes(`.pi/go/runs/${blocked.runId}/JOURNAL.md`), "Resume reads the same scoped journal");
+		assert.equal(state().runId, blocked.runId);
+		assert.equal(state().sessionFile, blocked.sessionFile);
+		assert.equal(state().startedAt, blocked.startedAt);
+		assert.equal(state().resets, blocked.resets);
+		assert.equal(state().reviewRounds, expectedReviews, "Review audit count remains cumulative after resuming");
+		assert.equal(readFileSync(runPath("PLAN.md"), "utf8"), oldPlan);
+		assert.equal(readFileSync(runPath("HANDOFF.md"), "utf8"), oldHandoff);
+		assert.ok(readFileSync(runPath("JOURNAL.md"), "utf8").startsWith(oldJournal), "Resume preserves all prior journal evidence");
+		assert.ok(!runtime.session.getActiveToolNames().includes("go_done"), "Completed resumed run hides controls again");
+	}
+	await resumeBlocked("UAT clarification: the review findings are resolved; verify the existing artifacts.", 3);
+	// Exercise a genuine worker blocker, independently of the review-limit path.
+	writeFileSync(join(cwd, "uat-block-once"), "Need the user to confirm the existing task artifacts are in scope.");
+	await runtime.session.prompt("/go Verify a worker blocker can continue after clarification.");
+	await until(() => state().status === "blocked", "worker go_blocked stops the run");
+	assert.match(state().reason!, /confirm the existing task artifacts/);
+	assert.equal(state().reviewRounds, 0);
+	await resumeBlocked("UAT clarification: the existing three task artifacts are in scope; continue.", 1);
 	// Pause an actual independent reviewer request and resume a new attempt.
 	writeFileSync(join(cwd, "uat-review-hold"), "hold");
 	await runtime.session.prompt("/go Verify paused independent reviews cancel and resume.");
@@ -172,7 +214,7 @@ try {
 	assert.equal(archivedReview.reviewRounds, 0, "Cancelled reviewer cannot update archived state");
 	assert.equal(readFileSync(goPath(cwd, "PLAN.md", resetReview.runId), "utf8"), preservedPlan);
 	assert.equal(errors.length, 0, JSON.stringify(errors));
-	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "review fail/fix/pass", "two review failures block", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
+	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "review fail/fix/pass", "two review failures block", "blocked clarification then resume preserves identity, files, tools and cumulative reviews", "worker go_blocked then same-run resume", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
 } finally {
 	await runtime?.dispose();
 	console.log(`UAT artifacts: ${cwd}`);

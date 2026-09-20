@@ -46,8 +46,8 @@ function harness(cwd: string, sessionFile = '/session-a') {
     children: (value) => { children = value; }, input: (data) => terminalInput?.(data), bus,
     event: async (name, event = {}) => handlers.has(name) && await handlers.get(name)(event, ctx),
     command: async args => commands.get('go').handler(args, ctx),
-    tool: async name => tools.get(name).execute('call', {}, undefined, undefined, ctx),
-    active: () => activeTools,
+    tool: async (name, params = {}) => tools.get(name).execute('call', params, undefined, undefined, ctx),
+    active: () => activeTools, setActive: (names: string[]) => { activeTools = names; },
   };
 }
 async function fixture(fn: (h: ReturnType<typeof harness>, cwd: string) => Promise<void>) {
@@ -290,4 +290,102 @@ test('provider pauses retain the concrete error instead of a generic unexplained
   await h.event('agent_settled');
   assert.equal(readState(cwd, "/session-a")?.status, 'paused');
   assert.match(readState(cwd, "/session-a")?.reason ?? '', /WebSocket error/);
+}));
+
+
+test('go trims overlapping tools by phase and restores the original selection through pause, reload and reset', async () => fixture(async (h, cwd) => {
+  const work = ['read', 'bash', 'edit', 'write', 'web_search', 'bg_start', 'subagent_spawn', 'subagent_wait', 'custom_project_tool'];
+  const context = ['context_checkpoint', 'context_timeline', 'context_compact', 'recall'];
+  const interactive = ['request_feedback', 'request_code_review', 'ask_user_question'];
+  const original = [...work, ...context, ...interactive];
+  h.setActive(original);
+  await h.command('task');
+  assert.deepEqual(h.active(), [...work, ...interactive, 'go_launch', 'go_blocked']);
+  const state = readState(cwd, '/session-a')!;
+  writeFileSync(goPath(cwd, 'PLAN.md', state.runId), 'Task plan');
+  writeFileSync(goPath(cwd, 'HANDOFF.md', state.runId), 'Starting state');
+  await h.tool('go_launch');
+  assert.deepEqual(h.active(), [...work, 'go_done', 'go_blocked']);
+  const running = readState(cwd, '/session-a')!;
+  running.resetPending = false; saveState(cwd, running);
+  await h.tool('go_done');
+  assert.deepEqual(h.active(), work, 'reviewing worker exposes no goal lifecycle tools');
+  await h.command('pause');
+  assert.deepEqual(h.active(), original);
+  // User selection while paused becomes the next run segment's baseline.
+  const selected = ['read', 'bash', 'web_search', 'context_compact'];
+  h.setActive(selected);
+  await h.event('before_agent_start', { systemPrompt: 'base' });
+  const paused = readState(cwd, '/session-a')!;
+  paused.resumeStatus = 'running'; saveState(cwd, paused);
+  await h.command('resume');
+  assert.deepEqual(h.active(), ['read', 'bash', 'web_search', 'go_done', 'go_blocked']);
+  const reloaded = harness(cwd);
+  reloaded.setActive(original);
+  await reloaded.event('session_start');
+  assert.deepEqual(reloaded.active(), h.active(), 'reload retains original disabled tools');
+  await reloaded.command('reset');
+  assert.deepEqual(reloaded.active(), selected, 'reset restores full pre-resume selection');
+  assert.equal(readState(cwd, '/session-a'), undefined);
+  await reloaded.event('session_shutdown');
+}));
+
+
+for (const phase of ['planning', 'running', 'reviewing'] as const) {
+  test(`blocked ${phase} resumes the same run with history and budgets intact`, async () => fixture(async (h, cwd) => {
+    await h.command('--tokens 10000 task');
+    const state = readState(cwd, '/session-a')!;
+    Object.assign(state, { status: phase, tokensUsed: 123, resets: 2, reviewRounds: phase === 'reviewing' ? 2 : 0 });
+    saveState(cwd, state);
+    for (const name of ['PLAN.md', 'HANDOFF.md', 'JOURNAL.md']) writeFileSync(goPath(cwd, name, state.runId), `Original ${name}\n`);
+    await h.tool('go_blocked', { reason: 'Need user decision' });
+    await h.event('input', { source: 'interactive', text: 'Use option B' });
+    assert.equal(readState(cwd, '/session-a')!.status, 'blocked', 'plain clarification does not auto-start');
+    const journal = readFileSync(goPath(cwd, 'JOURNAL.md', state.runId), 'utf8');
+    const foreign = harness(cwd, '/session-b'); await foreign.command('resume');
+    assert.equal(readState(cwd, '/session-a')!.status, 'blocked');
+    await h.command('resume');
+    const resumed = readState(cwd, '/session-a')!;
+    assert.equal(resumed.status, phase === 'planning' ? 'planning' : 'running');
+    for (const key of ['runId', 'sessionFile', 'startedAt', 'tokensUsed', 'resets', 'reviewRounds']) assert.equal(resumed[key], state[key]);
+    assert.deepEqual(resumed.budget, state.budget);
+    assert.equal(resumed.reason, undefined);
+    assert.equal(resumed.reviewRoundsAtResume, state.reviewRounds);
+    assert.equal(readFileSync(goPath(cwd, 'PLAN.md', state.runId), 'utf8'), 'Original PLAN.md\n');
+    assert.equal(readFileSync(goPath(cwd, 'HANDOFF.md', state.runId), 'utf8'), 'Original HANDOFF.md\n');
+    assert.ok(readFileSync(goPath(cwd, 'JOURNAL.md', state.runId), 'utf8').startsWith(journal));
+    assert.match(h.messages.at(-1)[0], /latest clarification/);
+    assert.match(h.messages.at(-1)[0], /Need user decision/);
+    assert.equal(h.messages.at(-1)[1].deliverAs, 'steer');
+    assert.ok(h.active().includes(phase === 'planning' ? 'go_launch' : 'go_done'));
+  }));
+}
+
+test('blocked resume still enforces the existing budget; reset runs cannot resume', async () => fixture(async (h, cwd) => {
+  await h.command('--tokens 100 task');
+  const state = readState(cwd, '/session-a')!;
+  Object.assign(state, { status: 'blocked', resumeStatus: 'running', tokensUsed: 100 }); saveState(cwd, state);
+  await h.command('resume');
+  assert.equal(readState(cwd, '/session-a')!.status, 'blocked');
+  await h.command('resume --tokens 200');
+  assert.equal(readState(cwd, '/session-a')!.status, 'running');
+  assert.equal(readState(cwd, '/session-a')!.tokensUsed, 100);
+  await h.command('reset'); await h.command('resume');
+  assert.equal(readState(cwd, '/session-a'), undefined);
+}));
+
+
+test('resuming a blocked review grants a bounded allowance without erasing cumulative history', async () => fixture(async (h, cwd) => {
+  await h.command('task');
+  const state = readState(cwd, '/session-a')!;
+  Object.assign(state, { status: 'blocked', resumeStatus: 'reviewing', reviewRounds: 2 }); saveState(cwd, state);
+  await h.command('resume');
+  const resumed = readState(cwd, '/session-a')!;
+  assert.equal(resumed.status, 'running');
+  assert.equal(resumed.reviewRoundsAtResume, 2);
+  Object.assign(resumed, { status: 'reviewing', reviewRounds: 4 }); saveState(cwd, resumed);
+  await h.event('agent_settled');
+  assert.equal(readState(cwd, '/session-a')!.status, 'blocked');
+  assert.equal(readState(cwd, '/session-a')!.reviewRounds, 4);
+  assert.match(readState(cwd, '/session-a')!.reason!, /review limit/);
 }));

@@ -1,5 +1,5 @@
 // Deterministic, offline Anthropic stand-in. Only loaded explicitly by uat.ts / -e.
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readState, type GoState } from "../core.ts";
 import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
@@ -31,7 +31,7 @@ export default function (pi: any) {
 			const user = [...context.messages].reverse().find((m: any) => m.role === "user");
 			const text = typeof user?.content === "string" ? user.content : user?.content?.filter((c: any) => c.type === "text").map((c: any) => c.text).join("\n") ?? "";
 			runPrefix = text.match(/\.pi\/go\/runs\/[A-Za-z0-9_-]+/)?.[0] ?? (readState(cwd, sessionFile)?.runId ? `.pi/go/runs/${readState(cwd, sessionFile)!.runId}` : runPrefix);
-			trace({ event: "request", model: model.id, text, tools: context.tools?.map((t: any) => t.name) });
+			trace({ event: "request", model: model.id, text, userTexts: context.messages.filter((m: any) => m.role === "user").map((m: any) => typeof m.content === "string" ? m.content : m.content.filter((c: any) => c.type === "text").map((c: any) => c.text).join("\n")), state: readState(cwd, sessionFile), tools: context.tools?.map((t: any) => t.name) });
 			const message: any = { role: "assistant", content: [], api: model.api, provider: model.provider, model: model.id,
 				usage: { input: 100, output: 10, cacheRead: 0, cacheWrite: 0, totalTokens: 110, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } }, stopReason: "stop", timestamp: Date.now() };
 			const done = () => { stream.push({ type: "done", reason: message.stopReason, message }); stream.end(); };
@@ -65,6 +65,12 @@ export default function (pi: any) {
 								say("<fail/>\n- Add reviewer-proof.txt containing reviewed, and journal the verification.");
 							} else say([1, 2, 3].every(n => read(`task-${n}.txt`).trim() === `task ${n}`) ? "<pass/>\n- All three task artifacts match PLAN; journal evidence preserved." : "<fail/>\n- Task artifacts missing.");
 						}
+					} else if (state.status === "blocked") {
+						say("Clarification received; waiting for /go resume.");
+					} else if (state.status === "running" && !state.resetPending && read("uat-block-once")) {
+						const reason = read("uat-block-once");
+						unlinkSync(join(cwd, "uat-block-once"));
+						tool("go_blocked", { reason });
 					} else if (text.includes("Context limit reached")) {
 						say("HANDOFF is current; stopping for the requested context reset.");
 					} else if (state.resetPending) {

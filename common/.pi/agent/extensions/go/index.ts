@@ -14,6 +14,9 @@ import {
 } from "./core.ts";
 
 const TOOL_NAMES = ["go_launch", "go_done", "go_blocked"];
+// /go already owns context, durable run notes, final review and blocker escalation.
+const CONTEXT_TOOLS = ["context_checkpoint", "context_timeline", "context_compact", "recall"];
+const INTERACTIVE_TOOLS = ["request_feedback", "request_code_review", "ask_user_question"];
 const active = (state?: GoState) => !!state && ["planning", "running", "reviewing"].includes(state.status);
 const owned = (ctx: ExtensionContext, state?: GoState): state is GoState => !!state && state.sessionFile === ctx.sessionManager.getSessionFile();
 const result = (text: string) => ({ content: [{ type: "text" as const, text }], details: {} });
@@ -59,12 +62,29 @@ export default function goExtension(pi: ExtensionAPI) {
 			};
 		}, { placement: "aboveEditor" });
 	};
-	const syncTools = (ctx: ExtensionContext) => {
-		const state = readState(ctx.cwd, ctx.sessionManager.getSessionFile());
+	const syncTools = (ctx: ExtensionContext, state = readState(ctx.cwd, ctx.sessionManager.getSessionFile()), restoringSession = false) => {
 		const enabled = owned(ctx, state) && active(state);
-		if (enabled) registerTools();
-		const tools = pi.getActiveTools().filter(name => !TOOL_NAMES.includes(name));
-		pi.setActiveTools(enabled ? [...tools, ...TOOL_NAMES] : tools);
+		const current = pi.getActiveTools().filter(name => !TOOL_NAMES.includes(name));
+		if (enabled) {
+			if (!state.toolsRestricted || !state.toolsBeforeGo) {
+				state.toolsBeforeGo = current;
+				state.toolsRestricted = true;
+				saveState(ctx.cwd, state);
+			}
+			registerTools();
+			const hidden = state.status === "planning" ? CONTEXT_TOOLS : [...CONTEXT_TOOLS, ...INTERACTIVE_TOOLS];
+			const controls = state.status === "planning" ? ["go_launch", "go_blocked"] : state.status === "running" ? ["go_done", "go_blocked"] : [];
+			pi.setActiveTools([...state.toolsBeforeGo.filter(name => !hidden.includes(name)), ...controls]);
+		} else if (state?.toolsBeforeGo && (state.toolsRestricted || restoringSession)) {
+			pi.setActiveTools(state.toolsBeforeGo);
+			if (state.toolsRestricted) { state.toolsRestricted = false; saveState(ctx.cwd, state); }
+		} else {
+			pi.setActiveTools(current);
+			// Preserve changes made with /tools while paused or after completion.
+			if (state?.toolsBeforeGo && JSON.stringify(state.toolsBeforeGo) !== JSON.stringify(current)) {
+				state.toolsBeforeGo = current; saveState(ctx.cwd, state);
+			}
+		}
 		syncIndicator(ctx);
 	};
 	const terminal = async (ctx: ExtensionContext, state: GoState, status: "paused" | "blocked" | "done", reason: string) => {
@@ -78,7 +98,7 @@ export default function goExtension(pi: ExtensionAPI) {
 		current.resetQueued = false;
 		saveState(ctx.cwd, current);
 		clearTimer();
-		syncTools(ctx);
+		syncTools(ctx, current);
 		show(ctx, `/go ${status}: ${reason}`, status === "done" ? "info" : "warning");
 		try {
 			const response = await pi.exec("cmux", ["notify", "--title", "Pi /go", "--body", `[${ctx.cwd}] ${status}: ${reason}`], { timeout: 5_000 });
@@ -175,7 +195,7 @@ export default function goExtension(pi: ExtensionAPI) {
 				state.handoffReady = true;
 				state.handoffResultVersion = subagents().resultVersion;
 				state.lastStopReason = undefined;
-				saveState(ctx.cwd, state);
+				saveState(ctx.cwd, state); syncTools(ctx, state);
 				return result("Launch queued. Stop now; the fresh session will continue from PLAN and HANDOFF.");
 			},
 		});
@@ -191,7 +211,7 @@ export default function goExtension(pi: ExtensionAPI) {
 				if (children.active || children.pendingResults) throw new Error("Wait for the existing subagents and incorporate their results before go_done.");
 				state.status = "reviewing";
 				state.reviewInFlight = false;
-				saveState(ctx.cwd, state);
+				saveState(ctx.cwd, state); syncTools(ctx, state);
 				return result("Independent review will start when this turn settles. Stop now.");
 			},
 		});
@@ -227,7 +247,7 @@ export default function goExtension(pi: ExtensionAPI) {
 				state.reviewInFlight = false;
 				state.resetQueued = false;
 				saveState(ctx.cwd, state);
-				clearTimer(); syncTools(ctx);
+				clearTimer(); syncTools(ctx, state);
 				ctx.abort();
 				await ctx.waitForIdle();
 				show(ctx, `/go reset. Run files preserved in ${goPath(ctx.cwd, "", state.runId)}. Start fresh with /go.`);
@@ -246,27 +266,40 @@ export default function goExtension(pi: ExtensionAPI) {
 					await notification;
 					return;
 				}
-				if (state.status !== "paused") { show(ctx, "Only paused runs can resume.", "warning"); return; }
+				if (state.status !== "paused" && state.status !== "blocked") { show(ctx, "Only paused or blocked runs can resume.", "warning"); return; }
 				const options = parseArgs(rest.join(" "));
 				if (options.steering) throw new Error("Usage: /go resume [--tokens TOTAL] [--minutes TOTAL]");
 				if (options.budget) state.budget = { ...state.budget, ...options.budget };
 				const reason = budgetReason(state);
 				if (reason) { show(ctx, `${reason} Raise the total with /go resume --tokens 4M or --minutes 180.`, "warning"); return; }
-				state.status = state.resumeStatus ?? "running";
+				const wasBlocked = state.status === "blocked";
+				const previousBlocker = state.reason;
+				if (wasBlocked) {
+					appendJournal(ctx.cwd, `## Resumed · ${new Date().toISOString()}\nUser requested /go resume. Previous blocker: ${previousBlocker ?? "unspecified"}. Continue with the latest clarification.`, state.runId);
+					state.reviewRoundsAtResume = state.reviewRounds;
+					state.reviewPassed = false;
+					state.reviewAttemptId = undefined;
+				}
+				// A failed review needs worker repairs before another review attempt.
+				state.status = wasBlocked ? (state.resumeStatus === "planning" ? "planning" : "running") : state.resumeStatus ?? "running";
 				state.reason = undefined;
 				state.lastStopReason = undefined;
 				state.lastErrorMessage = undefined;
 				state.reviewInFlight = false;
 				state.resetQueued = false;
 				saveState(ctx.cwd, state);
-				syncTools(ctx); armTimer(ctx, state);
+				syncTools(ctx, state); armTimer(ctx, state);
 				if (state.resetPending) {
 					state.handoffRequested = false;
 					state.waitingNoticeSent = false;
 					prepareHandoff(ctx, state);
 				}
 				else if (state.status === "reviewing") await review(ctx);
-				else pi.sendUserMessage(promptForRun(state.status === "planning" ? planningPrompt(state.steering) : CONTINUE_PROMPT, state.runId), { deliverAs: "steer" });
+				else {
+					const continuation = state.status === "planning" ? planningPrompt(state.steering) : CONTINUE_PROMPT;
+					const clarification = wasBlocked ? `Resume this same run using the user's latest clarification in this conversation. Previous blocker: ${previousBlocker ?? "unspecified"}. Read .pi/go/JOURNAL.md for the latest blocker or review findings; preserve completed work. If still blocked, explain what remains via go_blocked.\n\n` : "";
+					pi.sendUserMessage(promptForRun(clarification + continuation, state.runId), { deliverAs: "steer" });
+				}
 				return;
 			}
 			if (state && !["done", "blocked"].includes(state.status)) {
@@ -284,7 +317,7 @@ export default function goExtension(pi: ExtensionAPI) {
 				reviewRounds: 0, budget: options.budget ?? config.budget, tokensUsed: 0, stallResets: 0,
 			};
 			saveState(ctx.cwd, state);
-			syncTools(ctx); armTimer(ctx, state);
+			syncTools(ctx, state); armTimer(ctx, state);
 			pi.sendUserMessage(promptForRun(planningPrompt(state.steering), state.runId), { deliverAs: "followUp" });
 		}),
 	});
@@ -348,10 +381,10 @@ export default function goExtension(pi: ExtensionAPI) {
 		if (!owned(ctx, state) || state.status !== "reviewing" || state.reviewInFlight) return;
 		if (state.reviewPassed) { await finishReview(ctx, state); return; }
 		const config = loadConfig(ctx.cwd);
-		if (state.reviewRounds >= config.maxReviewRounds) { await terminal(ctx, state, "blocked", "Independent review limit reached."); return; }
+		if (state.reviewRounds - (state.reviewRoundsAtResume ?? 0) >= config.maxReviewRounds) { await terminal(ctx, state, "blocked", "Independent review limit reached."); return; }
 		state.reviewInFlight = true;
 		state.reviewAttemptId = randomUUID();
-		saveState(ctx.cwd, state); syncTools(ctx);
+		saveState(ctx.cwd, state); syncTools(ctx, state);
 		let outcome: Awaited<ReturnType<typeof runReview>>;
 		try { outcome = await runReview(ctx, config); }
 		catch (error) {
@@ -366,6 +399,7 @@ export default function goExtension(pi: ExtensionAPI) {
 		if (!current || current.sessionFile !== ownerFile || current.runId !== state.runId || current.reviewAttemptId !== state.reviewAttemptId || current.status !== "reviewing" || !current.reviewInFlight) return;
 		current.reviewInFlight = false;
 		current.reviewRounds++;
+		const round = current.reviewRounds - (current.reviewRoundsAtResume ?? 0);
 		current.tokensUsed += outcome.tokens ?? 0;
 		saveState(ctx.cwd, current);
 		appendJournal(ctx.cwd, `## Review round ${current.reviewRounds} · ${new Date().toISOString()}\n${outcome.passed ? "<pass/>" : "<fail/>"}\n${outcome.warning ? `Warning: ${outcome.warning}\n` : ""}${outcome.findings}`, current.runId);
@@ -376,15 +410,15 @@ export default function goExtension(pi: ExtensionAPI) {
 			const reason = budgetReason(current);
 			if (reason) { await terminal(ctx, current, "paused", `${reason} Review passed; raise the budget and /go resume to finish.`); return; }
 			await finishReview(ctx, current);
-		} else if (current.reviewRounds >= config.maxReviewRounds) {
-			await terminal(ctx, current, "blocked", `Review failed after ${current.reviewRounds} rounds. See JOURNAL.md.`);
+		} else if (round >= config.maxReviewRounds) {
+			await terminal(ctx, current, "blocked", `Review failed after ${round} rounds. See JOURNAL.md; after addressing the findings, use /go resume.`);
 		} else {
 			current.status = "running";
 			saveState(ctx.cwd, current);
 			const reason = budgetReason(current);
 			if (reason) { await terminal(ctx, current, "paused", reason); return; }
-			syncTools(ctx);
-			pi.sendUserMessage(`Independent review failed (round ${current.reviewRounds}/${config.maxReviewRounds}). Fix these findings, journal evidence, then call go_done again:\n${outcome.findings}`, { deliverAs: "followUp" });
+			syncTools(ctx, current);
+			pi.sendUserMessage(`Independent review failed (round ${round}/${config.maxReviewRounds}). Fix these findings, journal evidence, then call go_done again:\n${outcome.findings}`, { deliverAs: "followUp" });
 		}
 	}
 
@@ -415,13 +449,14 @@ export default function goExtension(pi: ExtensionAPI) {
 			saveState(ctx.cwd, state);
 			armTimer(ctx, state);
 		}
-		syncTools(ctx);
+		syncTools(ctx, state, true);
 	}));
 	pi.on("session_shutdown", guard(async (_event, ctx) => {
 		sessionContext = undefined;
 		clearTimer(); removeInputListener?.(); removeInputListener = undefined;
 		hasOverlay = () => false;
 		const state = readState(ctx.cwd, ctx.sessionManager.getSessionFile());
+		if (owned(ctx, state) && !active(state)) syncTools(ctx, state);
 		if (owned(ctx, state) && state.status === "reviewing") await terminal(ctx, state, "paused", "Review interrupted by session shutdown. Open this session and /go resume.");
 		if (ctx.hasUI) ctx.ui.setWidget("go", undefined);
 	}));
@@ -436,7 +471,7 @@ export default function goExtension(pi: ExtensionAPI) {
 		state.reviewPassed = false;
 		state.status = "running";
 		saveState(ctx.cwd, state);
-		syncTools(ctx);
+		syncTools(ctx, state);
 	}));
 	pi.on("before_agent_start", guard(async (event, ctx) => {
 		syncTools(ctx);

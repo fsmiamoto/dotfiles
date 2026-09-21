@@ -155,6 +155,9 @@ ifeq ($(UNAME_S),Darwin)
 	@defaults write com.apple.dock autohide -bool true
 	@defaults write NSGlobalDomain _HIHideMenuBar -bool true
 	@defaults write com.apple.screencapture type -string "png"
+	@mkdir -p "$$HOME/Documents/Screenshots"
+	@defaults write com.apple.screencapture location -string "$$HOME/Documents/Screenshots"
+	@killall SystemUIServer 2>/dev/null || true
 
 	@defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
 	@defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false

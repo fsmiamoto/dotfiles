@@ -48,6 +48,11 @@ source = "https://github.com/DietrichGebert/ponytail.git"
 selector = "main"
 path = "skills/ponytail"
 
+[[skills]]
+source = "https://github.com/typesafe-ai/skills.git"
+selector = "main"
+path = "skills/typesafe-ai"
+
 # Every direct skill under skills/ in the private personal repository.
 [[collections]]
 source = "git@github.com:fsmiamoto/skills.git"

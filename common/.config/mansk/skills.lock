@@ -4,7 +4,8 @@
   "git": {
     "https://github.com/DietrichGebert/ponytail.git": "356918eba965ee1eac64bd3a7f0dd02108350de5",
     "https://github.com/anthropics/claude-code.git": "ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558",
-    "https://github.com/mattpocock/skills.git": "3cca18b368ae95cdbdebbff572ccafa662551015"
+    "https://github.com/mattpocock/skills.git": "3cca18b368ae95cdbdebbff572ccafa662551015",
+    "https://github.com/typesafe-ai/skills.git": "65a39f393687675ce170e6094757de20370365b9"
   },
   "collections": [
     {

@@ -42,7 +42,7 @@ close_pane = "prefix+q"
 
 # Familiar tmux utility bindings.
 copy_mode = ["prefix+[", "ctrl+up"]
-goto = ["prefix+g", "prefix+n", "ctrl+/"]
+goto = ["prefix+g", "prefix+n"]
 reload_config = "prefix+r"
 detach = "prefix+d"
 resize_mode = ""
@@ -55,6 +55,18 @@ navigate_pane_left = "h"
 navigate_pane_down = "ctrl+j"
 navigate_pane_up = "ctrl+k"
 navigate_pane_right = "l"
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "local.projects.open"
+description = "open project"
+
+[[keys.command]]
+key = "ctrl+/"
+type = "plugin_action"
+command = "local.attention.open"
+description = "open attention"
 
 # tmux-style one-step pane resizing.
 [[keys.command]]
@@ -108,6 +120,7 @@ pane_gaps = false
 copy_on_select = true
 
 show_agent_labels_on_pane_borders = true
+status_indicators = "symbols"
 [advanced]
 # Match the tmux history-limit setting.
 scrollback_limit_bytes = 10000000

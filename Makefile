@@ -23,7 +23,7 @@ VERBOSE ?= 0
 CARGO_TOOLS = mansk servant
 FORCE ?= 0
 
-config: backup scripts install cargo-tools sync-skills
+config: backup scripts install cargo-tools sync-skills herdr-extensions
 
 macos: packages config defaults
 
@@ -98,6 +98,19 @@ scripts:
 		git clone https://github.com/fsmiamoto/scripts.git ~/.scripts; \
 	else \
 		echo "Scripts directory already exists, skipping..."; \
+	fi
+
+# Personal Herdr plugins (Projects, Attention); bindings live in common/.config/herdr/config.toml.
+herdr-extensions:
+	@echo "Installing herdr extensions..."
+	@if ! command -v herdr >/dev/null 2>&1; then \
+		echo "herdr is not installed, skipping"; \
+	else \
+		if [ ! -d ~/Code/herdr-extensions ]; then \
+			git clone https://github.com/fsmiamoto/herdr-extensions.git ~/Code/herdr-extensions; \
+		fi; \
+		herdr plugin link ~/Code/herdr-extensions/projects --enabled; \
+		herdr plugin link ~/Code/herdr-extensions/attention --enabled; \
 	fi
 
 packages:
@@ -200,4 +213,4 @@ sync-skills:
 	fi
 	@mansk sync
 
-.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills cargo-tools
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills cargo-tools herdr-extensions

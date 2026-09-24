@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# herdr-handoff — live-handoff the running herdr server to the installed binary.
+# `herdr update --handoff` refuses Homebrew installs, but the server's socket API
+# (`server.live_handoff`) doesn't care who installed the binary. Panes keep running.
+set -euo pipefail
+
+bin=$(command -v herdr)
+sock="${HERDR_SOCKET_PATH:-$HOME/.config/herdr/herdr.sock}"
+want=$("$bin" --version | awk '{print $2}')
+
+ping() { printf '{"id":"p","method":"ping","params":{}}\n' | nc -U -w 2 "$sock" 2>/dev/null || true; }
+
+status=$(ping)
+have=$(jq -r '.result.version // empty' <<<"$status")
+[[ -z "$have" ]] && { echo "no herdr server on $sock" >&2; exit 1; }
+[[ "$have" == "$want" ]] && { echo "server already at $want"; exit 0; }
+jq -e '.result.capabilities.live_handoff' <<<"$status" >/dev/null \
+  || { echo "server $have does not support live handoff; use: herdr server stop && herdr" >&2; exit 1; }
+
+echo "handing off $have -> $want ($bin)..."
+printf '{"id":"h","method":"server.live_handoff","params":{"import_exe":"%s","expected_version":"%s"}}\n' "$bin" "$want" \
+  | nc -U -w 60 "$sock" | jq -r '.error.message // "handoff accepted"'
+
+for _ in $(seq 1 30); do
+  sleep 1
+  v=$(ping | jq -r '.result.version // empty')
+  [[ "$v" == "$want" ]] && { echo "done: server is $v. Detach (prefix+d) and run herdr again for the new client."; exit 0; }
+done
+echo "server did not come back as $want within 30s; check: herdr status" >&2
+exit 1

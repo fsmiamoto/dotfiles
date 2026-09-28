@@ -1,7 +1,7 @@
 // Deterministic offline model for real SDK multi-session acceptance tests.
 import { appendFileSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
+import { createAssistantMessageEventStream, getCurrentSystemPrompt } from "@earendil-works/pi-ai";
 import { readState, goPath } from "../core.ts";
 
 export default function (pi: any) {
@@ -21,7 +21,7 @@ export default function (pi: any) {
       queueMicrotask(() => {
         stream.push({ type: "start", partial: message });
         const state = readState(cwd, sessionFile);
-        trace({ event: "request", runId: state?.runId, status: state?.status, system: context.systemPrompt });
+        trace({ event: "request", runId: state?.runId, status: state?.status, system: getCurrentSystemPrompt(context.messages) });
         if (!state) { say("No goal in this session."); done(); return; }
         const path = (file: string) => goPath(cwd, file, state.runId);
         if (state.status === "planning" && !existsSync(path("PLAN.md"))) {

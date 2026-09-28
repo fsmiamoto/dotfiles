@@ -45,6 +45,10 @@ export interface GoState {
 	detached?: boolean;
 	toolsBeforeGo?: string[];
 	toolsRestricted?: boolean;
+	/** Worker model + thinking captured at the latest handoff; applied once in the fresh session. */
+	model?: { provider: string; id: string };
+	thinkingLevel?: string;
+	carryPending?: boolean;
 }
 export const DEFAULT_CONFIG: GoConfig = {
 	resetThresholdTokens: 100_000, maxReviewRounds: 2, maxStallResets: 2,

@@ -74,6 +74,7 @@ open A. Baseline evidence: `/var/folders/xx/nlvm2q6968l0vhhzcmqpltg80000gp/T/go-
 | `*.test.ts` | State transitions, session pointers, equal start timestamps, corruption isolation, budgets, paths/config, legacy preservation, widget rendering, review contract, subagent gates |
 | `scoping.uat.ts` | Two simultaneous same-project runs; isolated documents; owner-only migration; reset during streaming; archives; fresh start; reload; launch/context ownership transfers; old sessions cannot resurrect runs |
 | `uat.ts` | Native abort/resume during tool loop; complete launch batch; two context resets; journal continuity; reviewer pass/fix/two failures; paused review; reset during review followed by fresh run without stale-result contamination |
+| `model.uat.ts` | Settings default model+thinking; mid-run switch carried through launch and context handoffs (latest choice wins); `/go status`; unavailable carried model → default + warning, run completes; settings.json byte-identical |
 | `subagents.uat.ts` | Real Pi child survives pending handoff, result delivered exactly once and incorporated before replacement, final review passes |
 | `tui.uat.ts` | Actual Pi TUI: foreign paused legacy run; visible marker; Esc; `/reload`; 52-column display; `/go reset` clears marker and archives; fresh `/go`; legacy bytes untouched |
 

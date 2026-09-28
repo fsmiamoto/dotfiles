@@ -134,6 +134,17 @@ export default function goExtension(pi: ExtensionAPI) {
 		}, Math.max(1, Math.min(remaining, 2_147_483_647)));
 		budgetTimer.unref?.();
 	};
+	// Session-only: pi.setModel/setThinkingLevel never write settings defaults.
+	const applyCarriedModel = async (ctx: ExtensionContext, state: GoState) => {
+		const wanted = state.model;
+		if (wanted && (ctx.model?.provider !== wanted.provider || ctx.model?.id !== wanted.id)) {
+			const model = ctx.modelRegistry.find(wanted.provider, wanted.id);
+			let applied = false;
+			try { applied = !!model && await pi.setModel(model); } catch { applied = false; }
+			if (!applied) show(ctx, `/go: carried model ${wanted.provider}/${wanted.id} unavailable; continuing on ${ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : "default model"}.`, "warning");
+		}
+		if (state.thinkingLevel) pi.setThinkingLevel(state.thinkingLevel as Parameters<typeof pi.setThinkingLevel>[0]);
+	};
 	const queueReset = (ctx: ExtensionContext, state: GoState) => {
 		if (state.resetQueued) return;
 		state.resetQueued = true;
@@ -254,7 +265,8 @@ export default function goExtension(pi: ExtensionAPI) {
 				return;
 			}
 			if (verb === "status") {
-				show(ctx, state ? `/go ${state.status} · ${state.tokensUsed} tokens · ${state.resets} resets · ${state.reviewRounds} reviews\nSession: ${state.sessionFile}${state.reason ? `\n${state.reason}` : ""}` : "No /go run in this session. Start one with /go.");
+				const carried = state?.model ? `\nModel: ${state.model.provider}/${state.model.id} · thinking ${state.thinkingLevel ?? "default"} (carried across handoffs)` : "";
+				show(ctx, state ? `/go ${state.status} · ${state.tokensUsed} tokens · ${state.resets} resets · ${state.reviewRounds} reviews\nSession: ${state.sessionFile}${carried}${state.reason ? `\n${state.reason}` : ""}` : "No /go run in this session. Start one with /go.");
 				return;
 			}
 			if (["pause", "resume", "stop"].includes(verb)) {
@@ -342,6 +354,9 @@ export default function goExtension(pi: ExtensionAPI) {
 			state.journalLinesAtLastReset = lines;
 			const oldSession = state.sessionFile;
 			const prompt = promptForRun(seedPrompt(plan, handoff, state.steering, journal.trimEnd().split("\n").slice(-20).join("\n")), state.runId);
+			// Latest choice wins: capture now; this instance is invalid once replaced.
+			state.model = ctx.model ? { provider: ctx.model.provider, id: ctx.model.id } : undefined;
+			state.thinkingLevel = pi.getThinkingLevel();
 			const replacement = await ctx.newSession({
 				parentSession: oldSession,
 				// setup runs before session_start; the replacement must own state before tools are armed.
@@ -359,12 +374,14 @@ export default function goExtension(pi: ExtensionAPI) {
 					state.waitingForSubagents = undefined;
 					state.waitingNoticeSent = undefined;
 					state.lastStopReason = undefined;
+					state.carryPending = true;
 					saveState(cwd, state);
 				},
 				withSession: async (ctx2: { sendUserMessage(content: string): Promise<void> }) => { await ctx2.sendUserMessage(prompt); },
 			});
 			if (replacement.cancelled) {
 				state.sessionFile = oldSession;
+				state.carryPending = undefined;
 				saveState(ctx.cwd, state);
 				await terminal(ctx, state, "paused", "Session replacement was cancelled. Use /go resume.");
 			}
@@ -442,6 +459,12 @@ export default function goExtension(pi: ExtensionAPI) {
 			return { consume: true };
 		});
 		const state = readState(ctx.cwd, ctx.sessionManager.getSessionFile());
+		if (owned(ctx, state) && state.carryPending) {
+			// Once only: later reloads keep whatever the user picked in this session.
+			state.carryPending = undefined;
+			saveState(ctx.cwd, state);
+			await applyCarriedModel(ctx, state);
+		}
 		if (owned(ctx, state) && active(state)) {
 			// A process/reload cannot retain an in-flight request or queued command.
 			state.reviewInFlight = false;
@@ -514,7 +537,8 @@ export default function goExtension(pi: ExtensionAPI) {
 		const reason = budgetReason(state);
 		if (reason) { await terminal(ctx, state, "paused", reason); return; }
 		if (state.resetPending) { if (prepareHandoff(ctx, state)) queueReset(ctx, state); return; }
-		if (state.status === "reviewing") { await review(ctx); return; }
+		// Don't hold agent_settled open: Pi defers prompts (e.g. /go pause) until it returns.
+		if (state.status === "reviewing") { void guard(review)(ctx); return; }
 		if (state.status === "running") pi.sendUserMessage(promptForRun(CONTINUE_PROMPT, state.runId), { deliverAs: "followUp" });
 	}));
 }

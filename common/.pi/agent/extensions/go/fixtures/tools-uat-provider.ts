@@ -2,7 +2,7 @@
 import { appendFileSync, existsSync, readFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { Type } from "typebox";
-import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
+import { createAssistantMessageEventStream, getCurrentTools } from "@earendil-works/pi-ai";
 import { goPath, readState } from "../core.ts";
 
 export const fixtureTools = ["context_checkpoint", "context_timeline", "context_compact", "recall", "request_feedback", "request_code_review", "ask_user_question", "web_search", "background_job", "subagent_spawn", "custom_work", "custom_disabled"];
@@ -25,7 +25,7 @@ export default function (pi: any) {
         try {
           stream.push({ type: "start", partial: message });
           const state = readState(cwd, sessionFile);
-          trace({ event: "request", model: model.id, status: state?.status, runId: state?.runId, tools: context.tools?.map((t: any) => t.name), reminder: JSON.stringify(context.messages).includes("[handoff-reminder]") });
+          trace({ event: "request", model: model.id, status: state?.status, runId: state?.runId, tools: getCurrentTools(context.messages).map((t: any) => t.name), reminder: JSON.stringify(context.messages).includes("[handoff-reminder]") });
           if (model.id === "go-tools-reviewer") { say("<pass/>\n- The tool-policy acceptance fixture completed its documented checks."); done(); return; }
           if (!state || ["paused", "blocked", "done"].includes(state.status)) {
             if (existsSync(join(cwd, "normal-high"))) { message.usage.input = 100_001; message.usage.totalTokens = 100_011; }

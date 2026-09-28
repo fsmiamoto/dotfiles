@@ -2,7 +2,7 @@
 import { appendFileSync, existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readState, type GoState } from "../core.ts";
-import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
+import { createAssistantMessageEventStream, getCurrentTools } from "@earendil-works/pi-ai";
 
 export default function (pi: any) {
 	let cwd = process.cwd();
@@ -31,7 +31,7 @@ export default function (pi: any) {
 			const user = [...context.messages].reverse().find((m: any) => m.role === "user");
 			const text = typeof user?.content === "string" ? user.content : user?.content?.filter((c: any) => c.type === "text").map((c: any) => c.text).join("\n") ?? "";
 			runPrefix = text.match(/\.pi\/go\/runs\/[A-Za-z0-9_-]+/)?.[0] ?? (readState(cwd, sessionFile)?.runId ? `.pi/go/runs/${readState(cwd, sessionFile)!.runId}` : runPrefix);
-			trace({ event: "request", model: model.id, text, userTexts: context.messages.filter((m: any) => m.role === "user").map((m: any) => typeof m.content === "string" ? m.content : m.content.filter((c: any) => c.type === "text").map((c: any) => c.text).join("\n")), state: readState(cwd, sessionFile), tools: context.tools?.map((t: any) => t.name) });
+			trace({ event: "request", model: model.id, text, userTexts: context.messages.filter((m: any) => m.role === "user").map((m: any) => typeof m.content === "string" ? m.content : m.content.filter((c: any) => c.type === "text").map((c: any) => c.text).join("\n")), state: readState(cwd, sessionFile), tools: getCurrentTools(context.messages).map((t: any) => t.name) });
 			const message: any = { role: "assistant", content: [], api: model.api, provider: model.provider, model: model.id,
 				usage: { input: 100, output: 10, cacheRead: 0, cacheWrite: 0, totalTokens: 110, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } }, stopReason: "stop", timestamp: Date.now() };
 			const done = () => { stream.push({ type: "done", reason: message.stopReason, message }); stream.end(); };
@@ -57,7 +57,7 @@ export default function (pi: any) {
 						return;
 					}
 					if (model.id === "go-uat-reviewer") {
-						if (last?.role !== "toolResult" && context.tools?.some((t: any) => t.name === "read")) tool("read", { path: go("PLAN.md") });
+						if (last?.role !== "toolResult" && getCurrentTools(context.messages).some((t: any) => t.name === "read")) tool("read", { path: go("PLAN.md") });
 						else {
 							const failures = Number(read("uat-review-fail-count").trim() || "0");
 							if (failures > 0) {

@@ -23,7 +23,9 @@ function harness(cwd: string, sessionFile = '/session-a') {
   let children = { active: 0, pendingResults: 0, resultVersion: 0 };
   let terminalInput: ((data: string) => unknown) | undefined;
   let activeTools = ['read', 'bash', 'edit', 'write'];
+  const models: any = { thinking: 'off', setModelCalls: [] as any[], thinkingCalls: [] as string[], available: new Set(['anthropic/worker', 'anthropic/alt']), auth: true };
   const ctx: any = { cwd, hasUI: true, model: { provider: 'anthropic', id: 'worker' },
+    modelRegistry: { find: (provider: string, id: string) => models.available.has(`${provider}/${id}`) ? { provider, id } : undefined },
     sessionManager: { getSessionFile: () => sessionFile, getLeafId: () => undefined },
     getContextUsage: () => ({ tokens: 0 }), isIdle: () => true, abort: () => {}, waitForIdle: async () => {},
     ui: { notify: (...args) => notifications.push(args), setStatus: () => {}, setWidget: (name, value, options) => {
@@ -40,9 +42,12 @@ function harness(cwd: string, sessionFile = '/session-a') {
     registerCommand: (name, def) => commands.set(name, def), registerTool: def => tools.set(def.name, def),
     getActiveTools: () => activeTools, setActiveTools: names => { activeTools = names; },
     sendUserMessage: (...args) => messages.push(args), exec: async (...args) => { notifications.push(args); return { code: 0 }; },
+    getThinkingLevel: () => models.thinking,
+    setThinkingLevel: (level: string) => { models.thinkingCalls.push(level); models.thinking = level; },
+    setModel: async (model: any) => { models.setModelCalls.push(model); if (!models.auth) return false; ctx.model = model; return true; },
   };
   extension(pi);
-  return { ctx, handlers, commands, tools, messages, notifications, widgets,
+  return { ctx, handlers, commands, tools, messages, notifications, widgets, models,
     children: (value) => { children = value; }, input: (data) => terminalInput?.(data), bus,
     event: async (name, event = {}) => handlers.has(name) && await handlers.get(name)(event, ctx),
     command: async args => commands.get('go').handler(args, ctx),
@@ -389,3 +394,52 @@ test('resuming a blocked review grants a bounded allowance without erasing cumul
   assert.equal(readState(cwd, '/session-a')!.reviewRounds, 4);
   assert.match(readState(cwd, '/session-a')!.reason!, /review limit/);
 }));
+
+test('handoff carries the latest model + thinking into the fresh session once, session-only, with fallback warning', async () => {
+  const cwd = mkdtempSync(join(tmpdir(), 'go-carry-'));
+  try {
+    const a = harness(cwd, '/session-a');
+    await a.event('session_start');
+    await a.command('carry task');
+    const runId = readState(cwd, '/session-a')!.runId;
+    writeFileSync(goPath(cwd, 'PLAN.md', runId), 'A testable plan');
+    writeFileSync(goPath(cwd, 'HANDOFF.md', runId), 'Starting state');
+    await a.tool('go_launch');
+    // Mid-run switch in the outgoing session: latest choice wins at handoff time.
+    a.ctx.model = { provider: 'anthropic', id: 'alt' }; a.models.thinking = 'high';
+    a.ctx.newSession = async (options: any) => { await options.setup({ getSessionFile: () => '/session-b' }); return { cancelled: false }; };
+    await a.commands.get('go-reset').handler('', a.ctx);
+    const handed = readState(cwd, '/session-b')!;
+    assert.deepEqual(handed.model, { provider: 'anthropic', id: 'alt' });
+    assert.equal(handed.thinkingLevel, 'high');
+    assert.equal(handed.carryPending, true);
+    assert.equal(a.models.setModelCalls.length, 0, 'outgoing instance never switches models');
+
+    // Fresh instance starts on the default worker model with thinking off.
+    const b = harness(cwd, '/session-b');
+    await b.event('session_start');
+    assert.deepEqual(b.models.setModelCalls, [{ provider: 'anthropic', id: 'alt' }]);
+    assert.deepEqual(b.models.thinkingCalls, ['high']);
+    assert.equal(readState(cwd, '/session-b')!.carryPending, undefined);
+    await b.event('session_start');
+    assert.equal(b.models.setModelCalls.length, 1, 'reload keeps the in-session choice; carry applies once');
+    await b.command('status');
+    assert.match(b.notifications.at(-1)[0], /Model: anthropic\/alt · thinking high/);
+    await b.event('session_shutdown');
+
+    // Fallback: carried model missing from the registry, then present but without auth.
+    let owner = '/session-b';
+    for (const [label, setup] of [['missing', (h: any) => h.models.available.delete('anthropic/alt')], ['no auth', (h: any) => { h.models.auth = false; }]] as const) {
+      const state = readState(cwd, owner)!;
+      owner = state.sessionFile = `/session-${label}`; state.carryPending = true; saveState(cwd, state);
+      const c = harness(cwd, `/session-${label}`); setup(c);
+      await c.event('session_start');
+      assert.deepEqual(c.ctx.model, { provider: 'anthropic', id: 'worker' }, `${label}: default model kept`);
+      assert.ok(c.notifications.some(([text, level]) => level === 'warning' && /carried model anthropic\/alt unavailable; continuing on anthropic\/worker/.test(text)), `${label}: visible warning`);
+      assert.deepEqual(c.models.thinkingCalls, ['high'], `${label}: thinking still carried (Pi clamps)`);
+      assert.equal(readState(cwd, `/session-${label}`)!.status, 'running', `${label}: run continues`);
+      assert.ok(c.active().includes('go_done'), `${label}: worker tools armed`);
+      await c.event('session_shutdown');
+    }
+  } finally { rmSync(cwd, { recursive: true, force: true }); }
+});

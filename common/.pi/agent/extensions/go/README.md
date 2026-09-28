@@ -16,6 +16,7 @@ the plan title. It adapts to narrow terminals and clears in unrelated sessions.
 
 - `/go pause` or **Esc** during work pauses; `/go resume` steers the owning session at the next tool boundary. Esc in an editor popup/dialog closes that UI without pausing the run.
 - If blocked, give your clarification, then `/go resume` continues the same run, plan, journal, and budget. Plain replies do not restart the loop. Failed-review runs return to the worker for repairs with a fresh bounded review allowance; cumulative review history is retained.
+- Handoffs (launch + context resets) carry the model and thinking level active at handoff time into the fresh session, session-only (settings untouched); an unavailable model falls back to the default with a warning. `/go status` shows them.
 - `/go status` shows state; `/go stop` blocks the run until you resume or reset it.
 - Runs are scoped to sessions. Other sessions in the same project can start their own `/go`. Automatic handoffs keep the same run directory.
 - `/go reset` archives this session's run and clears its marker. Then `/go [steering]` starts fresh. Plans, journals, and handoffs stay on disk; reset waits for existing subagent work/results to finish.

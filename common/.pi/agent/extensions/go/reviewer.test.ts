@@ -19,6 +19,10 @@ test('review verdict fails closed on malformed, missing, or contradictory marker
     '<pass/>\n- evidence <fail/>', '<pass/>\n- duplicated <pass/>']) {
     assert.equal(parseReview(text).passed, false, text);
   }
+  // Escalation is only a valid verdict for handoff reviews.
+  assert.equal(parseReview('<escalate/>\n- PLAN is infeasible.').verdict, 'fail');
+  assert.equal(parseReview('<escalate/>\n- PLAN is infeasible.', true).verdict, 'escalate');
+  assert.equal(parseReview('<fail/>\n- bug', true).verdict, 'fail');
 });
 
 test('reviewer chooses authenticated Anthropic sibling and warns on fallback', async () => {

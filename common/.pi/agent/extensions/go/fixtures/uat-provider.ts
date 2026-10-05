@@ -60,7 +60,12 @@ export default function (pi: any) {
 					}
 					if (model.id === "go-uat-reviewer") {
 						if (last?.role !== "toolResult" && getCurrentTools(context.messages).some((t: any) => t.name === "read")) tool("read", { path: go("PLAN.md") });
-						else {
+						else if (text.includes("Audit the work since the previous handoff")) {
+							// Handoff review: escalate on demand, else advisory fail once, then pass.
+							if (read("uat-handoff-escalate")) { unlinkSync(join(cwd, "uat-handoff-escalate")); say("<escalate/>\n- UAT escalation marker: PLAN needs a human decision."); }
+							else if (!read("uat-handoff-reviewed")) { writeFileSync(join(cwd, "uat-handoff-reviewed"), "1"); say("<fail/>\n- UAT handoff finding marker: double-check task evidence."); }
+							else say("<pass/>\n- Handoff claims match files.");
+						} else {
 							const failures = Number(read("uat-review-fail-count").trim() || "0");
 							if (failures > 0) {
 								writeFileSync(join(cwd, "uat-review-fail-count"), String(failures - 1));

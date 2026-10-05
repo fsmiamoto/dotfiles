@@ -45,6 +45,7 @@ Global settings: `~/.pi/agent/go.json`. Project overrides: `.pi/go/config.json`.
   "resetThresholdTokens": 100000,
   "maxReviewRounds": 2,
   "maxStallResets": 2,
+  "handoffReview": true,
   "reviewer": {
     "provider": "anthropic",
     "thinkingLevel": "high"
@@ -52,6 +53,13 @@ Global settings: `~/.pi/agent/go.json`. Project overrides: `.pi/go/config.json`.
   "budget": null
 }
 ```
+
+Handoff review (`handoffReview`, default on): at each context reset, before the
+fresh session starts, the same read-only reviewer audits work since the previous
+handoff (new journal lines + `git diff` from the HEAD recorded then). It is
+advisory: findings are journaled and seed the fresh session; reviewer errors only
+warn. `<escalate/>` (PLAN wrong / off the rails) blocks the run; reply, then
+`/go resume` — that handoff skips re-review. Esc or typing during it cancels it.
 
 Set `reviewer.model` to pin a model. Otherwise a different authenticated
 Anthropic sibling is selected; models the API 404s (listed in the catalog but

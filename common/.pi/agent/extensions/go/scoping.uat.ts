@@ -18,7 +18,7 @@ mkdirSync(join(cwd, "bin"));
 writeFileSync(join(cwd, "bin/cmux"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
 process.env.PATH = `${join(cwd, "bin")}:${process.env.PATH ?? ""}`;
 mkdirSync(agentDir); mkdirSync(goPath(cwd, ""), { recursive: true });
-writeFileSync(goPath(cwd, "config.json"), JSON.stringify({ resetThresholdTokens: 20_000 }));
+writeFileSync(goPath(cwd, "config.json"), JSON.stringify({ resetThresholdTokens: 20_000, handoffReview: false }));
 const errors: unknown[] = [];
 const notices: string[] = [];
 const runtimes = new Set<any>();

@@ -36,6 +36,11 @@ export function excludeRunFiles(cwd: string): void {
 	}
 }
 
+function gitHead(cwd: string): string | undefined {
+	const head = spawnSync("git", ["rev-parse", "--verify", "--quiet", "HEAD"], { cwd, encoding: "utf8" });
+	return head.status === 0 ? head.stdout.trim() : undefined;
+}
+
 export default function goExtension(pi: ExtensionAPI) {
 	// Runtime resource only: every run decision survives on disk, including pending resets.
 	let budgetTimer: ReturnType<typeof setTimeout> | undefined;
@@ -157,7 +162,7 @@ export default function goExtension(pi: ExtensionAPI) {
 		return snapshot;
 	};
 	// A settled parent can still own working children or undelivered reports.
-	const prepareHandoff = (ctx: ExtensionContext, state: GoState): boolean => {
+	const prepareHandoff = (ctx: ExtensionContext, state: GoState, prefix = ""): boolean => {
 		const children = subagents();
 		state.waitingForSubagents = children.active + children.pendingResults;
 		if (state.waitingForSubagents) {
@@ -177,7 +182,7 @@ export default function goExtension(pi: ExtensionAPI) {
 			state.waitingNoticeSent = false;
 			state.resetQueued = false;
 			saveState(ctx.cwd, state); syncIndicator(ctx);
-			pi.sendUserMessage(promptForRun(HANDOFF_PROMPT, state.runId), { deliverAs: "steer" });
+			pi.sendUserMessage(promptForRun(prefix + HANDOFF_PROMPT, state.runId), { deliverAs: "steer" });
 			return false;
 		}
 		return state.handoffReady === true;
@@ -304,7 +309,7 @@ export default function goExtension(pi: ExtensionAPI) {
 				if (state.resetPending) {
 					state.handoffRequested = false;
 					state.waitingNoticeSent = false;
-					prepareHandoff(ctx, state);
+					prepareHandoff(ctx, state, wasBlocked ? `Resuming after blocker: ${previousBlocker ?? "unspecified"}. Record the user's latest clarification from this conversation in HANDOFF.md so the fresh session follows it.\n\n` : "");
 				}
 				else if (state.status === "reviewing") await review(ctx);
 				else {
@@ -351,9 +356,11 @@ export default function goExtension(pi: ExtensionAPI) {
 				await terminal(ctx, state, "paused", "No journal progress across consecutive resets. Inspect the handoff, then /go resume.");
 				return;
 			}
-			state.journalLinesAtLastReset = lines;
+			const review = state.resetKind === "context" ? await handoffReview(ctx, state) : "";
+			if (review === false) return;
+			state.journalLinesAtLastReset = lineCount(readText(ctx.cwd, "JOURNAL.md", state.runId));
 			const oldSession = state.sessionFile;
-			const prompt = promptForRun(seedPrompt(plan, handoff, state.steering, journal.trimEnd().split("\n").slice(-20).join("\n")), state.runId);
+			const prompt = promptForRun(seedPrompt(plan, handoff, state.steering, journal.trimEnd().split("\n").slice(-20).join("\n"), review), state.runId);
 			// Latest choice wins: capture now; this instance is invalid once replaced.
 			state.model = ctx.model ? { provider: ctx.model.provider, id: ctx.model.id } : undefined;
 			state.thinkingLevel = pi.getThinkingLevel();
@@ -375,6 +382,7 @@ export default function goExtension(pi: ExtensionAPI) {
 					state.waitingNoticeSent = undefined;
 					state.lastStopReason = undefined;
 					state.carryPending = true;
+					state.reviewBaseHead = gitHead(cwd);
 					saveState(cwd, state);
 				},
 				withSession: async (ctx2: { sendUserMessage(content: string): Promise<void> }) => { await ctx2.sendUserMessage(prompt); },
@@ -387,6 +395,43 @@ export default function goExtension(pi: ExtensionAPI) {
 			}
 		}),
 	});
+
+	/** Advisory review before a context reset. Returns findings for the seed prompt, or false if the reset must not proceed. */
+	async function handoffReview(ctx: ExtensionContext, state: GoState): Promise<string | false> {
+		const config = loadConfig(ctx.cwd);
+		if (!config.handoffReview) return "";
+		if (state.skipHandoffReview) { state.skipHandoffReview = undefined; saveState(ctx.cwd, state); return ""; }
+		state.reviewInFlight = true;
+		state.reviewAttemptId = randomUUID();
+		saveState(ctx.cwd, state);
+		show(ctx, "/go: independent handoff review before the fresh session…");
+		let outcome: Awaited<ReturnType<typeof runReview>> | undefined, failure: unknown;
+		try { outcome = await runReview(ctx, config, "handoff"); } catch (error) { failure = error; }
+		const current = readState(ctx.cwd, ctx.sessionManager.getSessionFile());
+		// Esc, /go pause|stop|reset or typed steering invalidated this attempt.
+		if (!owned(ctx, current) || current.runId !== state.runId || current.reviewAttemptId !== state.reviewAttemptId ||
+			current.status !== "running" || !current.reviewInFlight || current.detached) return false;
+		current.reviewInFlight = false;
+		const stamp = new Date().toISOString();
+		if (!outcome) {
+			appendJournal(ctx.cwd, `## Handoff review · ${stamp}\nSkipped: reviewer failed: ${failure}`, current.runId);
+			saveState(ctx.cwd, current); Object.assign(state, current);
+			show(ctx, `/go: handoff review failed (${failure}); continuing without it.`, "warning");
+			return "";
+		}
+		current.tokensUsed += outcome.tokens ?? 0;
+		appendJournal(ctx.cwd, `## Handoff review · ${stamp}\n<${outcome.verdict}/>\n${outcome.warning ? `Warning: ${outcome.warning}\n` : ""}${outcome.findings}`, current.runId);
+		if (outcome.warning) show(ctx, outcome.warning, "warning");
+		if (outcome.verdict === "escalate") {
+			current.skipHandoffReview = true;
+			saveState(ctx.cwd, current);
+			await terminal(ctx, current, "blocked", `Handoff reviewer escalated (see JOURNAL.md); reply with a decision, then /go resume.\n${outcome.findings}`);
+			return false;
+		}
+		saveState(ctx.cwd, current); Object.assign(state, current);
+		show(ctx, `/go: handoff review ${outcome.verdict}.`);
+		return `<${outcome.verdict}/>\n${outcome.findings}`;
+	}
 
 	async function finishReview(ctx: ExtensionContext, state: GoState) {
 		appendJournal(ctx.cwd, `## Done · ${new Date().toISOString()}\nIndependent review passed; PLAN done-criteria verified.`, state.runId);
@@ -449,7 +494,7 @@ export default function goExtension(pi: ExtensionAPI) {
 			// Let Pi handle Esc in worker turns, autocomplete and dialogs. Only
 			// independent review/child waiting needs an idle-session override.
 			if (!owned(ctx, current) || !active(current) || !ctx.isIdle() ||
-				(current.status !== "reviewing" && !current.waitingForSubagents) ||
+				(current.status !== "reviewing" && !current.waitingForSubagents && !current.reviewInFlight) ||
 				uiPromptOpen || hasOverlay() || ctx.ui.getEditorText()) return;
 			void guard(async (_event, inputCtx: ExtensionContext) => {
 				const notification = terminal(inputCtx, current, "paused", "Interrupted (Esc). Use /go resume.");
@@ -488,6 +533,13 @@ export default function goExtension(pi: ExtensionAPI) {
 	pi.on("input", guard(async (event, ctx) => {
 		if (event.source === "extension") return;
 		const state = readState(ctx.cwd, ctx.sessionManager.getSessionFile());
+		if (owned(ctx, state) && state.status === "running" && state.reviewInFlight) {
+			// Typed steering during a handoff review: drop the review; the worker answers, then hands off again.
+			state.reviewAttemptId = randomUUID();
+			state.reviewInFlight = false;
+			saveState(ctx.cwd, state);
+			return;
+		}
 		if (!owned(ctx, state) || state.status !== "reviewing") return;
 		state.reviewAttemptId = randomUUID();
 		state.reviewInFlight = false;

@@ -120,6 +120,10 @@ try {
 	assert.ok(review, "Different reviewer model used");
 	assert.ok(trace().some(row => row.event === "request" && row.model === "go-uat-zz-missing"), "Auto-selected reviewer tried first");
 	assert.match(readFileSync(goPath(cwd, "JOURNAL.md", state().runId), "utf8"), /go-uat-zz-missing not found for this account/, "404 reviewer skipped with journaled warning");
+	assert.match(journal, /## Handoff review[^\n]*\n<fail\/>\n[\s\S]*UAT handoff finding marker/, "Handoff review journaled");
+	assert.match(journal, /## Handoff review[^\n]*\n<pass\/>/, "Second handoff review journaled");
+	assert.ok(requests.some(row => row.model === "go-uat-worker" && row.text.includes("INDEPENDENT HANDOFF REVIEW") && row.text.includes("UAT handoff finding marker")), "Handoff findings seed the fresh session");
+	assert.ok(requests.some(row => row.model === "go-uat-reviewer" && row.text.includes("Audit the work since the previous handoff") && row.text.includes("task-1.txt")), "Handoff reviewer sees diff since previous handoff");
 	assert.deepEqual([...review.tools].sort(), ["find", "grep", "ls", "read"], "Reviewer gets only read-only tools");
 	assert.match(readFileSync(join(cwd, ".git/info/exclude"), "utf8"), /\.pi\/go/);
 	assert.ok(!runtime.session.getActiveToolNames().includes("go_done"), "Terminal state hides tools");
@@ -216,7 +220,25 @@ try {
 	assert.equal(archivedReview.reviewRounds, 0, "Cancelled reviewer cannot update archived state");
 	assert.equal(readFileSync(goPath(cwd, "PLAN.md", resetReview.runId), "utf8"), preservedPlan);
 	assert.equal(errors.length, 0, JSON.stringify(errors));
-	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "404 reviewer model skipped", "review fail/fix/pass", "two review failures block", "blocked clarification then resume preserves identity, files, tools and cumulative reviews", "worker go_blocked then same-run resume", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
+	// Handoff reviewer escalation blocks; resume records clarification and skips one re-review.
+	for (const n of [1, 2, 3]) unlinkSync(join(cwd, `task-${n}.txt`));
+	writeFileSync(join(cwd, "uat-handoff-escalate"), "1");
+	await runtime.session.prompt("/go Verify handoff reviewer escalation.");
+	await until(() => state().status === "blocked" || state().status === "done", "handoff review escalation blocks");
+	assert.equal(state().status, "blocked", JSON.stringify(state()));
+	assert.match(state().reason!, /Handoff reviewer escalated[\s\S]*UAT escalation marker/);
+	assert.equal(state().skipHandoffReview, true);
+	const escalatedResets = state().resets;
+	await runtime.session.prompt("UAT clarification: PLAN is fine, continue.");
+	await runtime.session.prompt("/go resume");
+	await until(() => state().status === "done" || state().status === "blocked", "escalated run resumes and completes");
+	assert.equal(state().status, "done", JSON.stringify(state()));
+	assert.ok(state().resets > escalatedResets, "Escalated handoff proceeds after resume");
+	const escalationJournal = readFileSync(runPath("JOURNAL.md"), "utf8");
+	assert.match(escalationJournal, /<escalate\/>/);
+	assert.equal(escalationJournal.match(/<escalate\/>/g)!.length, 1, "Resumed handoff is not re-reviewed into another escalation");
+	assert.ok(trace().some(row => row.event === "request" && row.model === "go-uat-worker" && row.text.includes("Record the user's latest clarification")), "Resume asks worker to record clarification in HANDOFF");
+	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "404 reviewer model skipped", "advisory handoff review seeds fresh session", "handoff escalation blocks then resumes", "review fail/fix/pass", "two review failures block", "blocked clarification then resume preserves identity, files, tools and cumulative reviews", "worker go_blocked then same-run resume", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
 } finally {
 	await runtime?.dispose();
 	console.log(`UAT artifacts: ${cwd}`);

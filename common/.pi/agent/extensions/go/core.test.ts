@@ -19,7 +19,7 @@ test('config defaults, nested overrides, and malformed values', () => {
   assert.equal(config.reviewer.thinkingLevel, 'low');
   assert.equal(config.reviewer.provider, 'anthropic');
   for (const bad of [{ resetThresholdTokens: 0 }, { maxReviewRounds: -1 },
-    { maxStallResets: 1.5 }, { reviewer: { thinkingLevel: 'bogus' } }, { budget: { tokens: -1 } }]) {
+    { handoffReview: 'yes' }, { maxStallResets: 1.5 }, { reviewer: { thinkingLevel: 'bogus' } }, { budget: { tokens: -1 } }]) {
     assert.throws(() => mergeConfig({}, bad), JSON.stringify(bad));
   }
 });

@@ -9,6 +9,8 @@ export interface GoConfig {
 	resetThresholdTokens: number;
 	maxReviewRounds: number;
 	maxStallResets: number;
+	/** Advisory independent review at each context reset (before the fresh session). */
+	handoffReview: boolean;
 	reviewer: { provider: string; model?: string; thinkingLevel: "off" | "minimal" | "low" | "medium" | "high" | "xhigh" };
 	budget: Budget | null;
 }
@@ -48,10 +50,14 @@ export interface GoState {
 	/** Worker model + thinking captured at the latest handoff; applied once in the fresh session. */
 	model?: { provider: string; id: string };
 	thinkingLevel?: string;
+	/** Git HEAD at the latest handoff; the handoff reviewer diffs against it. */
+	reviewBaseHead?: string;
+	/** Set after a handoff-review escalation so the resumed handoff isn't re-reviewed in a loop. */
+	skipHandoffReview?: boolean;
 	carryPending?: boolean;
 }
 export const DEFAULT_CONFIG: GoConfig = {
-	resetThresholdTokens: 100_000, maxReviewRounds: 2, maxStallResets: 2,
+	resetThresholdTokens: 100_000, maxReviewRounds: 2, maxStallResets: 2, handoffReview: true,
 	reviewer: { provider: "anthropic", thinkingLevel: "high" }, budget: null,
 };
 function safeRunId(runId: string): string {
@@ -151,6 +157,7 @@ export function mergeConfig(global: any = {}, project: any = {}): GoConfig {
 		positive(config[name], name);
 		if (!Number.isInteger(config[name])) throw new Error(`${name} must be an integer`);
 	}
+	if (typeof config.handoffReview !== "boolean") throw new Error("handoffReview must be a boolean");
 	if (config.reviewer.provider !== "anthropic") throw new Error("reviewer.provider must be anthropic");
 	if (config.reviewer.model !== undefined && (typeof config.reviewer.model !== "string" || !config.reviewer.model.trim())) throw new Error("reviewer.model must be a non-empty model ID");
 	if (!["off", "minimal", "low", "medium", "high", "xhigh"].includes(config.reviewer.thinkingLevel)) throw new Error("Invalid reviewer.thinkingLevel");
@@ -192,8 +199,9 @@ export const HANDOFF_PROMPT = "Context limit reached. Update .pi/go/HANDOFF.md a
 export function planningPrompt(steering: string): string {
 	return `From this conversation write .pi/go/PLAN.md (scope, non-goals, done-criteria each verifiable by command or inspection, ordered task checklist) and .pi/go/HANDOFF.md (starting state, at most 60 lines). Preserve existing JOURNAL.md and append the new run's starting entry. Steering: ${steering || "none"}. ${AUTONOMY} Then call go_launch.`;
 }
-export function seedPrompt(plan: string, handoff: string, steering: string, journalTail: string): string {
-	return `Continue this autonomous /go run in the same project. Steering: ${steering || "none"}\n\n${AUTONOMY}\n\nPLAN (.pi/go/PLAN.md):\n${plan}\n\nHANDOFF (.pi/go/HANDOFF.md):\n${handoff}\n\nLast 20 journal lines (older entries stay on disk):\n${journalTail}\n\nContinue with the current task. When every done-criterion is verified, call go_done; call go_blocked(reason) if blocked.`;
+export function seedPrompt(plan: string, handoff: string, steering: string, journalTail: string, review = ""): string {
+	const findings = review ? `\n\nINDEPENDENT HANDOFF REVIEW (advisory; fix valid findings before new PLAN work, journal why if you disagree):\n${review}` : "";
+	return `Continue this autonomous /go run in the same project. Steering: ${steering || "none"}\n\n${AUTONOMY}\n\nPLAN (.pi/go/PLAN.md):\n${plan}\n\nHANDOFF (.pi/go/HANDOFF.md):\n${handoff}\n\nLast 20 journal lines (older entries stay on disk):\n${journalTail}${findings}\n\nContinue with the current task. When every done-criterion is verified, call go_done; call go_blocked(reason) if blocked.`;
 }
 export function validateHandoff(cwd: string, runId?: string): { plan: string; handoff: string } {
 	const plan = readText(cwd, "PLAN.md", runId), handoff = readText(cwd, "HANDOFF.md", runId);

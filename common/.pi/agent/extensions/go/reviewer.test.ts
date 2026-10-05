@@ -10,7 +10,7 @@ const sdk = process.env.PI_PACKAGE_DIR ?? join(homedir(), '.local/lib/node_modul
 const require = createRequire(join(sdk, 'package.json'));
 const { createJiti } = require('jiti');
 const jiti = createJiti(import.meta.url, { alias: { '@earendil-works/pi-coding-agent': join(sdk, 'dist/index.js') } });
-const { parseReview, selectReviewerModel, reviewPrompt } = await jiti.import('./reviewer.ts');
+const { parseReview, selectReviewerModel, reviewPrompt, unavailableModels, isModelNotFound } = await jiti.import('./reviewer.ts');
 
 test('review verdict fails closed on malformed, missing, or contradictory markers', () => {
   assert.equal(parseReview('<pass/>\n- All criteria inspected.').passed, true);
@@ -44,6 +44,14 @@ test('reviewer chooses authenticated Anthropic sibling and warns on fallback', a
     assert.equal(result.model, ctx.model);
     assert.match(result.warning, /falling back/);
   }
+  // Catalog-listed models that 404 for this account are skipped.
+  ctx.model = models[2];
+  unavailableModels.add('anthropic/claude-sonnet-4');
+  assert.equal((await selectReviewerModel(ctx, config)).model.id, 'claude-opus-4');
+  unavailableModels.clear();
+  assert.ok(isModelNotFound('Reviewer did not complete: 404 {"type":"error","error":{"type":"not_found_error","message":"model: claude-sonnet-5-5"}}'));
+  assert.ok(!isModelNotFound('Reviewer did not complete: 529 overloaded_error'));
+  ctx.model = models[0];
   ctx.modelRegistry.getApiKeyAndHeaders = async () => ({ ok: false });
   assert.match((await selectReviewerModel(ctx, config)).warning, /unauthenticated/);
 });

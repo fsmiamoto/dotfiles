@@ -54,7 +54,8 @@ Global settings: `~/.pi/agent/go.json`. Project overrides: `.pi/go/config.json`.
 ```
 
 Set `reviewer.model` to pin a model. Otherwise a different authenticated
-Anthropic sibling is selected. If unavailable, the worker model is used
+Anthropic sibling is selected; models the API 404s (listed in the catalog but
+not callable by your account) are skipped. If none remain, the worker model is used
 with a visible warning. The review session has only read/search tools.
 
 Install from the dotfiles root with `stow --no-folding common -t "$HOME"`,

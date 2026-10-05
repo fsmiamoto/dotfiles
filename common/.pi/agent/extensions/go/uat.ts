@@ -21,7 +21,7 @@ process.env.PATH = `${join(cwd, "bin")}:${process.env.PATH ?? ""}`;
 mkdirSync(join(cwd, ".pi", "go"), { recursive: true });
 mkdirSync(agentDir);
 execFileSync("git", ["init", "--quiet", cwd]);
-writeFileSync(join(cwd, ".pi/go/config.json"), JSON.stringify({ resetThresholdTokens: 20_000, reviewer: { model: "go-uat-reviewer", thinkingLevel: "off" } }));
+writeFileSync(join(cwd, ".pi/go/config.json"), JSON.stringify({ resetThresholdTokens: 20_000, reviewer: { thinkingLevel: "off" } })); // auto-select: skips 404ing go-uat-zz-missing
 let lastState: GoState | undefined;
 const state = () => {
   const owned = readState(cwd, runtime?.session.sessionManager.getSessionFile());
@@ -118,6 +118,8 @@ try {
 	assert.ok(requests.every(row => row.text !== "/go-reset"), "Internal reset dispatched as command, never model input");
 	const review = requests.find(row => row.model === "go-uat-reviewer");
 	assert.ok(review, "Different reviewer model used");
+	assert.ok(trace().some(row => row.event === "request" && row.model === "go-uat-zz-missing"), "Auto-selected reviewer tried first");
+	assert.match(readFileSync(goPath(cwd, "JOURNAL.md", state().runId), "utf8"), /go-uat-zz-missing not found for this account/, "404 reviewer skipped with journaled warning");
 	assert.deepEqual([...review.tools].sort(), ["find", "grep", "ls", "read"], "Reviewer gets only read-only tools");
 	assert.match(readFileSync(join(cwd, ".git/info/exclude"), "utf8"), /\.pi\/go/);
 	assert.ok(!runtime.session.getActiveToolNames().includes("go_done"), "Terminal state hides tools");
@@ -214,7 +216,7 @@ try {
 	assert.equal(archivedReview.reviewRounds, 0, "Cancelled reviewer cannot update archived state");
 	assert.equal(readFileSync(goPath(cwd, "PLAN.md", resetReview.runId), "utf8"), preservedPlan);
 	assert.equal(errors.length, 0, JSON.stringify(errors));
-	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "review fail/fix/pass", "two review failures block", "blocked clarification then resume preserves identity, files, tools and cumulative reviews", "worker go_blocked then same-run resume", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
+	console.log(JSON.stringify({ result: "PASS", cwd, resets: contextResets, instances: instances.length, checks: ["running abort pause/resume", "resume during native tool loop without follow-up starvation", "planning + launch after complete tool batch", "fresh extension instances + parent linkage", "2+ resets", "journal continuity", "handoff reload", "internal command routing", "different read-only reviewer pass", "404 reviewer model skipped", "review fail/fix/pass", "two review failures block", "blocked clarification then resume preserves identity, files, tools and cumulative reviews", "worker go_blocked then same-run resume", "review cancellation pause/resume", "reset held reviewer then fresh run without stale review contamination", "terminal tool removal", "git exclusion"], providerFixture: join(extensionDir, "fixtures/uat-provider.ts") }, null, 2));
 } finally {
 	await runtime?.dispose();
 	console.log(`UAT artifacts: ${cwd}`);

@@ -21,7 +21,8 @@ export default function (pi: any) {
 		baseUrl: "http://127.0.0.1:1/offline-uat",
 		apiKey: "offline-uat",
 		api: "anthropic-messages",
-		models: ["go-uat-worker", "go-uat-reviewer"].map(id => ({
+		// go-uat-zz-missing sorts first as auto-selected reviewer but 404s like a catalog model the account cannot call.
+		models: ["go-uat-worker", "go-uat-reviewer", "go-uat-zz-missing"].map(id => ({
 			id, name: id, reasoning: false, input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 200_000, maxTokens: 4000,
 		})),
@@ -41,6 +42,7 @@ export default function (pi: any) {
 			queueMicrotask(() => {
 				try {
 					stream.push({ type: "start", partial: message });
+					if (model.id === "go-uat-zz-missing") throw new Error('404 {"type":"error","error":{"type":"not_found_error","message":"model: go-uat-zz-missing"}}');
 					// A native task can keep calling tools while its /go goal is paused.
 					// Only steering can interrupt this loop; follow-ups starve behind it.
 					if (text === "UAT native work keeps calling tools") {

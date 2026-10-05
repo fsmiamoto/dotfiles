@@ -41,11 +41,16 @@ export function parseReview(text: string): ReviewResult {
 	return { passed: match[1] === "<pass/>", findings: match[2].trim() };
 }
 
+// Catalog can list models the account cannot call (e.g. 404 not_found_error); skip them for this process.
+export const unavailableModels = new Set<string>();
+const modelKey = (model: { provider: string; id: string }) => `${model.provider}/${model.id}`;
+export const isModelNotFound = (message = "") => /not_found_error|\b404\b/.test(message);
+
 export async function selectReviewerModel(ctx: ExtensionContext, config: ReviewConfig) {
 	const worker = ctx.model;
 	const sameAsWorker = (model: NonNullable<typeof worker>) =>
 		model.provider === worker?.provider && model.id === worker.id;
-	const available = ctx.modelRegistry.getAvailable().filter((model) => !sameAsWorker(model));
+	const available = ctx.modelRegistry.getAvailable().filter((model) => !sameAsWorker(model) && !unavailableModels.has(modelKey(model)));
 	const requested = config.reviewer.model;
 	const preferredTier = /opus/i.test(worker?.id ?? "") ? /sonnet|fable/i : /opus/i;
 	const candidates = requested
@@ -104,8 +109,22 @@ export async function runReview(ctx: ExtensionContext, config: ReviewConfig): Pr
 				state.sessionFile === originalState.sessionFile && state.reviewAttemptId === originalState.reviewAttemptId;
 		} catch { return false; }
 	};
-	const { model, warning } = await selectReviewerModel(ctx, config);
+	let { model, warning } = await selectReviewerModel(ctx, config);
 	if (warning) ctx.ui.notify(warning, "warning");
+	for (;;) {
+		try { return { ...(await reviewWith(ctx, config, model, originalState, stillReviewing)), warning }; }
+		catch (error) {
+			if (!isModelNotFound(String(error)) || (model.provider === ctx.model?.provider && model.id === ctx.model?.id)) throw error;
+			unavailableModels.add(modelKey(model));
+			const skipped = `Reviewer ${modelKey(model)} not found for this account; trying another model.`;
+			({ model, warning } = await selectReviewerModel(ctx, config));
+			warning = [skipped, warning].filter(Boolean).join(" ");
+		}
+	}
+}
+
+async function reviewWith(ctx: ExtensionContext, config: ReviewConfig, model: NonNullable<ExtensionContext["model"]>,
+	originalState: NonNullable<ReturnType<typeof readState>>, stillReviewing: () => boolean): Promise<ReviewResult> {
 	const settingsManager = SettingsManager.inMemory({ compaction: { enabled: false }, retry: { enabled: false } });
 	const loader = new DefaultResourceLoader({
 		cwd: ctx.cwd, agentDir: getAgentDir(), settingsManager,
@@ -144,7 +163,7 @@ export async function runReview(ctx: ExtensionContext, config: ReviewConfig): Pr
 			throw new Error(`Reviewer did not complete: ${last?.errorMessage || last?.stopReason || "no response"}`);
 		}
 		const text = last.content.filter((part) => part.type === "text").map((part) => part.text).join("\n");
-		return { ...parseReview(text), warning, tokens };
+		return { ...parseReview(text), tokens };
 	} finally {
 		clearInterval(timer);
 		session.dispose();

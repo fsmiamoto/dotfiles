@@ -15,7 +15,10 @@ Before committing, check `git log` and match the repo's existing commit message 
 Never push a commit without explicit permission from the user.
 
 ## PR descriptions
-Short and sweet — people skim. Follow the repo's PR template if one exists.
+Use the `pr` skill.
+
+## Session logs
+Pi: `~/.pi/agent/sessions/<cwd-slug>/*.jsonl`. Claude Code: `~/.claude/projects/<cwd-slug>/*.jsonl`.
 
 ## Obsidian vault
 The user has an Obsidian vault at `~/Documents/Vault` with personal notes, work notes (e.g. `sakanaai/` for current job), reports, and reference material.

@@ -2,9 +2,9 @@
   "schema": 1,
   "local": [],
   "git": {
-    "https://github.com/DietrichGebert/ponytail.git": "356918eba965ee1eac64bd3a7f0dd02108350de5",
-    "https://github.com/anthropics/claude-code.git": "ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558",
-    "https://github.com/mattpocock/skills.git": "3cca18b368ae95cdbdebbff572ccafa662551015",
+    "https://github.com/DietrichGebert/ponytail.git": "552acd5efd0aeae2583a12efe39373d2f076f25e",
+    "https://github.com/anthropics/claude-code.git": "79babc372d64101f981bd2b52c3dbe588596dc56",
+    "https://github.com/mattpocock/skills.git": "f3fc5632f401156837ee3872f14fe33ccf1024ea",
     "https://github.com/typesafe-ai/skills.git": "65a39f393687675ce170e6094757de20370365b9"
   },
   "collections": [

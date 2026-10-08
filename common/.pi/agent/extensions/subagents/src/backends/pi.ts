@@ -36,6 +36,24 @@ import type {
 import { SendError, SpawnError } from "../domain.ts";
 import { createToolCallTimeoutGuard } from "../tool-call-timeout.ts";
 
+/**
+ * Context occupancy reported by one finalized assistant message, mirroring the
+ * SDK's calculateContextTokens. Undefined for aborted/errored or zero usage,
+ * which the SDK also ignores.
+ */
+export function piAssistantContextTokens(
+  message: Pick<AssistantMessage, "usage" | "stopReason">,
+): number | undefined {
+  if (message.stopReason === "aborted" || message.stopReason === "error")
+    return undefined;
+  const usage = message.usage;
+  if (!usage) return undefined;
+  const tokens =
+    usage.totalTokens ||
+    usage.input + usage.output + usage.cacheRead + usage.cacheWrite;
+  return tokens > 0 ? tokens : undefined;
+}
+
 const CHILD_SHUTDOWN_TIMEOUT_MS = 5_000;
 
 /** Tools that headless children must not receive. Everything else stays enabled. */
@@ -353,11 +371,18 @@ const makePiSession = (
       };
     };
 
-    const emitUsage = () => {
-      const usage = session.getContextUsage();
+    const emitUsage = (message?: AssistantMessage) => {
+      // message_end reaches listeners before the SDK persists the message, so
+      // getContextUsage() still reflects the previous request here. Prefer the
+      // finalized message's own usage; it is what the SDK reports next.
+      const fromMessage = message
+        ? piAssistantContextTokens(message)
+        : undefined;
+      const usage =
+        fromMessage === undefined ? session.getContextUsage() : undefined;
       emit({
         _tag: "UsageChanged",
-        tokens: usage?.tokens ?? undefined,
+        tokens: fromMessage ?? usage?.tokens ?? undefined,
         contextWindow: activeModel()?.contextWindow ?? usage?.contextWindow,
       });
     };
@@ -432,7 +457,7 @@ const makePiSession = (
               _tag: "AssistantMessage",
               parts: assistantParts(event.message as AssistantMessage),
             });
-            emitUsage();
+            emitUsage(event.message as AssistantMessage);
             emit({ _tag: "MetaChanged", meta: currentMeta() });
           }
           // toolResult messages are covered by tool_execution_end.

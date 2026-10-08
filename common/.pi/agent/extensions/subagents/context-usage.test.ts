@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { contextOccupancyTokens } from "./src/backends/claude.ts";
 import { parseThreadTokenUsage } from "./src/backends/codex.ts";
+import { piAssistantContextTokens } from "./src/backends/pi.ts";
 
 // --- Claude: per-request occupancy, never the run aggregate ------------------
 
@@ -104,4 +105,48 @@ test("Codex occupancy is unknown when last usage or window is absent", () => {
     tokens: undefined,
     contextWindow: undefined,
   });
+});
+
+// --- Pi: the finalized message's own usage, not the lagging session estimate --
+
+test("Pi occupancy uses the finalized assistant message's usage", () => {
+  const usage = {
+    input: 120_000,
+    output: 10,
+    cacheRead: 0,
+    cacheWrite: 0,
+    totalTokens: 120_010,
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
+  };
+  assert.equal(
+    piAssistantContextTokens({ usage, stopReason: "toolUse" }),
+    120_010,
+  );
+  assert.equal(
+    piAssistantContextTokens({
+      usage: { ...usage, totalTokens: 0, cacheRead: 5_000 },
+      stopReason: "stop",
+    }),
+    125_010,
+  );
+});
+
+test("Pi occupancy is unknown for aborted, errored, or zero-usage messages", () => {
+  const usage = {
+    input: 1_000,
+    output: 1,
+    cacheRead: 0,
+    cacheWrite: 0,
+    totalTokens: 1_001,
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
+  };
+  assert.equal(piAssistantContextTokens({ usage, stopReason: "aborted" }), undefined);
+  assert.equal(piAssistantContextTokens({ usage, stopReason: "error" }), undefined);
+  assert.equal(
+    piAssistantContextTokens({
+      usage: { ...usage, input: 0, output: 0, totalTokens: 0 },
+      stopReason: "stop",
+    }),
+    undefined,
+  );
 });

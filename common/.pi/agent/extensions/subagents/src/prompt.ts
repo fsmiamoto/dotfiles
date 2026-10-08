@@ -11,6 +11,7 @@ export const SUBAGENT_SPAWN_PROMPT_SNIPPET =
 /** Guides the parent model to delegate standalone tasks and avoid unnecessary blocking waits. */
 export const SUBAGENT_SPAWN_PROMPT_GUIDELINES = [
   "Use subagent_spawn to delegate self-contained tasks that can run in the background; give it a complete, standalone prompt.",
+  "Size each subagent to ONE bounded slice (one module, feature, or test file) it can finish well under ~100k context tokens. Split bigger work into independent slices and run them in parallel (max 4); never hand one child a multi-task plan.",
   "Pick the subagent harness deliberately: pi unless you have a reason to prefer Claude Code or Codex (e.g. the user asked for one, or the task suits that harness).",
   "After subagent_spawn, keep working; results arrive automatically. Only call subagent_wait when you cannot proceed without the result.",
 ];
@@ -18,7 +19,7 @@ export const SUBAGENT_SPAWN_PROMPT_GUIDELINES = [
 /** Model-facing schema descriptions for subagent_spawn task and execution options. */
 export const SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS = {
   prompt:
-    "Task prompt for the subagent. Must be self-contained: include all needed context, file paths, and what to report back.",
+    "Task prompt for the subagent, scoped to one bounded slice of work (not a multi-task plan). Must be self-contained: include all needed context, file paths, and what to report back.",
   name: "Short human-readable name for this subagent, shown in listings and the UI",
   harness:
     'Harness to run the subagent on: "pi" (in-process pi session; inherits this environment), "claude" (Claude Code), or "codex" (Codex CLI). Choose deliberately per task.',
@@ -76,6 +77,14 @@ export const SUBAGENT_CHECK_PARAMETER_DESCRIPTIONS = {
 export const SUBAGENT_LIST_TOOL_DESCRIPTION =
   "List all subagents (running and finished) with their harness and status.";
 
+/** One-shot steer sent to a model-spawned child once its context crosses the budget. */
+export const SUBAGENT_CONTEXT_BUDGET_STEER =
+  "Context budget reached (~100k tokens): you are leaving the range where you work reliably. Finish only the step you are on, commit or checkpoint your work, then stop and report: what is done, what is left, and suggested next slices for the remainder. Do not start new work.";
+
+/** Result-message note telling the parent a child outgrew its slice. */
+export const SUBAGENT_OVER_BUDGET_NOTE =
+  "Note: this subagent exceeded the ~100k context budget and was asked to wrap up. Split any remaining work into smaller parallel slices instead of continuing in one child.";
+
 /** Builds the child completion/failure wrapper injected into the parent model's context. */
 export function buildSubagentResultMessage(options: {
   id: string;
@@ -83,9 +92,11 @@ export function buildSubagentResultMessage(options: {
   status: "running" | "done" | "error";
   errorText?: string;
   output: string;
+  overBudget?: boolean;
 }) {
   const verb = options.status === "error" ? "failed" : "finished";
   let text = `Subagent ${options.id} "${options.title}" ${verb}.`;
+  if (options.overBudget) text += `\n${SUBAGENT_OVER_BUDGET_NOTE}`;
   if (options.errorText) text += `\nError: ${options.errorText}`;
   text += `\n\n${options.output}`;
   return text;

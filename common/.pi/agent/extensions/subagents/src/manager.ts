@@ -35,6 +35,7 @@ import type {
   SubagentStatus,
   TranscriptItem,
 } from "./domain.ts";
+import { SUBAGENT_CONTEXT_BUDGET_STEER } from "./prompt.ts";
 import {
   BackendUnavailableError,
   ConcurrencyLimitError,
@@ -44,6 +45,12 @@ import {
 
 export const MAX_RUNNING = 4;
 export const MAX_TRACKED = 64;
+/**
+ * Absolute context size past which a model-spawned child is steered to wrap
+ * up. Absolute, not a share of the window: reliability degrades by tokens
+ * held, whatever the model's maximum.
+ */
+export const CONTEXT_BUDGET_TOKENS = 100_000;
 const STOP_TIMEOUT_MS = 5_000;
 const ERROR_TEXT_MAX_LENGTH = 4_096;
 const TRANSCRIPT_TEXT_MAX_LENGTH = 64 * 1_024;
@@ -91,6 +98,7 @@ interface MutableSnapshot {
   queued: SubagentSnapshot["queued"];
   finalText: string;
   turns: number;
+  overBudget?: boolean;
 }
 
 interface Entry {
@@ -313,6 +321,28 @@ const makeManager = Effect.gen(function* () {
     pruneSettled();
   };
 
+  /**
+   * One-shot guardrail: the first time a running model-spawned child reaches
+   * CONTEXT_BUDGET_TOKENS, flag it and steer it to wrap up. Never re-steers
+   * (later turns or restarts); user-origin (btw) sessions are exempt.
+   * Backends without live steering (codex) queue the text as a follow-up
+   * turn after the current run instead. The send is fire-and-forget and is
+   * skipped if the run settled meanwhile, so it never restarts an idle child.
+   */
+  const checkContextBudget = (entry: Entry) => {
+    const s = entry.snapshot;
+    if (s.overBudget || s.origin !== "model" || s.status !== "running") return;
+    if ((s.usage.tokens ?? 0) < CONTEXT_BUDGET_TOKENS) return;
+    s.overBudget = true;
+    runDetached(
+      Effect.suspend(() =>
+        entry.snapshot.status === "running" && !disposed
+          ? entry.session.send(SUBAGENT_CONTEXT_BUDGET_STEER)
+          : Effect.void,
+      ).pipe(Effect.ignore),
+    );
+  };
+
   const foldEvent = (entry: Entry, event: SubagentEvent) => {
     const s = entry.snapshot;
     switch (event._tag) {
@@ -410,6 +440,7 @@ const makeManager = Effect.gen(function* () {
           tokens: event.tokens ?? s.usage.tokens,
           contextWindow: event.contextWindow ?? s.usage.contextWindow,
         };
+        checkContextBudget(entry);
         break;
       case "MetaChanged":
         s.meta = { ...s.meta, ...event.meta };

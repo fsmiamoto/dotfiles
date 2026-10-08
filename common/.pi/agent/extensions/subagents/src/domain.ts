@@ -211,6 +211,8 @@ export interface SubagentSnapshot {
   readonly finalText: string;
   /** Count of finalized assistant messages (for subagent_check). */
   readonly turns: number;
+  /** Context crossed the manager's budget and the child was steered to wrap up. */
+  readonly overBudget?: boolean;
 }
 
 /** Final text, or the live streaming buffer while a run is active (v1 `latestOutput`). */

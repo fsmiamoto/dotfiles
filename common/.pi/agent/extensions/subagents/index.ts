@@ -61,6 +61,7 @@ import {
   SUBAGENT_CHECK_PARAMETER_DESCRIPTIONS,
   SUBAGENT_CHECK_TOOL_DESCRIPTION,
   SUBAGENT_LIST_TOOL_DESCRIPTION,
+  SUBAGENT_OVER_BUDGET_NOTE,
   SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS,
   SUBAGENT_SPAWN_PROMPT_GUIDELINES,
   SUBAGENT_SPAWN_PROMPT_SNIPPET,
@@ -200,6 +201,7 @@ export default function (pi: ExtensionAPI) {
           status: snap.status,
           errorText: snap.errorText,
           output: truncatedOutput(snap),
+          overBudget: snap.overBudget,
         }),
         display: true,
         details: { id: snap.id, title: snap.title, status: snap.status },
@@ -453,6 +455,7 @@ export default function (pi: ExtensionAPI) {
         }
         const verb = snap.status === "error" ? "failed" : "finished";
         let section = `## ${snap.id} "${snap.title}" ${verb}`;
+        if (snap.overBudget) section += `\n${SUBAGENT_OVER_BUDGET_NOTE}`;
         if (snap.errorText) section += `\nError: ${snap.errorText}`;
         const headerBytes = Buffer.byteLength(section, "utf8") + 2;
         const outputBudget = Math.max(

@@ -9,6 +9,8 @@
  *   (fresh run);
  * - supports interrupt (RunSettled Interrupted -> status "error", matching v1);
  * - fails the run when the prompt starts with "FAIL:" (error-path testing);
+ * - reports >=100k context tokens on every turn when the spawn prompt starts
+ *   with "BIG:" (context-budget guardrail testing);
  * - appends every event to a JSONL "session file" in tmpdir so the
  *   "full transcript in session file" pointers resolve.
  */
@@ -113,6 +115,7 @@ const makeStubSession = (
       }).pipe(Effect.asVoid);
 
     const pause = Effect.sleep(Duration.millis(profile.cadenceMs));
+    const usageBase = task.prompt.trimStart().startsWith("BIG:") ? 120_000 : 0;
 
     const runTurn = (userText: string, turn: number) =>
       Effect.gen(function* () {
@@ -160,7 +163,10 @@ const makeStubSession = (
         });
         yield* emit({
           _tag: "UsageChanged",
-          tokens: Math.min(profile.contextWindow, 2400 * (turn + 1)),
+          tokens: Math.min(
+            profile.contextWindow,
+            usageBase + 2400 * (turn + 1),
+          ),
           contextWindow: profile.contextWindow,
         });
 
@@ -190,7 +196,10 @@ const makeStubSession = (
         });
         yield* emit({
           _tag: "UsageChanged",
-          tokens: Math.min(profile.contextWindow, 2400 * (turn + 1) + 900),
+          tokens: Math.min(
+            profile.contextWindow,
+            usageBase + 2400 * (turn + 1) + 900,
+          ),
           contextWindow: profile.contextWindow,
         });
         yield* emit({

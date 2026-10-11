@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Guardrail for the dotfiles repo. Enabled by `make hooks`.
+set -euo pipefail
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Shell scripts: everything in common/.local/bin plus any *.sh.
+scripts=$(grep -E '^common/\.local/bin/|\.sh$' <<<"$staged" || true)
+if [ -n "$scripts" ]; then
+	if command -v mise >/dev/null 2>&1; then
+		sc=(mise x shellcheck@0.11.0 -- shellcheck)
+	else
+		sc=(shellcheck)
+	fi
+	# shellcheck disable=SC2086
+	"${sc[@]}" $scripts
+fi
+
+# Skills: the committed manifest + lock must match what is installed.
+if grep -q '^common/\.config/mansk/' <<<"$staged"; then
+	out=$(mansk --manifest common/.config/mansk/skills.toml sync --dry-run 2>&1) || {
+		echo "$out"
+		exit 1
+	}
+	if ! grep -q 'Everything is up to date' <<<"$out"; then
+		echo "$out"
+		echo "pre-commit: skills manifest/lock drift from installed skills. Add skills with \`mansk get\`, or run \`mansk update\`." >&2
+		exit 1
+	fi
+fi

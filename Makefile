@@ -23,7 +23,7 @@ VERBOSE ?= 0
 CARGO_TOOLS = mansk servant
 FORCE ?= 0
 
-config: backup scripts install cargo-tools sync-skills herdr-extensions
+config: backup scripts install cargo-tools sync-skills herdr-extensions hooks
 
 macos: packages config defaults
 
@@ -208,6 +208,10 @@ cargo-tools:
 		fi; \
 	done
 
+# Repo guardrail: shellcheck + skills lock drift on commit.
+hooks:
+	@git config core.hooksPath .githooks
+
 sync-skills:
 	@echo "Syncing agent skills with mansk..."
 	@if ! command -v mansk >/dev/null 2>&1; then \
@@ -216,4 +220,4 @@ sync-skills:
 	fi
 	@mansk sync
 
-.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills cargo-tools herdr-extensions
+.PHONY: backup install migrate unstow packages dump scripts config homebrew defaults theme-colors sync-skills cargo-tools herdr-extensions hooks
